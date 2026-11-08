@@ -1,6 +1,6 @@
-// Two tiny helper elements for the Phatta markup. Neither re-implements player behaviour:
-// <phatta-rate> only mirrors the playback rate as the speed button's painted "1×" label, and
-// <phatta-volume> only picks how the v10 volume popover is laid out for the current pointer.
+// Two tiny helper elements for the Phatta markup. It does not re-implement player behaviour:
+// <phatta-rate> only mirrors the playback rate as the speed button's painted "1×" label;
+// <phatta-clock> pads the minutes of the v10 <media-time> text it wraps ("02:14").
 
 const formatRate = (rate: number) => `${Number.isFinite(rate) ? Number(rate.toFixed(2)) : 1}×`;
 
@@ -33,36 +33,32 @@ class PhattaRateElement extends HTMLElement {
 }
 
 /**
- * Wraps the mute button and its volume popover.
- * Fine pointers keep the v10 hover/focus popover (vertical brass slider; Tab from mute reaches it).
- * Touch screens never hover, so the popover would never open there: on `(hover: none)` the slider turns
- * horizontal and CSS shows it inline beside the mute button, so volume is usable by touch and by Tab.
+ * Sign-painter clock face: the painted plate reads "02:14 / 07:48", so pad single-digit minutes ("2:14" -> "02:14").
+ * Wraps v10 <media-time> elements and only rewrites their visible text after v10 updates it; the elements, their
+ * accessible labels and their behaviour are untouched.
  */
-class PhattaVolumeElement extends HTMLElement {
-  #query: MediaQueryList | null = null;
-  #onChange = () => this.#apply();
+const pad = (text: string) => text.replace(/^(-?)(\d):(\d\d)$/, (_m, sign: string, m: string, s: string) => `${sign}0${m}:${s}`);
+
+class PhattaClockElement extends HTMLElement {
+  #observer: MutationObserver | null = null;
 
   connectedCallback() {
-    this.#query = globalThis.matchMedia?.('(hover: none)') ?? null;
-    this.#query?.addEventListener('change', this.#onChange);
-    this.#apply();
-    // When streamed by the HTML parser the slider may not exist yet.
-    queueMicrotask(() => this.#apply());
+    const fix = () => {
+      const walker = document.createTreeWalker(this, NodeFilter.SHOW_TEXT);
+      for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+        const value = node.nodeValue ?? '';
+        const next = pad(value.trim());
+        if (next !== value.trim()) node.nodeValue = next;
+      }
+    };
+    this.#observer = new MutationObserver(fix);
+    this.#observer.observe(this, { subtree: true, childList: true, characterData: true });
+    fix();
   }
 
   disconnectedCallback() {
-    this.#query?.removeEventListener('change', this.#onChange);
-    this.#query = null;
-  }
-
-  #apply() {
-    const inline = this.#query?.matches ?? false;
-    this.toggleAttribute('data-inline', inline);
-    const slider = this.querySelector('media-volume-slider') as (HTMLElement & { orientation?: string }) | null;
-    if (!slider) return;
-    const orientation = inline ? 'horizontal' : 'vertical';
-    slider.setAttribute('orientation', orientation);
-    slider.orientation = orientation;
+    this.#observer?.disconnect();
+    this.#observer = null;
   }
 }
 
@@ -70,5 +66,5 @@ export function definePhattaElements(): void {
   const registry = globalThis.customElements;
   if (!registry) return;
   if (!registry.get('phatta-rate')) registry.define('phatta-rate', PhattaRateElement);
-  if (!registry.get('phatta-volume')) registry.define('phatta-volume', PhattaVolumeElement);
+  if (!registry.get('phatta-clock')) registry.define('phatta-clock', PhattaClockElement);
 }

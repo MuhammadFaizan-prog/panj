@@ -7,7 +7,7 @@ Status key: ✅ done · 🔄 in progress · ⏳ next · ⛔ blocked
 | P0 REA map | ⏳ | | REA not installed (needs Faizi's OK); map from v10 source/docs + public Plyr demo |
 | P1 Scaffold | ✅ | aee2ea1 | 5 skins (CLI, html/css/scaffold/video), gallery MPA, docs, licence. Builds + typecheck pass; 6 routes 200 |
 | P2 Essentials | ✅ | see log | All 5 skins: 116 Playwright checks pass at 1440/390 (6 documented skips) |
-| P3 Art | ✅ | see log | Phatta ✅ · Glass ✅ · Basant ✅ · Ink & Reed ✅ · Darkroom ✅ (art per skin README; gallery page per skin) |
+| P3 Art | ✅ | see log | Phatta ✅ (v2 pixel-perfect raster plate, see log) · Glass ✅ · Basant ✅ · Ink & Reed ✅ · Darkroom ✅ (art per skin README; gallery page per skin) |
 | P4 States | ✅ | see log | Phatta ✅ · Glass ✅ · Basant ✅ · Ink & Reed ✅ · Darkroom ✅ (hover/focus/active/disabled, loading, error dialog, touch volume) |
 | P5 Gauntlet | ⏳ | | |
 | P6 A11y + QA | ⏳ | | |
@@ -40,8 +40,16 @@ Status key: ✅ done · 🔄 in progress · ⏳ next · ⛔ blocked
 - Tests: volume gate is popover-Esc where a desktop popover exists, otherwise Tab-to-slider + ↑/↓; Ink & Reed ±15 s runs on mobile too; new bright-footage check per skin; fullscreen test waits 300 ms before toggling back (headless cold-start race).
 - Verification: 132 Playwright checks pass at 1440 + 390 against the production build (0 skipped, 0 flaky; earlier dev-server run also green); `pnpm -r build` and `pnpm -r typecheck` pass. Vercel build command verified from a clean clone.
 
+### 2026-11-09: Phatta v2, pixel-perfect truck page
+- Faizi asked for `/phatta` to be a pixel-perfect clone of his night/day/workshop references with every feature live, and allowed the references themselves (our own AI-generated art) as plates and sprites. This replaces the hand-authored-SVG rule for Phatta only.
+- Method: each reference is the page's background plate at its exact aspect ratio (night default, day on the toggle; choice kept in `localStorage`). Painted footage is blacked out and the live `<video>` sits on that rectangle (`object-fit: cover`). Painted control content is erased from the plate and every control is a sprite cropped from the plate at the spot it is drawn (bead strips as two layers with the gold one clipped to progress, brass ball, cream time tag, painted icons, volume rail). Time, tag and speed are live text in subset Source Serif 4 / Inter. Geometry is generated (`skins/phatta/src/video/phatta-geometry.css`, tools in `skins/phatta/tools/`).
+- Extras: bells are a separate layer that sways on hover and while playing; LEDs twinkle and headlights brighten while playing (night); all still under reduced motion. Nav: invisible hit areas over the painted Skins / About / GitHub (Skins → `/`, About → workshop section with focus, GitHub → repo) plus a day/night toggle. Phones: crown crop header, full-width video, live strip under it, mudflap crops as footer.
+- Pixel check (reference viewport, player paused at the reference progress/volume, outside the video rectangle, threshold 26/255): night 0.27%, day 0.31%. Rounds: night 3.53 → 3.53 → 0.28 → 0.29 → 0.34 → 0.29 → 0.29 → 0.27; day 0.37 → 0.33 → 0.31. Remaining: live serif text antialiasing vs paint, the play glyph (▶ while paused instead of the painted ▶II) and the toggle the plate does not paint.
+- Markup: volume popover replaced by an inline rail (the reference paints it inline); `<phatta-clock>` pads minutes; menu max-height raised so the full speed list shows.
+- Tests: Phatta 26/26 pass (desktop-1440 + mobile-390), no test changes needed.
+
 ## Open items
 - Read the challenge close date and the one-vs-five-entries rule once the page is live.
 - P5: readability gauntlet on real bright/dark footage (fixtures exist; bright-footage smoke check is in the suite).
 - Darkroom at 390: the deck covers about two thirds of a 16:9 phone picture while controls are showing (auto-hides); consider a slimmer phone deck.
-- Phatta Urdu line needs a Nastaliq/Naskh font on systems without one (falls back; one glyph showed as tofu in the sandbox).
+- Phatta: the Urdu line was dropped from the page in v2 (tofu risk); the crown art carries the phrase.

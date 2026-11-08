@@ -39,6 +39,5 @@
     --media-popover: var(--phatta-lacquer);
     --media-popover-foreground: var(--phatta-cream);
     --media-button-highlight: rgb(247 236 208 / 0.12);
-    --media-caption-controls-y: -112px;
   }
 }
