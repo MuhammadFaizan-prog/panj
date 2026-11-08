@@ -17,10 +17,10 @@ SLANT = 0.0   # upright, as the locked reference's LED module
 
 # Digit cell (font units)
 # Geometry measured off the locked reference (darkroom-ref.webp) at font-size 40px (25 units per pixel):
-# digits 18 x 29.5 px outer, 4 px segments, 21.5 px pitch.
+# digits 18 x 29.5 px outer, 4 px segments, 22 px pitch.
 X0, X1 = 40, 490          # left / right outer edges
 Y0, Y1 = 0, 737           # bottom / top outer edges
-T = 92                    # segment thickness
+T = 90                    # segment thickness
 G = 12                    # gap between segments
 YM = (Y0 + Y1) / 2
 
@@ -35,16 +35,25 @@ def vseg(x, ya, yb):
     return [(x, ya), (x + h, ya + h), (x + h, yb - h), (x, yb), (x - h, yb - h), (x - h, ya + h)]
 
 
-L, R = X0 + T / 2, X1 - T / 2
-B, TOP = Y0 + T / 2, Y1 - T / 2
+# Mitred segments, as the reference's LED module draws them: the outer segments run to the corners and meet on
+# diagonal seams (W wide); the middle bar is pointed at both ends.
+W = 14
+
+
+def mirror(poly):
+    return [(X0 + X1 - x, y) for x, y in poly]
+
+
+F = [(X0, Y1 - W), (X0 + T, Y1 - T - W), (X0 + T, YM + T / 2 + W / 2), (X0 + T / 2, YM + W / 2), (X0, YM + T / 2 + W / 2)]
+E = [(X0, Y0 + W), (X0, YM - T / 2 - W / 2), (X0 + T / 2, YM - W / 2), (X0 + T, YM - T / 2 - W / 2), (X0 + T, Y0 + T + W)]
 SEG = {
-    "a": hseg(L + G, R - G, TOP),
-    "b": vseg(R, YM + G, TOP - G),
-    "c": vseg(R, B + G, YM - G),
-    "d": hseg(L + G, R - G, B),
-    "e": vseg(L, B + G, YM - G),
-    "f": vseg(L, YM + G, TOP - G),
-    "g": hseg(L + G, R - G, YM),
+    "a": [(X0 + W, Y1), (X1 - W, Y1), (X1 - T - W, Y1 - T), (X0 + T + W, Y1 - T)],
+    "b": mirror(F),
+    "c": mirror(E),
+    "d": [(X0 + T + W, Y0 + T), (X1 - T - W, Y0 + T), (X1 - W, Y0), (X0 + W, Y0)],
+    "e": E,
+    "f": F,
+    "g": hseg(X0 + T / 2 + W, X1 - T / 2 - W, YM),
 }
 DIGITS = {
     "0": "abcdef", "1": "bc", "2": "abged", "3": "abgcd", "4": "fgbc",
@@ -84,9 +93,13 @@ def draw(polys):
 glyphs, advances = {".notdef": draw([rect(60, 0, 400, 700)])}, {".notdef": 520}
 for ch, segs in DIGITS.items():
     glyphs[NAMES[ch]] = draw([SEG[s] for s in segs])
-    advances[NAMES[ch]] = 537
+    advances[NAMES[ch]] = 550
+def dot_at(x, y, d=84, c=22):
+    return [(x + c, y), (x + d - c, y), (x + d, y + c), (x + d, y + d - c), (x + d - c, y + d), (x + c, y + d), (x, y + d - c), (x, y + c)]
+
+
 dot = 88
-glyphs["colon"] = draw([rect(53, 112, dot, 100), rect(53, 512, dot, 100)])
+glyphs["colon"] = draw([dot_at(55, 118), dot_at(55, 516)])
 advances["colon"] = 237
 glyphs["period"] = draw([rect(77, 0, dot, dot)])
 advances["period"] = 250

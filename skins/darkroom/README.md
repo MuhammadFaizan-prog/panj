@@ -13,17 +13,24 @@ A photo darkroom / film lab.
 
 ## Status
 
-P3 art and states built (not yet committed). What is on the deck:
+Pixel-matched to Faizi's locked reference (`darkroom-ref.webp`, 1408 x 768): the player is the whole film-lab unit,
+756 x 648 reference pixels, and `/darkroom` places it on the reference itself. Gauntlet at 1408 x 768 (paused at
+00:47 / 03:20, captions on, 1x): 0.15% of pixels differ outside the video, 0.42% over the full frame; what remains is
+the live clock text and the relettered "CC" key.
 
-- **Film-strip seek bar**: sprocket rebate top and bottom, contact-sheet frames; played frames glow as if developed, buffered stock is a shade lighter. **One** playhead: an amber loupe bracket with a black keyline (the thumb, `role="slider"`).
-- **Hover preview**: a print on paper. On `/darkroom` the gallery page adds the sample's Mux storyboard as a `thumbnails` metadata track, so `media-slider-thumbnail` shows real frames; without that track the preview is the LED time chip only.
-- **Seven-segment time**: an original LED font (`src/fonts/darkroom-segments.woff`, 1.2 KB, built by `tools/make-segment-font.py`, inlined by Vite). Digits `#ff7a45` on `#170605` (7.6:1).
-- **Hardware buttons** with status LEDs: playing, muted (amber), captions on, PiP, fullscreen, settings open. LEDs are a bonus cue; icons and aria carry the state.
-- **Volume**: an inline console fader next to mute instead of the hover-only popover, so it is reachable by Tab and draggable on touch. Hidden where the platform owns volume (the slider reports `hidden`).
-- **Layout**: PiP and fullscreen moved from the top bar to the right of the deck. Under a 34rem player: PiP button (hotkey `i` stays) and duration hide. Under 21rem: the captions button hides (Settings → Captions and `c` stay).
-- **Layering**: art lives in `@layer utilities.darkroom`, which beats the Scaffold but loses to the shared essentials, so 44 px targets, focus rings and reduced motion always win.
-
-Safelight red (`#ff3d1f`) is decoration only; essential text is warm white (16.3:1) or amber (11:1) on an opaque deck.
+- **Monitor**: the picture in the safelight bezel; a thin seek line, play/pause, time, settings and fullscreen sit on
+  a scrim along its foot and fade with the controls.
+- **Film strip** (`<dr-film>`, `role="slider"`): the film runs through a fixed gate as the video plays, so the red
+  loupe always rings the current frame. Drag to scrub, click a frame to jump to it, arrows 5 s, Page keys 30 s.
+- **Deck**: the play key lights the state it is in; the knob is the volume (drag up or down, or Tab + arrows; its
+  pointer follows the level and greys when muted) and its cap mutes; the seven-segment clock reads MM:SS in an
+  original font refit to the reference (`tools/make-segment-font.py`); the CC, 1x, 1.5x and fullscreen keys light
+  their LEDs (and the active speed its red rim) from the player's state, whoever changed it.
+- **Phones**: under a 35rem player the deck becomes two rows of the same parts with 44 px targets, under the film,
+  so it never covers the picture.
+- **Materials**: cut from the reference by `tools/build_assets.py` (card, film, loupe, LEDs, key faces, the play key
+  lit, and the page plate, backdrop and poster). The clock digits (`rgb(204 58 52)`, 40 px, about 3.8:1 on the
+  unlit glass, large text) and every state are live.
 
 ## Develop
 
@@ -36,7 +43,9 @@ pnpm --filter @panj/darkroom typecheck
 - `src/video/skin.html`: the skin markup (Video.js HTML custom elements). Root carries `data-theme="scaffold" data-skin="darkroom"`.
 - `src/video/skin.ts`: registers the elements and icons the markup uses, imports the CSS.
 - `src/tokens.css`: this skin's tokens, on top of `@panj/tokens` (with contrast notes).
-- `src/video/darkroom.css`: the art layer.
+- `src/video/darkroom.css`: the unit, in reference pixels (unlayered; restates the 44 px targets and keeps the essentials' focus rings).
+- `src/video/elements.ts`: `<dr-deck>` (volume, speed keys, fullscreen corner, MM:SS) and `<dr-film>` (the film seek).
+- `tools/build_assets.py`: cuts the materials from the reference (needs numpy, Pillow, OpenCV; output is committed).
 - `tools/make-segment-font.py`: regenerates the LED font (needs `fonttools`; output is committed).
 - `src/index.ts`: package entry, `createSkinnedPlayer(mediaHtml, poster)`, used by `apps/gallery`.
 - `apps/preview/`: the CLI workbench. Leave it as generated except `src/frame/player.ts`.

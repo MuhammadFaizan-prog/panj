@@ -123,6 +123,19 @@
   opacity: 0;
 }
 
+/* a scrim along the foot of the picture keeps the white bar readable over bright footage */
+.media-skin[data-skin="darkroom"] .dr-screen::before {
+  content: "";
+  position: absolute;
+  left: calc(23 * var(--bp));
+  top: calc(311 * var(--bp));
+  width: calc(710 * var(--bp));
+  height: calc(52 * var(--bp));
+  border-radius: 0 0 calc(6 * var(--bp)) calc(6 * var(--bp));
+  background: linear-gradient(to bottom, transparent, rgb(0 0 0 / 0.62) 35%, rgb(0 0 0 / 0.74));
+  pointer-events: none;
+}
+
 .media-skin[data-skin="darkroom"] .video-controls-content:not([data-visible]) .dr-screen * {
   pointer-events: none;
 }
@@ -174,7 +187,7 @@
   inset: 0 auto 0 0;
   width: var(--media-slider-buffer, 0%);
   height: 100%;
-  background: rgb(111 111 111);
+  background: rgb(86 86 86);
   border-radius: 0;
 }
 
@@ -254,7 +267,7 @@
   width: calc(14 * var(--bp));
   height: calc(15 * var(--bp));
   translate: calc(1 * var(--bp)) 0;
-  background: currentColor;
+  background: rgb(206 206 206);
   clip-path: polygon(0 0, 100% 50%, 0 100%);
 }
 
@@ -278,18 +291,24 @@
 }
 
 .media-skin[data-skin="darkroom"] .dr-screen .dr-screen-gear .media-button-icon {
+  display: none;
+}
+
+/* a solid six-tooth gear, as the reference draws it */
+.media-skin[data-skin="darkroom"] .dr-screen .dr-screen-gear::before {
+  content: "";
   width: max(14px, calc(17 * var(--bp)));
   height: max(14px, calc(17 * var(--bp)));
-  color: #dcdcdc;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 17 17'%3E%3Cpath fill-rule='evenodd' fill='%23d2d2d2' d='M6.66 0.51 L10.34 0.51 L10.25 2.76 L12.59 4.11 L14.50 2.91 L16.34 6.10 L14.35 7.15 L14.35 9.85 L16.34 10.90 L14.50 14.09 L12.59 12.89 L10.25 14.24 L10.34 16.49 L6.66 16.49 L6.75 14.24 L4.41 12.89 L2.50 14.09 L0.66 10.90 L2.65 9.85 L2.65 7.15 L0.66 6.10 L2.50 2.91 L4.41 4.11 L6.75 2.76Z M8.5 5.9a2.6 2.6 0 1 0 0.01 0z'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
 }
 
 .media-skin[data-skin="darkroom"] .dr-screen .dr-screen-fullscreen {
-  --cx: 686.5;
+  --cx: 687;
   cursor: pointer;
 }
 
 .media-skin[data-skin="darkroom"] .dr-screen .dr-screen-glyph {
-  width: max(14px, calc(17 * var(--bp)));
+  width: max(14px, calc(18 * var(--bp)));
   height: max(12px, calc(15 * var(--bp)));
   color: #dcdcdc;
 }
@@ -362,9 +381,9 @@
 
 .media-skin[data-skin="darkroom"] .dr-film-loupe {
   position: absolute;
-  left: calc(270 * var(--bp));
+  left: calc(254 * var(--bp));
   top: 0;
-  width: calc(220 * var(--bp));
+  width: calc(260 * var(--bp));
   height: 100%;
   pointer-events: none;
   background: url("../assets/loupe.webp") 0 0 / 100% 100% no-repeat;
@@ -504,20 +523,22 @@
 .media-skin[data-skin="darkroom"] .dr-knob-pointer {
   --dr-angle: calc(-150deg + 300deg * var(--dr-vol, 1));
   position: absolute;
-  left: calc(50% - 1.6 * var(--bp));
+  left: calc(50% - 1.4 * var(--bp));
   top: calc(50% - 25 * var(--bp));
-  width: calc(3.2 * var(--bp));
+  width: calc(2.8 * var(--bp));
   height: calc(25 * var(--bp));
   transform-origin: 50% 100%;
   rotate: var(--dr-angle);
   pointer-events: none;
-  background: linear-gradient(to bottom, transparent 0 2%, rgb(205 48 38) 2% 52%, transparent 52%);
-  border-radius: calc(1.6 * var(--bp));
+  /* an engraved red line: darker edges, a lit core; the mask keeps it on the cap's outer half */
+  background: linear-gradient(90deg, rgb(150 32 26), rgb(238 84 70) 50%, rgb(150 32 26));
+  mask-image: linear-gradient(to bottom, transparent 0 2%, #000 2% 50%, transparent 50%);
+  border-radius: calc(1.4 * var(--bp));
   transition: rotate 0.12s ease-out;
 }
 
 .media-skin[data-skin="darkroom"] .dr-deck[data-muted] .dr-knob-pointer {
-  background: linear-gradient(to bottom, transparent 0 2%, rgb(96 88 84) 2% 52%, transparent 52%);
+  background: rgb(96 88 84);
 }
 
 .media-skin[data-skin="darkroom"] .dr-knob .dr-knob-cap {
@@ -543,7 +564,7 @@
   font-weight: 400;
   line-height: 1;
   letter-spacing: 0;
-  color: rgb(222 70 60);
+  color: rgb(204 58 52);
   text-shadow:
     0 0 calc(1.5 * var(--bp)) rgb(255 60 40 / 0.55),
     0 0 calc(6 * var(--bp)) rgb(255 30 15 / 0.45);
@@ -560,7 +581,7 @@
 }
 
 .media-skin[data-skin="darkroom"] .dr-clock .media-time-current-value {
-  left: calc(266.4 * var(--bp));
+  left: calc(267 * var(--bp));
 }
 
 .media-skin[data-skin="darkroom"] .dr-clock .media-time-separator {
@@ -569,7 +590,7 @@
 }
 
 .media-skin[data-skin="darkroom"] .dr-clock .media-time-duration-value {
-  left: calc(394.4 * var(--bp));
+  left: calc(395 * var(--bp));
 }
 
 /* push keys: CC, 1x, 1.5x, fullscreen on y 63.5; their LEDs sit above at y 31 */
@@ -733,9 +754,9 @@
   }
 
   .media-skin[data-skin="darkroom"] .dr-knob-pointer {
-    left: calc(50% - 1.6 * var(--k));
+    left: calc(50% - 1.4 * var(--k));
     top: calc(50% - 25 * var(--k));
-    width: calc(3.2 * var(--k));
+    width: calc(2.8 * var(--k));
     height: calc(25 * var(--k));
     z-index: 1;
   }

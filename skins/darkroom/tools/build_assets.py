@@ -11,7 +11,8 @@ Skin sprites (skins/darkroom/src/assets/):
                    relettered "CC". The video and film rectangles are covered by live layers.
   film.webp        the film band (y 430-581) with the red loupe ring painted out
   film-tile.webp   five frames of that band, gap to gap (x 345-1062): repeats seamlessly as the film runs
-  loupe.webp       the red grease-pencil ring and cross over the current frame (alpha), fixed in the gate
+  loupe.webp       the red grease-pencil ring, its cross and shadow over the current frame (alpha), fixed in the gate
+                   (x 580-840; solved as the most transparent layer that restores the reference over film.webp)
   leds.webp        status LEDs, 4 positions x [on, off], 32 x 16 each
   rate-faces.webp  the 1x and 1.5x push-button faces, [1x on, 1x off, 1.5x on, 1.5x off], 52 x 52 each
   play-live.webp   the play/pause button face while playing (the play triangle lit, the pause bars dark)
@@ -65,20 +66,22 @@ def ring_split(ref):
     a = np.clip((d - d0) / (RING[0] - RING[1] - d0), 0, 1)
     a[~near] = 0
     a[a < 0.04] = 0
-    # the ring's own colour runs from dark to bright red, so where it is strong the sprite carries the reference
-    # pixel itself (opaque) and the film under it is inpainted; only its faint fringe is unmixed against RING.
-    hard = cv2.dilate((a >= 0.3).astype(np.uint8), np.ones((3, 3), np.uint8)) > 0
-    soft = (a > 0) & ~hard
-    aa = a[..., None]
-    film = band.copy()
-    film[soft] = ((band - aa * RING) / np.maximum(1 - aa, 1e-3))[soft]
-    film = np.clip(film, 0, 255).astype(np.uint8)
-    film = cv2.inpaint(film, hard.astype(np.uint8), 4, cv2.INPAINT_TELEA)
+    # The ring is drawn with a soft dark shadow, so a plain unmix leaves a ghost in the film. Instead the film is
+    # inpainted across a band around the ring, and the loupe sprite is solved per pixel as the most transparent
+    # colour that puts the reference back over that film: (1 - alpha) film + alpha colour = reference.
+    band_m = cv2.dilate((a > 0.02).astype(np.uint8), np.ones((11, 11), np.uint8))
+    film = cv2.inpaint(band.astype(np.uint8), band_m, 5, cv2.INPAINT_TELEA)
+    F = film.astype(np.float32)
+    P = band
+    up = np.where(P > F, (P - F) / np.maximum(255 - F, 1), (F - P) / np.maximum(F, 1))
+    alpha = np.clip(up.max(2), 0, 1)
+    alpha[band_m == 0] = 0
+    alpha = np.ceil(alpha * 255) / 255
+    col = (P - (1 - alpha[..., None]) * F) / np.maximum(alpha[..., None], 1e-3)
     rgba = np.zeros(band.shape[:2] + (4,), np.uint8)
-    rgba[..., :3] = RING.astype(np.uint8)
-    rgba[..., 3] = np.round(a * 255).astype(np.uint8)
-    rgba[hard, :3] = band[hard].astype(np.uint8)
-    rgba[hard, 3] = 255
+    rgba[..., :3] = np.clip(np.round(col), 0, 255).astype(np.uint8)
+    rgba[..., 3] = np.round(alpha * 255).astype(np.uint8)
+    rgba[alpha == 0, :3] = 0
     return film, rgba
 
 
@@ -222,7 +225,7 @@ def main():
     film, ring = ring_split(ref)
     save(film[:, x:x + w], os.path.join(SKIN_OUT, 'film.webp'))
     save(film[:, TILE_X[0]:TILE_X[1]], os.path.join(SKIN_OUT, 'film-tile.webp'))
-    rx0, rx1 = 596, 816
+    rx0, rx1 = 580, 840
     save(ring[:, rx0:rx1], os.path.join(SKIN_OUT, 'loupe.webp'))
     save(leds(ref), os.path.join(SKIN_OUT, 'leds.webp'))
     save(rate_faces(ref), os.path.join(SKIN_OUT, 'rate-faces.webp'))
