@@ -1,0 +1,221 @@
+/* /basant gallery page: a Lahore rooftop at dusk framing the player.
+   Page-only styles; the skin itself lives in skins/basant. All art is CSS + inline SVG in index.html. */
+
+.basant-page {
+  --dusk-0: #17183f;
+  --dusk-1: #33296a;
+  --dusk-2: #8a3f7a;
+  --dusk-3: #e0705a;
+  --dusk-4: #ffbf69;
+  --roof: #170d1c;
+  background: var(--roof);
+  color: #fdf6ec;
+  overflow-x: hidden;
+}
+
+/* ── Scene: sky behind, rooftops in front of the strings, player on top ─── */
+.basant-page .scene {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding-bottom: clamp(70px, 11vw, 150px);
+}
+
+.basant-page .sky {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(
+    to bottom,
+    var(--dusk-0) 0%,
+    var(--dusk-1) 30%,
+    var(--dusk-2) 58%,
+    var(--dusk-3) 78%,
+    var(--dusk-4) 94%
+  );
+}
+
+.basant-page .sun {
+  position: absolute;
+  left: 50%;
+  bottom: clamp(40px, 7vw, 100px);
+  width: clamp(160px, 26vw, 380px);
+  aspect-ratio: 1;
+  translate: -50% 40%;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff1c1 0 22%, #ffd27a 34%, rgb(255 191 105 / 0.35) 52%, transparent 70%);
+}
+
+.basant-page .cloud {
+  position: absolute;
+  height: 18px;
+  border-radius: 999px;
+  background: rgb(255 214 190 / 0.18);
+  filter: blur(1px);
+}
+
+.basant-page .cloud-1 { top: 16%; left: 6%; width: 180px; }
+.basant-page .cloud-2 { top: 9%; right: 10%; width: 240px; }
+.basant-page .cloud-3 { top: 44%; left: 62%; width: 140px; background: rgb(255 214 190 / 0.14); }
+
+.basant-page .skyline {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  width: 100%;
+  height: clamp(120px, 17vw, 240px);
+  z-index: 2; /* in front of the kite strings */
+  display: block;
+}
+
+/* ── Kites: a hand-drawn patang (see #patang), recoloured per kite ──────── */
+.basant-page .kite {
+  --size: 64px;
+  --a: #f5b301;
+  --b: #d81b60;
+  --c: #fffaf0;
+  --tassel: #1f8f4e;
+  --tail: #fff3d6;
+  --tilt: -8deg;
+  --string-angle: 18deg;
+  position: absolute;
+  z-index: 1;
+  width: var(--size);
+  rotate: var(--tilt);
+  transform-origin: 50% 45%;
+  filter: drop-shadow(0 4px 6px rgb(10 8 30 / 0.35));
+}
+
+.basant-page .kite svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+/* the string, from the bridle down to a rooftop out of sight */
+.basant-page .kite::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 44%;
+  width: 1px;
+  height: 140vh;
+  background: linear-gradient(to bottom, rgb(255 246 230 / 0.75), rgb(255 246 230 / 0.25));
+  transform-origin: top center;
+  rotate: var(--string-angle);
+  z-index: -1;
+}
+
+.basant-page .k1 { top: 6%;  left: 4%;   --size: 72px; --tilt: -10deg; --string-angle: -14deg; }
+.basant-page .k2 { top: 22%; left: 13%;  --size: 46px; --a: #1f8f4e; --b: #9be15d; --c: #d81b60; --tassel: #f5b301; --tilt: 6deg; --string-angle: 10deg; }
+.basant-page .k3 { top: 4%;  left: 38%;  --size: 40px; --a: #e94e1b; --b: #f5b301; --tilt: 12deg; --string-angle: 26deg; }
+.basant-page .k4 { top: 3%;  right: 18%; --size: 52px; --a: #d81b60; --b: #ff8fb8; --c: #f5b301; --tassel: #2c7be5; --tilt: -4deg; --string-angle: -24deg; }
+.basant-page .k5 { top: 18%; right: 5%;  --size: 78px; --a: #f5b301; --b: #1f8f4e; --c: #fffaf0; --tassel: #d81b60; --tilt: 9deg; --string-angle: -8deg; }
+.basant-page .k6 { top: 46%; left: 2%;   --size: 38px; --a: #6c3fd1; --b: #f5b301; --tilt: -14deg; --string-angle: 22deg; }
+.basant-page .k7 { top: 50%; right: 2%;  --size: 44px; --a: #2c7be5; --b: #fffaf0; --c: #d81b60; --tilt: 4deg; --string-angle: -18deg; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .basant-page .kite {
+    animation: basant-drift var(--dur, 7s) ease-in-out var(--delay, 0s) infinite alternate;
+  }
+
+  .basant-page .k2 { --dur: 5.5s; --delay: -2s; }
+  .basant-page .k3 { --dur: 6.2s; --delay: -4s; }
+  .basant-page .k4 { --dur: 8s;   --delay: -1s; }
+  .basant-page .k5 { --dur: 9s;   --delay: -3s; }
+  .basant-page .k6 { --dur: 6.8s; --delay: -5s; }
+  .basant-page .k7 { --dur: 7.6s; --delay: -2.5s; }
+}
+
+@keyframes basant-drift {
+  0%   { translate: 0 0;       rotate: var(--tilt); }
+  50%  { translate: 10px -8px; rotate: calc(var(--tilt) + 5deg); }
+  100% { translate: -6px 4px;  rotate: calc(var(--tilt) - 4deg); }
+}
+
+/* ── Page column ────────────────────────────────────────────────────────── */
+.basant-page .basant-main {
+  position: relative;
+  z-index: 3; /* the player sits in front of the rooftops */
+  max-width: 1080px;
+  padding: 20px clamp(12px, 3vw, 24px) 0;
+}
+
+.basant-page .back {
+  color: #fdf6ec;
+  font-weight: 600;
+}
+
+.basant-page .basant-head {
+  margin: 8px 0 24px;
+}
+
+.basant-page h1 {
+  margin: 0;
+  font-size: clamp(2.2rem, 6vw, 4rem);
+  line-height: 1;
+  letter-spacing: 0.02em;
+  color: #ffd25e;
+  text-shadow: 0 2px 0 #3a1a40, 0 6px 18px rgb(0 0 0 / 0.35);
+}
+
+.basant-page .basant-head p {
+  margin: 10px 0 0;
+  max-width: 46ch;
+  font-size: clamp(1rem, 2.2vw, 1.15rem);
+  color: #fdf6ec;
+}
+
+.basant-page #stage {
+  border-radius: 18px;
+  background: #0b0b14;
+  box-shadow:
+    0 0 0 3px #f5b301,
+    0 0 0 6px #3a1a40,
+    0 24px 60px rgb(10 6 30 / 0.55);
+}
+
+.basant-page #stage .media-skin {
+  border-radius: 16px;
+}
+
+/* ── Design thinking: on the roof, under the parapet ────────────────────── */
+.basant-page .thinking {
+  background: var(--roof);
+  border-top: 1px solid #3b2233;
+}
+
+.basant-page .thinking-inner {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: clamp(28px, 5vw, 56px) clamp(12px, 3vw, 24px) clamp(40px, 6vw, 72px);
+}
+
+.basant-page .thinking h2 {
+  margin: 0 0 12px;
+  font-size: 1.35rem;
+  color: #ffd25e;
+}
+
+.basant-page .thinking p {
+  margin: 0;
+  max-width: 70ch;
+  font-size: 1.05rem;
+  line-height: 1.65;
+  color: #f3e9dc;
+}
+
+/* ── Small screens: fewer, smaller kites so the player stays the subject ── */
+@media (max-width: 720px) {
+  .basant-page .k2,
+  .basant-page .k6,
+  .basant-page .k7 {
+    display: none;
+  }
+
+  .basant-page .k1 { --size: 48px; left: 70%; top: 2%; }
+  .basant-page .k3 { --size: 30px; left: 48%; top: 6%; }
+  .basant-page .k4 { --size: 36px; right: 4%; top: 12%; }
+  .basant-page .k5 { --size: 40px; right: auto; left: 3%; top: 64%; }
+}

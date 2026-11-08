@@ -1,9 +1,35 @@
-/* Basant skin tokens.
-   P1/P2: neutral placeholders (the Scaffold look) while controls are wired. Art lands in P3.
-   Planned: --panj-sky, --panj-string (manja), --panj-spool (charkhi wood), --panj-kite-*.
-   Scope every rule to [data-skin="basant"]. */
+/* Basant skin tokens: a Lahore rooftop at Basant.
+   Sky-blue bar, navy "ink" for anything that must be read, marigold (basant yellow) accent,
+   deep-pink and green kites, wooden charkhi. Every rule is scoped to [data-skin="basant"].
+   Public props honoured: --media-accent-color (marigold), --media-border-radius (container corners). */
 .media-skin[data-skin="basant"] {
-  --panj-surface: rgb(0 0 0 / 0.6);
-  --panj-on-surface: #fff;
-  --panj-accent: #fff;
+  /* palette */
+  --basant-ink: #0b2545;                 /* navy: text, icons, outlines on the sky bar */
+  --basant-paper: #fffaf0;               /* kite paper: button discs, menus */
+  --basant-sky-hi: #b4e4fa;
+  --basant-sky-lo: #86cdf0;              /* bar gradient; ink on both ≥ 9:1 */
+  --basant-marigold: var(--media-accent-color, #f5b301);
+  --basant-marigold-soft: #ffe08a;       /* hover / highlighted menu row */
+  --basant-pink: #d81b60;                /* manja + kite panel; always outlined in ink on the bar */
+  --basant-pink-deep: #a3104a;           /* bare string (volume): ≥ 3.8:1 on the sky bar */
+  --basant-green: #1f8f4e;
+  --basant-wood: #b06a2c;
+  --basant-wood-dark: #6b3a14;
+  --basant-dot: rgb(11 37 69 / 0.65);    /* unflown string trail, ≥ 3:1 on the bar */
+
+  /* Scaffold theme hooks */
+  --media-foreground: #fff;              /* text drawn straight over video (title, indicators) */
+  --media-popover: var(--basant-ink);    /* tooltips */
+  --media-popover-foreground: #fff;
+  --media-ring: var(--basant-ink);
+  --media-button-highlight: var(--basant-marigold-soft);
+  --media-video-border-radius: var(--media-border-radius, 16px);
+  --media-font-family: ui-rounded, "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  /* panj shared hooks: navy ring + white halo reads on the sky bar, paper discs, bright and dark video */
+  --panj-surface: var(--basant-sky-lo);
+  --panj-on-surface: var(--basant-ink);
+  --panj-accent: var(--basant-marigold);
+  --panj-focus-color: var(--basant-ink);
+  --panj-focus-halo: #fff;
 }

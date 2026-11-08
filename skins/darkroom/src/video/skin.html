@@ -53,30 +53,6 @@
 <media-tooltip-shortcut class="media-tooltip-shortcut">
 </media-tooltip-shortcut>
 </media-tooltip>
-<media-pip-button class="media-button media-pip-button" id="vjs-COsQCb_P-0-3-trigger">
-<media-icon family="scaffold" name="pip-enter" class="media-button-icon media-pip-button-enter-icon">
-</media-icon>
-<media-icon family="scaffold" name="pip-exit" class="media-button-icon media-pip-button-exit-icon">
-</media-icon>
-</media-pip-button>
-<media-tooltip trigger="vjs-COsQCb_P-0-3-trigger" side="top" class="media-popup media-popup-safe-area media-tooltip-popup media-tooltip-screen-popup">
-<media-tooltip-label>
-</media-tooltip-label>
-<media-tooltip-shortcut class="media-tooltip-shortcut">
-</media-tooltip-shortcut>
-</media-tooltip>
-<media-fullscreen-button class="media-button media-fullscreen-button" id="vjs-COsQCb_P-0-4-trigger">
-<media-icon family="scaffold" name="fullscreen-enter" class="media-button-icon media-fullscreen-button-enter-icon">
-</media-icon>
-<media-icon family="scaffold" name="fullscreen-exit" class="media-button-icon media-fullscreen-button-exit-icon">
-</media-icon>
-</media-fullscreen-button>
-<media-tooltip trigger="vjs-COsQCb_P-0-4-trigger" side="top" class="media-popup media-popup-safe-area media-tooltip-popup media-tooltip-screen-popup">
-<media-tooltip-label>
-</media-tooltip-label>
-<media-tooltip-shortcut class="media-tooltip-shortcut">
-</media-tooltip-shortcut>
-</media-tooltip>
 </media-controls-group>
 <media-buffering-indicator class="video-controls-buffering">
 <media-controls-group class="video-controls-center">
@@ -170,20 +146,20 @@
 <media-tooltip-shortcut class="media-tooltip-shortcut">
 </media-tooltip-shortcut>
 </media-tooltip>
-<media-mute-button commandfor="vjs-nnOyqmK2-0-popup" class="media-button media-mute-button" id="vjs-COsQCb_P-0-9-trigger">
+<media-mute-button class="media-button media-mute-button" id="vjs-COsQCb_P-0-9-trigger">
 <media-icon family="scaffold" name="volume-off" class="media-button-icon media-mute-button-off-icon">
 </media-icon>
 <media-icon family="scaffold" name="volume-high" class="media-button-icon media-mute-button-high-icon">
 </media-icon>
 </media-mute-button>
-<media-tooltip trigger="vjs-COsQCb_P-0-9-trigger" delay="0" disabled side="top" sticky class="media-popup media-popup-safe-area media-tooltip-popup">
+<media-tooltip trigger="vjs-COsQCb_P-0-9-trigger" side="top" class="media-popup media-popup-safe-area media-tooltip-popup">
 <media-tooltip-label>
 </media-tooltip-label>
 <media-tooltip-shortcut class="media-tooltip-shortcut">
 </media-tooltip-shortcut>
 </media-tooltip>
-<media-volume-popover open-on-hover delay="200" close-delay="100" side="top" class="media-popup media-popup-safe-area media-volume-popover-popup" id="vjs-nnOyqmK2-0-popup">
-<media-volume-slider class="media-volume-slider" orientation="vertical" thumb-alignment="edge">
+<div class="dr-fader">
+<media-volume-slider class="media-volume-slider dr-fader-slider" orientation="horizontal" thumb-alignment="edge">
 <media-slider-track class="media-volume-slider-track">
 <media-slider-fill class="media-volume-slider-fill">
 </media-slider-fill>
@@ -191,7 +167,7 @@
 <media-slider-thumb class="media-volume-slider-thumb">
 </media-slider-thumb>
 </media-volume-slider>
-</media-volume-popover>
+</div>
 <media-time-group class="media-time-group">
 <media-time class="media-time-toggle" type="current" toggle>
 </media-time>
@@ -203,6 +179,11 @@
 </media-time>
 </media-time-group>
 </media-controls-group>
+<div class="dr-plate" aria-hidden="true">
+<svg class="dr-plate-mark" viewBox="0 0 24 32" width="14" height="19" focusable="false"><path d="M7 2h10v8H7z M5 10h14l-3 5H8z M11 15h2v11h-2z M4 26h16v4H4z" fill="currentColor"/><path d="M9 18l-4 6h14l-4-6" fill="none" stroke="currentColor" stroke-width="1.2" opacity=".6"/></svg>
+<span class="dr-plate-name">DARKROOM</span>
+<span class="dr-plate-lamp"></span>
+</div>
 <media-controls-group class="video-controls-group">
 <media-captions-button class="media-button media-captions-button" id="vjs-COsQCb_P-0-10-trigger">
 <media-icon family="scaffold" name="captions-off" class="media-button-icon media-captions-button-off-icon">
@@ -364,6 +345,30 @@
 </media-menu-content>
 </media-menu-content>
 </media-menu>
+<media-pip-button class="media-button media-pip-button" id="vjs-COsQCb_P-0-3-trigger">
+<media-icon family="scaffold" name="pip-enter" class="media-button-icon media-pip-button-enter-icon">
+</media-icon>
+<media-icon family="scaffold" name="pip-exit" class="media-button-icon media-pip-button-exit-icon">
+</media-icon>
+</media-pip-button>
+<media-tooltip trigger="vjs-COsQCb_P-0-3-trigger" side="top" class="media-popup media-popup-safe-area media-tooltip-popup">
+<media-tooltip-label>
+</media-tooltip-label>
+<media-tooltip-shortcut class="media-tooltip-shortcut">
+</media-tooltip-shortcut>
+</media-tooltip>
+<media-fullscreen-button class="media-button media-fullscreen-button" id="vjs-COsQCb_P-0-4-trigger">
+<media-icon family="scaffold" name="fullscreen-enter" class="media-button-icon media-fullscreen-button-enter-icon">
+</media-icon>
+<media-icon family="scaffold" name="fullscreen-exit" class="media-button-icon media-fullscreen-button-exit-icon">
+</media-icon>
+</media-fullscreen-button>
+<media-tooltip trigger="vjs-COsQCb_P-0-4-trigger" side="top" class="media-popup media-popup-safe-area media-tooltip-popup">
+<media-tooltip-label>
+</media-tooltip-label>
+<media-tooltip-shortcut class="media-tooltip-shortcut">
+</media-tooltip-shortcut>
+</media-tooltip>
 </media-controls-group>
 </media-controls-group>
 </div>

@@ -1,0 +1,192 @@
+/* /darkroom page chrome: a darkroom framing the player. Scoped to .dr-body so no other route is touched.
+   Text contrast on #0b0707: #f2e6dc ~16:1, #ffb347 ~10.7:1, #c9b8ab ~9.9:1. */
+
+.dr-body {
+  --dr-ink: #f2e6dc;
+  --dr-ink-dim: #c9b8ab;
+  --dr-amber: #ffb347;
+  --dr-sway: 7s;
+  background-color: #0b0707;
+  background-image:
+    radial-gradient(60% 45% at 50% 0%, rgb(255 48 20 / 0.2), transparent 70%),
+    radial-gradient(40% 50% at 100% 30%, rgb(255 48 20 / 0.1), transparent 70%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 .5 0 0 0 0 .4 0 0 0 .05 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+  color: var(--dr-ink);
+  min-height: 100vh;
+}
+
+.dr-body a:focus-visible {
+  outline: 2px solid #ffd27a;
+  outline-offset: 3px;
+  box-shadow: 0 0 0 5px #000;
+}
+
+.dr-page {
+  max-width: 1440px;
+  padding: 24px clamp(12px, 3vw, 40px) 56px;
+}
+
+.dr-head h1 {
+  margin: 4px 0 4px;
+  color: var(--dr-amber);
+  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  text-shadow: 0 0 18px rgb(255 61 31 / 0.45);
+}
+
+.dr-tagline {
+  margin: 0 0 8px;
+  color: var(--dr-ink-dim);
+  max-width: 60ch;
+}
+
+/* ── Drying line ── */
+.dr-line {
+  display: block;
+  width: 100%;
+  max-width: 1200px;
+  height: auto;
+  margin: 0 auto -8px;
+  overflow: visible;
+}
+
+.dr-print {
+  transform-box: fill-box;
+  transform-origin: 50% 0;
+  animation: dr-sway var(--dr-sway) ease-in-out var(--dr-sway-delay, 0s) infinite alternate;
+}
+
+/* The prints hang by their transform attribute; sway nudges them with `rotate` so the two compose. */
+@keyframes dr-sway {
+  from { rotate: -1.2deg; }
+  to { rotate: 1.2deg; }
+}
+
+/* ── Scene: enlarger | easel with player | trays ── */
+.dr-scene {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 70%) minmax(0, 1fr);
+  align-items: end;
+  gap: clamp(8px, 2vw, 28px);
+}
+
+.dr-enlarger,
+.dr-trays {
+  width: 100%;
+  max-width: 220px;
+  height: auto;
+  justify-self: center;
+}
+
+.dr-enlarger-led {
+  filter: drop-shadow(0 0 4px #ff3d1f);
+}
+
+/* The easel: the player sits where the print would. */
+.dr-easel {
+  position: relative;
+  padding: clamp(6px, 1vw, 14px);
+  border-radius: 6px;
+  background: linear-gradient(to bottom, #242020, #121010);
+  box-shadow:
+    0 0 0 1px #000,
+    inset 0 1px 0 rgb(255 255 255 / 0.08),
+    0 30px 80px -20px rgb(255 48 20 / 0.35),
+    0 20px 40px rgb(0 0 0 / 0.7);
+}
+
+.dr-easel::before,
+.dr-easel::after {
+  /* masking blades on two edges, like a printing easel */
+  content: "";
+  position: absolute;
+  background: #d8cbbd;
+  opacity: 0.85;
+  pointer-events: none;
+}
+
+.dr-easel::before {
+  left: clamp(6px, 1vw, 14px);
+  right: 0;
+  top: 0;
+  height: 3px;
+}
+
+.dr-easel::after {
+  top: clamp(6px, 1vw, 14px);
+  bottom: 0;
+  left: 0;
+  width: 3px;
+}
+
+.dr-easel #stage {
+  overflow: hidden;
+  border-radius: 2px;
+}
+
+/* ── Design thinking ── */
+.dr-notes {
+  max-width: 72ch;
+  margin: 40px auto 0;
+  padding: 20px 24px;
+  border-left: 3px solid #ff3d1f;
+  background: rgb(20 12 11 / 0.85);
+}
+
+.dr-notes h2 {
+  margin: 0 0 8px;
+  color: var(--dr-amber);
+  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  font-size: 1rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.dr-notes p {
+  margin: 0;
+  line-height: 1.65;
+}
+
+/* ── Responsive ── */
+@media (max-width: 1100px) {
+  .dr-scene {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 78%);
+  }
+
+  .dr-trays {
+    display: none;
+  }
+}
+
+@media (max-width: 760px) {
+  .dr-scene {
+    grid-template-columns: 1fr;
+  }
+
+  .dr-enlarger {
+    display: none;
+  }
+
+  .dr-line {
+    margin-bottom: -4px;
+  }
+
+  .dr-notes {
+    padding: 16px;
+  }
+
+  .dr-easel {
+    padding: 4px;
+  }
+
+  .dr-easel::before { left: 4px; }
+  .dr-easel::after { top: 4px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dr-print {
+    animation: none;
+  }
+}

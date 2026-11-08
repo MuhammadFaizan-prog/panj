@@ -1,3 +1,4 @@
+@layer base, components, utilities;
 /* Shared panj tokens. Every skin imports this, then its own src/tokens.css.
    Skin-specific values override these under [data-skin="<slug>"]. */
 .media-skin[data-skin] {

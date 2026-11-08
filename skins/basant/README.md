@@ -14,7 +14,17 @@ Basant on a Lahore rooftop.
 
 ## Status
 
-P1 scaffold. Created with `npx @videojs/cli@10.3.0 skin create basant --framework html --styling css --base scaffold --preset video`. Essential controls work with the Scaffold's neutral styling. **No art yet.**
+P3 art (in progress, not yet committed). Created with `npx @videojs/cli@10.3.0 skin create basant --framework html --styling css --base scaffold --preset video`, now fully restyled:
+
+- **Bar:** opaque sky-blue strip with a marigold paper edge; navy ink for every glyph and the time (≥ 8.8:1), kite-paper button discs (44 px).
+- **Seek:** the manja (twisted pink/marigold string, outlined in ink) unwinds from a wooden charkhi drawn in CSS left of the slider. The wound thread thins with progress (`--media-slider-fill`). The unflown part is a dotted trail.
+- **Playhead:** an inline-SVG patang inside a 44 px thumb; sways while playing, tilts −14° while dragged. Both only under `prefers-reduced-motion: no-preference`.
+- **Volume:** a second kite climbing a slanted string, inline in the bar (no hover popover), so it is in the Tab order and draggable on touch. Muted = the kite dips and fades.
+- **Icons:** own `basant` family (`src/video/icons.ts`): play, pause, restart, volume, captions, fullscreen, charkhi settings and buffering spinner. Scaffold icons remain for airplay, cast, pip, menu chevrons/check.
+- **Menus, tooltips, indicators, error dialog:** kite paper / navy tags with marigold rings.
+- Public props: `--media-accent-color` (marigold), `--media-border-radius` (container corners).
+
+Files: `src/tokens.css` (palette), `src/video/basant.css` (art, `@layer basant`, after essentials), `src/video/icons.ts`, `src/video/skin.html` (bottom bar rebuilt; fullscreen moved from the top row to the bar).
 
 ## Develop
 

@@ -1,9 +1,43 @@
-/* Darkroom skin tokens.
-   P1/P2: neutral placeholders (the Scaffold look) while controls are wired. Art lands in P3.
-   Planned: --panj-safelight, --panj-film, --panj-segment, --panj-led.
-   Scope every rule to [data-skin="darkroom"]. */
+/* Darkroom skin tokens: a film-lab deck under a safelight.
+   Scope every rule to [data-skin="darkroom"].
+   Contrast (WCAG, against the deck face --dr-panel #0e0c0c unless noted):
+     --dr-ink        #f4e9df  16.3:1  icons, menu text (10:1 on the lightest button face #3d3535)
+     --dr-amber      #ffb347  11.0:1  labels, playhead, separators
+     --dr-led        #ff7a45   7.6:1  seven-segment digits on --dr-led-window #170605
+     --dr-safelight  #ff3d1f  decoration and LED dots only, never essential text
+   The deck is opaque, so these ratios hold over bright and dark video alike. */
 .media-skin[data-skin="darkroom"] {
-  --panj-surface: rgb(0 0 0 / 0.6);
-  --panj-on-surface: #fff;
-  --panj-accent: #fff;
+  /* palette */
+  --dr-panel: #0e0c0c;
+  --dr-panel-hi: #1d1919;
+  --dr-panel-edge: #322a28;
+  --dr-ink: #f4e9df;
+  --dr-ink-dim: #c9b8ab; /* ~10:1, secondary text */
+  --dr-amber: #ffb347;
+  --dr-led: #ff7a45;
+  --dr-led-window: #170605;
+  --dr-led-off: #3d1611;
+  --dr-safelight: #ff3d1f;
+  --dr-safelight-glow: rgb(255 61 31 / 0.55);
+  --dr-film: #22160f;        /* undeveloped stock */
+  --dr-film-buffer: #3a271b; /* loaded, not yet exposed */
+  --dr-film-gate: #050303;   /* frame gaps and rebate */
+  --dr-sprocket: #8f7c6c;    /* backlit sprocket holes */
+  --dr-frame: 34px;          /* contact-sheet frame pitch */
+  --dr-segment-font: "Darkroom Segments", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --dr-label-font: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+
+  /* shared panj tokens */
+  --panj-surface: var(--dr-panel);
+  --panj-on-surface: var(--dr-ink);
+  --panj-accent: var(--dr-amber);
+  --panj-focus-color: #ffd27a; /* bright amber ring, black halo keeps it visible on bright frames */
+  --panj-focus-halo: rgb(0 0 0 / 0.9);
+
+  /* public Video.js props, so hosts can retheme */
+  --media-accent: var(--media-accent-color, var(--dr-amber));
+  --media-foreground: var(--dr-ink);
+  --media-popover: #120e0e;
+  --media-popover-foreground: var(--dr-ink);
+  --media-ring: var(--panj-focus-color);
 }

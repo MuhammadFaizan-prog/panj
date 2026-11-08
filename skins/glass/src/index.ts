@@ -1,6 +1,7 @@
 // Package entry for @panj/glass, consumed by apps/gallery.
 import '@videojs/html/video/player';
 import './video/skin';
+import { enhanceGlass } from './video/behaviour';
 import template from './video/skin.html?raw';
 
 export const SKIN_SLUG = 'glass';
@@ -13,5 +14,6 @@ export function createSkinnedPlayer(mediaHtml: string, poster?: string): HTMLEle
   const player = document.createElement('video-player');
   if (poster) player.setAttribute('poster', poster);
   player.innerHTML = template.replace(MEDIA_PLACEHOLDER, mediaHtml);
+  enhanceGlass(player);
   return player;
 }

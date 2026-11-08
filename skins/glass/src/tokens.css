@@ -1,9 +1,100 @@
-/* Glass skin tokens.
-   P1/P2: neutral placeholders (the Scaffold look) while controls are wired. Art lands in P3.
-   Planned: --panj-surface (frosted alpha), --panj-scrim, --panj-edge (specular).
-   Scope every rule to [data-skin="glass"]. */
+/* Glass skin tokens. Scoped to [data-skin="glass"]; layered on top of @panj/tokens.
+   Every frosted surface reads --glass-tint + --glass-blur, so each fallback below swaps two tokens
+   instead of restyling components. */
 .media-skin[data-skin="glass"] {
-  --panj-surface: rgb(0 0 0 / 0.6);
+  /* Shared panj contract */
+  --panj-surface: var(--glass-tint);
   --panj-on-surface: #fff;
-  --panj-accent: #fff;
+  --panj-accent: var(--media-accent-color, #fff);
+  --panj-scrim:
+    linear-gradient(to top, rgb(4 6 10 / 0.62) 0%, rgb(4 6 10 / 0.34) 18%, rgb(4 6 10 / 0) 42%),
+    linear-gradient(to bottom, rgb(4 6 10 / 0.34) 0%, rgb(4 6 10 / 0) 22%);
+
+  /* Surface. brightness() inside the blur dims what sits behind the glass, which is what keeps
+     white glyphs readable over snow, sky or a white wall without a heavy grey tint. */
+  --glass-tint: rgb(20 22 29 / 0.34);
+  --glass-blur: blur(22px) saturate(175%) brightness(0.8);
+  --glass-solid: rgb(26 28 36 / 0.86);   /* no backdrop-filter */
+  --glass-opaque: rgb(14 15 20 / 0.97);  /* prefers-reduced-transparency */
+  --glass-specular: linear-gradient(
+    162deg,
+    rgb(255 255 255 / 0.6) 0%,
+    rgb(255 255 255 / 0.16) 26%,
+    rgb(255 255 255 / 0.05) 55%,
+    rgb(255 255 255 / 0.22) 100%
+  );
+  --glass-sheen:
+    radial-gradient(120% 150% at 30% -55%, rgb(255 255 255 / 0.2), rgb(255 255 255 / 0) 58%),
+    linear-gradient(to bottom, rgb(255 255 255 / 0.07), rgb(255 255 255 / 0) 55%);
+  --glass-shadow: 0 18px 40px -18px rgb(0 0 0 / 0.55), 0 2px 6px -2px rgb(0 0 0 / 0.3);
+  --glass-edge-solid: transparent;       /* a real border, used only by the fallbacks */
+
+  /* States */
+  --glass-hover: rgb(255 255 255 / 0.14);
+  --glass-press: rgb(255 255 255 / 0.22);
+  --glass-selected: rgb(255 255 255 / 0.16);
+  --glass-track: rgb(255 255 255 / 0.26);
+  --glass-buffer: rgb(255 255 255 / 0.24);
+  --glass-fill: var(--media-accent-color, #fff);
+  --glass-fill-glow: 0 0 10px rgb(255 255 255 / 0.45);
+
+  /* Shape and rhythm */
+  --glass-radius-pill: 999px;
+  --glass-radius-panel: 20px;
+  --glass-radius-item: 12px;
+  --glass-inset: clamp(6px, 2.2cqi, 20px);
+  --glass-icon: 24px;
+
+  /* Motion: durations always come from --panj-motion-* (zeroed under reduced motion). */
+  --glass-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --glass-ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* Type */
+  --glass-font: var(
+    --media-font-family,
+    ui-sans-serif, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI Variable Text", "Segoe UI",
+    "Helvetica Neue", system-ui, sans-serif
+  );
+
+  /* Scaffold tokens this skin re-points */
+  --media-video-border-radius: var(--media-border-radius, 22px);
+  --media-popover: var(--glass-tint);
+  --media-popover-foreground: #fff;
+  --media-button-highlight: var(--glass-hover);
+  --media-ring: var(--panj-focus-color);
+}
+
+/* No blur available: solid tinted glass. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .media-skin[data-skin="glass"] {
+    --glass-tint: var(--glass-solid);
+    --glass-blur: none;
+  }
+}
+
+/* Reduced transparency: near-opaque surface, visible edge, no sheen. */
+@media (prefers-reduced-transparency: reduce) {
+  .media-skin[data-skin="glass"] {
+    --glass-tint: var(--glass-opaque);
+    --glass-blur: none;
+    --glass-sheen: none;
+    --glass-edge-solid: rgb(255 255 255 / 0.45);
+    --glass-track: rgb(255 255 255 / 0.42);
+    --glass-buffer: rgb(255 255 255 / 0.36);
+  }
+}
+
+/* More contrast: black glass, white edge, no glow. */
+@media (prefers-contrast: more) {
+  .media-skin[data-skin="glass"] {
+    --glass-tint: #000;
+    --glass-blur: none;
+    --glass-sheen: none;
+    --glass-specular: linear-gradient(#fff, #fff);
+    --glass-edge-solid: #fff;
+    --glass-hover: rgb(255 255 255 / 0.28);
+    --glass-track: rgb(255 255 255 / 0.55);
+    --glass-buffer: rgb(255 255 255 / 0.45);
+    --glass-fill-glow: none;
+  }
 }

@@ -1,0 +1,10 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "installCommand": "pnpm install",
+  "buildCommand": "pnpm --filter @panj/gallery build",
+  "outputDirectory": "apps/gallery/dist",
+  "rewrites": [
+    { "source": "/(phatta|glass|basant|ink-reed|darkroom)", "destination": "/$1/index.html" }
+  ]
+}

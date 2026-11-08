@@ -1,0 +1,838 @@
+/* Ink & Reed: a calligrapher's desk.
+   Cream paper card, gold-leaf edge, the timeline is a reed-pen (qalam) stroke that swells as it is written,
+   the playhead is the nib with an ink drop. Controls sit on the paper below the picture, so their contrast never
+   depends on the frame.
+   Unlayered on purpose: it sits above the Scaffold (`components`) and panj essentials (`utilities`), so this file
+   restates the essentials it replaces (44px targets, focus ring + halo). Reduced motion still wins: essentials use
+   !important there. Every rule is scoped to .media-skin[data-skin="ink-reed"]. */
+
+/* ───────────────────────── Card: paper, grain, gold edge ───────────────────────── */
+
+.media-skin[data-skin="ink-reed"] {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr) auto;
+  padding: var(--ink-pad) var(--ink-pad) calc(var(--ink-pad) + 6px);
+  color: var(--ink-ink);
+  font-family: var(--ink-serif);
+  background-color: var(--ink-paper);
+  background-image: var(--ink-grain), var(--ink-fibre),
+    radial-gradient(120% 90% at 50% 40%, transparent 55%, rgb(150 115 60 / 0.10) 100%);
+  border-radius: var(--ink-radius);
+  box-shadow:
+    inset 0 0 0 1px rgb(120 90 40 / 0.22),
+    0 1px 0 rgb(255 255 255 / 0.6),
+    0 22px 44px -26px rgb(60 40 15 / 0.55);
+  /* the public prop still rounds the picture */
+  --media-video-border-radius: var(--media-border-radius, 4px);
+}
+
+/* thin gold rule (jadval) inset around the leaf */
+.media-skin[data-skin="ink-reed"]::before {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  border: 1px solid var(--ink-gold);
+  border-radius: calc(var(--ink-radius) - 4px);
+  box-shadow: inset 0 0 0 2px rgb(246 239 223 / 0.9), inset 0 0 0 2.6px rgb(176 138 62 / 0.35);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* gold-leaf band along the foot of the leaf */
+.media-skin[data-skin="ink-reed"]::after {
+  content: "";
+  position: absolute;
+  inset-inline: 5px;
+  bottom: 5px;
+  height: 4px;
+  background-image: var(--ink-leaf-noise), var(--ink-gold-leaf);
+  background-size: 160px 8px, 100% 100%;
+  border-radius: 0 0 calc(var(--ink-radius) - 4px) calc(var(--ink-radius) - 4px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Everything that belongs to the picture shares the first grid cell, so absolutely positioned layers
+   (poster, indicators, buffering) are bounded by the picture, not by the whole card. */
+.media-skin[data-skin="ink-reed"] > *,
+.media-skin[data-skin="ink-reed"] .video-controls-backdrop,
+.media-skin[data-skin="ink-reed"] .media-buffering-indicator {
+  grid-area: 1 / 1;
+}
+
+.media-skin[data-skin="ink-reed"] > :is(video, mux-video, hls-video) {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  aspect-ratio: var(--ink-aspect-ratio, 16 / 9);
+  background: #0c0907;
+  border-radius: var(--media-video-border-radius);
+  box-shadow: 0 0 0 1px rgb(60 40 15 / 0.35);
+}
+
+/* The Scaffold positions the poster and indicators absolutely against the whole leaf, which would lay the poster
+   over the paper bar. Keep them in the picture cell instead; contain: size stops the poster image sizing the row. */
+.media-skin[data-skin="ink-reed"] :is(.media-poster, .media-indicator-group) {
+  position: relative;
+  inset: auto;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  contain: size;
+}
+
+.media-skin[data-skin="ink-reed"] .media-poster {
+  z-index: 2;
+  border-radius: var(--media-video-border-radius);
+  overflow: hidden;
+}
+
+.media-skin[data-skin="ink-reed"] .media-indicator-group {
+  z-index: 20;
+}
+
+.media-skin[data-skin="ink-reed"] .media-buffering-indicator {
+  z-index: 15;
+  border-radius: var(--media-video-border-radius);
+}
+
+/* The bar never sits on the picture, so no gradient scrim. */
+.media-skin[data-skin="ink-reed"] .video-controls-backdrop {
+  display: none;
+}
+
+/* Fullscreen: the leaf fills the screen; the picture takes what the bar leaves. */
+.media-skin[data-skin="ink-reed"]:fullscreen,
+:fullscreen > .media-skin[data-skin="ink-reed"],
+:fullscreen .media-skin[data-skin="ink-reed"] {
+  width: 100%;
+  height: 100%;
+  border-radius: 0;
+}
+
+.media-skin[data-skin="ink-reed"]:fullscreen > :is(video, mux-video, hls-video),
+:fullscreen .media-skin[data-skin="ink-reed"] > :is(video, mux-video, hls-video) {
+  aspect-ratio: auto;
+}
+
+/* ───────────────────────── The bar ───────────────────────── */
+
+.media-skin[data-skin="ink-reed"] .video-controls-content {
+  grid-area: 2 / 1;
+  position: relative;
+  inset: auto;
+  z-index: 3;
+  pointer-events: auto;
+}
+
+/* Podcast bar: always on the paper, never fades (it does not cover the picture). */
+.media-skin[data-skin="ink-reed"] .video-controls-bottom,
+.media-skin[data-skin="ink-reed"] .video-controls-content:not([data-visible]) .video-controls-bottom {
+  position: relative;
+  inset: auto;
+  opacity: 1;
+  pointer-events: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 4px 2px 2px;
+  background: none;
+}
+
+.media-skin[data-skin="ink-reed"] .video-controls-slider-row {
+  padding-inline: 6px;
+}
+
+.media-skin[data-skin="ink-reed"] .video-controls-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-start;
+  column-gap: 6px;
+  row-gap: 0;
+}
+
+.media-skin[data-skin="ink-reed"] .video-controls-group {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+}
+
+/* a hairline between the transport and the page tools, like the concept's divider */
+.media-skin[data-skin="ink-reed"] .video-controls-end {
+  padding-inline-start: 8px;
+  border-inline-start: 1px solid rgb(125 106 80 / 0.45);
+}
+
+/* ───────────────────────── Buttons ───────────────────────── */
+
+.media-skin[data-skin="ink-reed"] .media-button {
+  width: var(--panj-target-min, 44px);
+  height: var(--panj-target-min, 44px);
+  border-radius: 50%;
+  color: var(--ink-ink);
+  background-color: transparent;
+  transition:
+    background-color var(--panj-motion-fast) ease-out,
+    transform var(--panj-motion-fast) ease-out;
+}
+
+@media (hover: hover) {
+  .media-skin[data-skin="ink-reed"] .media-button:hover {
+    background-color: var(--ink-wash);
+  }
+}
+
+.media-skin[data-skin="ink-reed"] .media-button:active {
+  background-color: var(--ink-wash-strong);
+  transform: scale(0.96);
+}
+
+.media-skin[data-skin="ink-reed"] .media-button[aria-expanded="true"] {
+  background-color: var(--ink-wash-strong);
+}
+
+.media-skin[data-skin="ink-reed"] .media-button:disabled,
+.media-skin[data-skin="ink-reed"] .media-button[aria-disabled="true"] {
+  opacity: 0.45;
+}
+
+.media-skin[data-skin="ink-reed"] :is(.media-button-icon, .media-button-icon-base) {
+  width: 22px;
+  height: 22px;
+}
+
+/* Play: a pressed paper disc with a gold hairline, the one raised object on the bar. */
+.media-skin[data-skin="ink-reed"] .ink-play {
+  background-color: var(--ink-paper-light);
+  box-shadow:
+    inset 0 0 0 1px rgb(176 138 62 / 0.75),
+    0 1px 2px rgb(60 40 15 / 0.18);
+}
+
+@media (hover: hover) {
+  .media-skin[data-skin="ink-reed"] .ink-play:hover {
+    background-color: #fffaf0;
+  }
+}
+
+.media-skin[data-skin="ink-reed"] .ink-play :is(.media-play-button-play-icon) {
+  translate: 1px 0;
+}
+
+/* captions on: the button is inked */
+.media-skin[data-skin="ink-reed"] .media-captions-button[data-active] {
+  background-color: var(--ink-wash-strong);
+}
+
+/* ±15 s: the numerals sit inside the loop, in the serif */
+.media-skin[data-skin="ink-reed"] .ink-skip .media-seek-button-content {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+}
+
+.media-skin[data-skin="ink-reed"] .ink-skip .ink-skip-icon {
+  width: 26px;
+  height: 26px;
+  grid-area: 1 / 1;
+}
+
+.media-skin[data-skin="ink-reed"] .ink-skip .ink-skip-label {
+  position: static;
+  grid-area: 1 / 1;
+  inset: auto;
+  font-family: var(--ink-serif);
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: lining-nums tabular-nums;
+  translate: 0 1.5px;
+}
+
+/* ───────────────────────── Time: serif numerals ───────────────────────── */
+
+.media-skin[data-skin="ink-reed"] .media-time-group {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.35em;
+  height: var(--panj-target-min, 44px);
+  margin-inline-start: auto;
+  padding-inline: 6px 8px;
+  font-family: var(--ink-serif);
+  font-size: 15px;
+  letter-spacing: 0.01em;
+  font-variant-numeric: lining-nums tabular-nums;
+  color: var(--ink-ink);
+}
+
+.media-skin[data-skin="ink-reed"] .media-time-group media-time {
+  /* digits read left to right inside an RTL bar */
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
+.media-skin[data-skin="ink-reed"] .media-time-duration-value,
+.media-skin[data-skin="ink-reed"] .media-time-separator {
+  color: var(--ink-ink-soft);
+  opacity: 1;
+}
+
+.media-skin[data-skin="ink-reed"] .media-time-toggle {
+  display: inline-grid;
+  place-items: center;
+  min-width: var(--panj-target-min, 44px);
+  min-height: var(--panj-target-min, 44px);
+  padding-inline: 6px;
+  border-radius: 22px;
+}
+
+@container media-root (width >= 20rem) {
+  .media-skin[data-skin="ink-reed"] .media-time-toggle {
+    display: none;
+  }
+}
+
+/* ───────────────────────── Timeline: the reed-pen stroke ───────────────────────── */
+
+.media-skin[data-skin="ink-reed"] .media-time-slider {
+  height: var(--panj-target-min, 44px);
+  --ink-track-h: 11px;
+}
+
+.media-skin[data-skin="ink-reed"] .media-time-slider-track {
+  height: var(--ink-track-h);
+  isolation: isolate;
+}
+
+/* unwritten: a ruled guideline (4.5:1) with the ghost of the stroke to come */
+.media-skin[data-skin="ink-reed"] .media-time-slider-track::before {
+  inset-block: 0;
+  inset-inline: 0;
+  left: 0;
+  right: 0;
+  clip-path: none;
+  background:
+    linear-gradient(
+      to bottom,
+      transparent calc(50% - 0.5px),
+      var(--ink-rule) calc(50% - 0.5px),
+      var(--ink-rule) calc(50% + 0.5px),
+      transparent calc(50% + 0.5px)
+    );
+  border-radius: 0;
+}
+
+.media-skin[data-skin="ink-reed"] .media-time-slider-track::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-color: var(--ink-ink);
+  opacity: 0.07;
+  -webkit-mask: var(--ink-stroke) center / 100% 100% no-repeat;
+  mask: var(--ink-stroke) center / 100% 100% no-repeat;
+  pointer-events: none;
+}
+
+/* Fill and buffer span the whole track and are clipped to progress, so the stroke's weight belongs to the
+   position in the episode: hairline at the start, full reed width at the end. */
+.media-skin[data-skin="ink-reed"] :is(.media-time-slider-fill, .media-time-slider-buffer) {
+  inset-block: 0;
+  left: 0;
+  right: 0;
+  border-radius: 0;
+  -webkit-mask: var(--ink-stroke) center / 100% 100% no-repeat;
+  mask: var(--ink-stroke) center / 100% 100% no-repeat;
+}
+
+.media-skin[data-skin="ink-reed"] .media-time-slider-buffer {
+  clip-path: inset(-2px calc(100% - var(--media-slider-buffer, 0%)) -2px 0);
+  background-color: var(--ink-sepia);
+  opacity: 0.55;
+}
+
+.media-skin[data-skin="ink-reed"] .media-time-slider-fill {
+  z-index: 1;
+  clip-path: inset(-2px calc(100% - var(--media-slider-fill, 0%)) -2px 0);
+  /* a little wet sheen where the nib is */
+  background:
+    radial-gradient(24px 8px at var(--media-slider-fill, 0%) 50%, rgb(110 84 58 / 0.55), transparent),
+    linear-gradient(90deg, #2a2119, var(--ink-ink) 40%, #120d09);
+  background-color: var(--ink-ink);
+}
+
+.media-skin[data-skin="ink-reed"] .media-time-slider[data-dragging] .media-time-slider-fill {
+  left: 0;
+  right: 0;
+  clip-path: inset(-2px calc(100% - var(--media-slider-pointer, 0%)) -2px 0);
+}
+
+/* Playhead: the nib, with a drop gathering under its tip. The element itself is the focusable slider thumb. */
+.media-skin[data-skin="ink-reed"] .media-time-slider-thumb {
+  z-index: 2;
+  width: 22px;
+  height: 22px;
+  background: none;
+  border: 0;
+  border-radius: 50%;
+  overflow: visible;
+}
+
+.media-skin[data-skin="ink-reed"] .media-time-slider-thumb::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: calc(50% - 2px);
+  width: 30px;
+  height: 14px;
+  translate: 0 -50%;
+  background: var(--ink-nib) center / contain no-repeat;
+  filter: drop-shadow(0 1px 0.6px rgb(40 25 10 / 0.35));
+  transform-origin: 100% 50%;
+  transition: scale var(--panj-motion-base) ease-out;
+}
+
+.media-skin[data-skin="ink-reed"] .media-time-slider-thumb::after {
+  content: "";
+  position: absolute;
+  left: calc(50% - 4.5px);
+  top: calc(50% + 4px);
+  width: 9px;
+  height: 12px;
+  background: var(--ink-drop) center / contain no-repeat;
+  transform-origin: 50% 0;
+  transition: scale var(--panj-motion-base) ease-out, opacity var(--panj-motion-base) ease-out;
+}
+
+/* while the episode plays, the drop slowly gathers and lets go; still when paused */
+.media-skin[data-skin="ink-reed"]:has(.media-play-button:not([data-paused]):not([data-ended])[data-started]) .media-time-slider-thumb::after {
+  animation: ink-drop-gather calc(var(--panj-motion-slow) * 7) ease-in-out infinite;
+}
+
+.media-skin[data-skin="ink-reed"] .media-time-slider:is([data-pointing], [data-dragging]) .media-time-slider-thumb::before {
+  scale: 1.12;
+}
+
+.media-skin[data-skin="ink-reed"] .media-time-slider:is([data-pointing], [data-dragging]) .media-time-slider-thumb::after {
+  scale: 1.18;
+}
+
+@keyframes ink-drop-gather {
+  0%,
+  100% {
+    scale: 0.82 0.78;
+  }
+  55% {
+    scale: 1 1.06;
+  }
+  70% {
+    scale: 0.96 1.1;
+  }
+}
+
+/* Hover/drag preview: a torn paper slip */
+.media-skin[data-skin="ink-reed"] .media-time-slider-preview {
+  bottom: calc(100% + 6px);
+}
+
+.media-skin[data-skin="ink-reed"] .media-slider-thumbnail {
+  border-radius: 4px;
+  box-shadow: 0 0 0 1px var(--ink-gold), 0 6px 16px -6px rgb(40 25 10 / 0.5);
+  background-color: var(--ink-paper-deep);
+}
+
+.media-skin[data-skin="ink-reed"] .media-time-slider-preview-meta {
+  width: auto;
+  padding: 3px 9px;
+  color: var(--ink-ink);
+  font-family: var(--ink-serif);
+  font-size: 14px;
+  font-variant-numeric: lining-nums tabular-nums;
+  background-color: var(--ink-paper-light);
+  border: 1px solid var(--ink-gold);
+  border-radius: 3px;
+  box-shadow: 0 4px 12px -6px rgb(40 25 10 / 0.5);
+}
+
+.media-skin[data-skin="ink-reed"] .media-time-slider-value {
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
+/* ───────────────────────── Volume ───────────────────────── */
+
+/* Desktop: a paper slip above the speaker with a vertical ink stroke. */
+.media-skin[data-skin="ink-reed"] .media-volume-popover-popup {
+  --media-popover-side-offset: 10px;
+  --media-popup-side-offset: 10px;
+  width: 48px;
+  min-width: 48px;
+  height: 128px;
+  padding: 12px 0;
+  color: var(--ink-ink);
+  background-color: var(--ink-paper-light);
+  background-image: var(--ink-grain);
+  border: 1px solid var(--ink-gold);
+  border-radius: 6px;
+  box-shadow: 0 10px 24px -12px rgb(40 25 10 / 0.55);
+}
+
+.media-skin[data-skin="ink-reed"] .media-volume-slider {
+  --media-accent: var(--media-accent-color, var(--ink-ink));
+  width: 100%;
+  min-width: var(--panj-target-min, 44px);
+  height: 100%;
+}
+
+.media-skin[data-skin="ink-reed"] .media-volume-slider-track {
+  width: 1px;
+  background-color: var(--ink-rule);
+  overflow: visible;
+  border-radius: 0;
+}
+
+.media-skin[data-skin="ink-reed"] .media-volume-slider-fill {
+  left: 50%;
+  width: 4px;
+  translate: -50% 0;
+  background-color: var(--media-accent);
+  border-radius: 2px 2px 0 0;
+}
+
+.media-skin[data-skin="ink-reed"] .media-volume-slider-thumb {
+  width: 14px;
+  height: 14px;
+  background: var(--ink-drop) center / 10px 13px no-repeat, var(--ink-paper-light);
+  border: 1px solid var(--ink-ink);
+  border-radius: 50%;
+}
+
+/* Touch (no hover): the v10 popover only opens on hover, so the stroke sits inline beside the speaker instead.
+   behavior.ts turns the slider horizontal for this mode. A popover the platform hides (fixed-volume devices) stays
+   hidden: mute is then the whole control. */
+@media (hover: none) {
+  .media-skin[data-skin="ink-reed"] .media-volume-popover-popup:not([hidden]) {
+    position: relative;
+    inset: auto;
+    display: flex;
+    align-items: center;
+    width: 76px;
+    min-width: 0;
+    height: var(--panj-target-min, 44px);
+    margin: 0;
+    padding: 0 6px;
+    overflow: visible;
+    opacity: 1;
+    scale: none;
+    filter: none;
+    transform: none;
+    background: none;
+    border: 0;
+    box-shadow: none;
+  }
+
+  .media-skin[data-skin="ink-reed"] .media-volume-popover-popup::before {
+    display: none;
+  }
+
+  .media-skin[data-skin="ink-reed"] .media-volume-slider[orientation="horizontal"] {
+    min-width: 0;
+    height: var(--panj-target-min, 44px);
+    align-items: center;
+  }
+
+  .media-skin[data-skin="ink-reed"] .media-volume-slider[orientation="horizontal"] .media-volume-slider-track {
+    inset: auto;
+    left: 0;
+    top: 50%;
+    bottom: auto;
+    width: 100%;
+    height: 1px;
+    translate: 0 -50%;
+    transform: none;
+  }
+
+  .media-skin[data-skin="ink-reed"] .media-volume-slider[orientation="horizontal"] .media-volume-slider-fill {
+    left: 0;
+    top: 50%;
+    bottom: auto;
+    width: var(--media-slider-fill, 0%);
+    height: 4px;
+    translate: 0 -50%;
+    border-radius: 0 2px 2px 0;
+  }
+
+  .media-skin[data-skin="ink-reed"] .media-volume-slider[orientation="horizontal"] .media-volume-slider-thumb {
+    left: var(--media-slider-fill, 0%);
+    bottom: auto;
+    top: 50%;
+    width: 18px;
+    height: 18px;
+    transform: translate(-50%, -50%);
+  }
+}
+
+/* ───────────────────────── Focus: ink ring + gold halo ───────────────────────── */
+
+.media-skin[data-skin="ink-reed"]
+  :is(
+    .media-button,
+    .media-time-toggle,
+    .media-menu-item,
+    .media-menu-radio-item,
+    .media-menu-back-item,
+    .media-time-slider-thumb,
+    .media-volume-slider-thumb,
+    .media-dialog-close,
+    [role="slider"]
+  ):focus-visible {
+  outline: var(--panj-focus-width, 2px) solid var(--panj-focus-color);
+  outline-offset: var(--panj-focus-offset, 2px);
+  box-shadow: 0 0 0 calc(var(--panj-focus-offset, 2px) + var(--panj-focus-width, 2px) + 3px) var(--panj-focus-halo);
+}
+
+.media-skin[data-skin="ink-reed"] :is(.media-menu-item, .media-menu-radio-item, .media-menu-back-item):focus-visible {
+  outline-offset: -2px;
+  box-shadow: inset 0 0 0 5px var(--panj-focus-halo);
+}
+
+.media-skin[data-skin="ink-reed"]:focus-visible {
+  outline: 2px solid var(--ink-ink);
+  outline-offset: -3px;
+  box-shadow: inset 0 0 0 6px var(--panj-focus-halo), 0 22px 44px -26px rgb(60 40 15 / 0.55);
+}
+
+/* ───────────────────────── Popups: paper slips ───────────────────────── */
+
+.media-skin[data-skin="ink-reed"] .media-tooltip-popup {
+  --media-tooltip-side-offset: 8px;
+  --media-popup-side-offset: 8px;
+  padding: 3px 9px;
+  font-family: var(--ink-serif);
+  font-size: 13px;
+  color: var(--ink-ink);
+  background-color: var(--ink-paper-light);
+  border: 1px solid var(--ink-gold);
+  border-radius: 3px;
+  box-shadow: 0 6px 14px -8px rgb(40 25 10 / 0.6);
+}
+
+.media-skin[data-skin="ink-reed"] .media-tooltip-shortcut {
+  min-width: 1.6em;
+  padding: 0.05em 0.35em;
+  font-family: var(--ink-serif);
+  font-size: 11px;
+  color: var(--ink-ink-soft);
+  background-color: var(--ink-paper-deep);
+  border: 1px solid rgb(125 106 80 / 0.5);
+  border-radius: 2px;
+}
+
+.media-skin[data-skin="ink-reed"] .media-menu-popup {
+  --media-popover-side-offset: 10px;
+  --media-popup-side-offset: 10px;
+  min-width: 200px;
+  font-family: var(--ink-serif);
+  font-size: 15px;
+  color: var(--ink-ink);
+  background-color: var(--ink-paper-light);
+  background-image: var(--ink-grain);
+  border: 1px solid var(--ink-gold);
+  border-radius: 6px;
+  box-shadow: 0 0 0 3px rgb(251 247 238 / 0.9), 0 0 0 4px rgb(176 138 62 / 0.35), 0 16px 32px -16px rgb(40 25 10 / 0.6);
+}
+
+.media-skin[data-skin="ink-reed"] .media-menu-content {
+  padding: 6px;
+  gap: 2px !important;
+  background-color: var(--ink-paper-light);
+}
+
+.media-skin[data-skin="ink-reed"] :is(.media-menu-item, .media-menu-radio-item, .media-menu-back-item) {
+  min-height: var(--panj-target-min, 44px);
+  padding-inline: 10px;
+  color: var(--ink-ink);
+  background-color: transparent;
+  border-radius: 4px;
+}
+
+.media-skin[data-skin="ink-reed"] :is(.media-menu-item, .media-menu-radio-item, .media-menu-back-item)[data-highlighted] {
+  background-color: var(--ink-wash-strong);
+}
+
+.media-skin[data-skin="ink-reed"] .media-menu-back-item {
+  border-bottom: 1px solid rgb(176 138 62 / 0.55);
+  border-radius: 4px 4px 0 0;
+}
+
+.media-skin[data-skin="ink-reed"] .media-menu-hint {
+  color: var(--ink-ink-soft);
+  opacity: 1;
+}
+
+.media-skin[data-skin="ink-reed"] :is(.media-menu-trigger-icon, .media-menu-forward-chevron, .media-menu-back-chevron, .media-menu-radio-icon) {
+  opacity: 0.85;
+}
+
+.media-skin[data-skin="ink-reed"] .media-menu-badge {
+  font-size: 11px;
+  color: var(--ink-ink);
+  background-color: var(--ink-paper-deep);
+  border: 1px solid rgb(176 138 62 / 0.6);
+  border-radius: 2px;
+}
+
+/* ───────────────────────── Indicators, buffering, captions, errors ───────────────────────── */
+
+.media-skin[data-skin="ink-reed"] .media-indicator {
+  padding: 5px 12px;
+  font-family: var(--ink-serif);
+  font-size: 15px;
+  font-variant-numeric: lining-nums tabular-nums;
+  color: var(--ink-ink);
+  background-color: rgb(251 247 238 / 0.94);
+  border: 1px solid var(--ink-gold);
+  border-radius: 999px;
+  box-shadow: 0 6px 16px -8px rgb(0 0 0 / 0.6);
+}
+
+.media-skin[data-skin="ink-reed"] .media-buffering-indicator-backdrop {
+  background-color: transparent;
+}
+
+.media-skin[data-skin="ink-reed"] .media-buffering-indicator-spinner-icon {
+  width: 44px;
+  height: 44px;
+  padding: 8px;
+  color: var(--ink-ink);
+  background-color: rgb(251 247 238 / 0.92);
+  border: 1px solid var(--ink-gold);
+  border-radius: 50%;
+}
+
+.media-skin[data-skin="ink-reed"] .media-buffering-indicator[data-visible] .media-buffering-indicator-spinner-icon svg {
+  animation: ink-spin calc(var(--panj-motion-slow) * 2.5) linear infinite;
+}
+
+@keyframes ink-spin {
+  to {
+    rotate: 1turn;
+  }
+}
+
+.media-skin[data-skin="ink-reed"] video::cue {
+  font-family: var(--ink-serif);
+  color: #fbf5e6;
+  background-color: rgb(22 16 11 / 0.82);
+}
+
+.media-skin[data-skin="ink-reed"] .media-dialog-backdrop {
+  background-color: rgb(28 22 17 / 0.78);
+  border-radius: var(--ink-radius);
+}
+
+.media-skin[data-skin="ink-reed"] .media-dialog-popup {
+  font-family: var(--ink-serif);
+  color: var(--ink-ink);
+  background-color: var(--ink-paper-light);
+  background-image: var(--ink-grain);
+  border: 1px solid var(--ink-gold);
+  border-radius: 6px;
+}
+
+.media-skin[data-skin="ink-reed"] .media-dialog-close {
+  border-radius: 22px;
+  border-color: var(--ink-ink) !important;
+}
+
+/* ───────────────────────── Narrow leaves ───────────────────────── */
+
+@container media-root (width < 30rem) {
+  .media-skin[data-skin="ink-reed"] .video-controls-row {
+    column-gap: 2px;
+  }
+
+  .media-skin[data-skin="ink-reed"] .video-controls-end {
+    padding-inline-start: 0;
+    border-inline-start: 0;
+  }
+
+  .media-skin[data-skin="ink-reed"] .media-time-group {
+    font-size: 14px;
+    padding-inline: 4px;
+  }
+}
+
+/* ───────────────────────── Right to left ─────────────────────────
+   The bar mirrors naturally (the Scaffold's row-reverse is undone above). The written line runs right to left, as
+   Urdu is written: the timeline is flipped visually and behavior.ts mirrors pointer and arrow-key input to match.
+   Opt out with data-ink-timeline="ltr" on the container. */
+
+.media-skin[data-skin="ink-reed"]:not([data-ink-timeline="ltr"]) :is(media-time-slider, media-volume-slider[orientation="horizontal"]):dir(rtl) {
+  transform: scaleX(-1);
+}
+
+/* keep the preview's numerals and picture readable inside the mirrored timeline */
+.media-skin[data-skin="ink-reed"]:not([data-ink-timeline="ltr"]) media-time-slider:dir(rtl) .media-time-slider-preview > * {
+  transform: scaleX(-1);
+}
+
+.media-skin[data-skin="ink-reed"] .ink-skip-icon:dir(rtl) {
+  transform: scaleX(-1);
+}
+
+/* ───────────────────────── Preferences ───────────────────────── */
+
+@media (prefers-contrast: more) {
+  .media-skin[data-skin="ink-reed"] {
+    --ink-rule: #4d3f2f;
+    --ink-ink-soft: #2e251c;
+    background-image: none;
+  }
+
+  .media-skin[data-skin="ink-reed"] .media-time-slider-track::after {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .media-skin[data-skin="ink-reed"] :is(.media-indicator, .media-buffering-indicator-spinner-icon) {
+    background-color: var(--ink-paper-light);
+  }
+}
+
+@media (forced-colors: active) {
+  .media-skin[data-skin="ink-reed"]::before,
+  .media-skin[data-skin="ink-reed"]::after,
+  .media-skin[data-skin="ink-reed"] .media-time-slider-track::after,
+  .media-skin[data-skin="ink-reed"] .media-time-slider-thumb::before {
+    display: none;
+  }
+
+  .media-skin[data-skin="ink-reed"] .media-time-slider-fill {
+    forced-color-adjust: none;
+    background: Highlight;
+  }
+
+  .media-skin[data-skin="ink-reed"] .media-time-slider-thumb {
+    forced-color-adjust: none;
+    background: Highlight;
+    border: 1px solid CanvasText;
+    width: 14px;
+    height: 14px;
+  }
+
+  .media-skin[data-skin="ink-reed"] .media-button {
+    border: 1px solid ButtonText;
+  }
+}

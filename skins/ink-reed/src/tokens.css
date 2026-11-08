@@ -1,9 +1,65 @@
-/* Ink & Reed skin tokens.
-   P1/P2: neutral placeholders (the Scaffold look) while controls are wired. Art lands in P3.
-   Planned: --panj-paper (cream), --panj-ink, --panj-gold; skip step 15 s.
-   Scope every rule to [data-skin="ink-reed"]. */
+/* Ink & Reed tokens. Everything the skin paints is defined here; skin rules live in video/ink-reed.css.
+   Art is hand-authored SVG (data URIs) + CSS. Scope: .media-skin[data-skin="ink-reed"]. */
 .media-skin[data-skin="ink-reed"] {
-  --panj-surface: rgb(0 0 0 / 0.6);
-  --panj-on-surface: #fff;
-  --panj-accent: #fff;
+  /* Paper, ink, gold */
+  --ink-paper: #f6efdf;
+  --ink-paper-deep: #efe5cf;
+  --ink-paper-light: #fbf7ee;
+  --ink-ink: #1c1611;          /* 15.6:1 on paper */
+  --ink-ink-soft: #5c4d3d;     /* 7.1:1 on paper: secondary text */
+  --ink-rule: #7d6a50;         /* 4.5:1 on paper: unplayed rule, hairlines that carry meaning */
+  --ink-sepia: #b49c74;        /* buffered wash (decorative, under the rule) */
+  --ink-gold: #b08a3e;         /* decorative gold rule */
+  --ink-gold-hi: #e3c47c;
+  --ink-gold-lo: #8c6a2c;
+  --ink-wash: rgb(28 22 17 / 0.07);
+  --ink-wash-strong: rgb(28 22 17 / 0.13);
+  --ink-serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", "URW Palladio L", P052, Georgia, "Noto Serif", "DejaVu Serif", serif;
+  --ink-radius: 10px;
+  --ink-pad: clamp(8px, 1.4vw, 16px);
+
+  /* Hand-authored SVG art */
+  --ink-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .36 0 0 0 0 .27 0 0 0 0 .16 0 0 0 .11 0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23g)'/%3E%3C/svg%3E");
+  --ink-fibre: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='420' height='420'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.012 .09' numOctaves='2' seed='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .52 0 0 0 0 .4 0 0 0 0 .22 0 0 0 .16 -.03'/%3E%3C/filter%3E%3Crect width='420' height='420' filter='url(%23f)'/%3E%3C/svg%3E");
+  --ink-leaf-noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='8'%3E%3Cfilter id='l'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9 .3' numOctaves='2' seed='11' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 .93 0 0 0 0 .7 0 0 0 .55 -.18'/%3E%3C/filter%3E%3Crect width='160' height='8' filter='url(%23l)'/%3E%3C/svg%3E");
+  --ink-stroke: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 16' preserveAspectRatio='none'%3E%3Cpath fill='%23000' d='M0 8.3C40 7.6 90 7.5 150 7.4C260 7.2 330 6.4 430 6.3C540 6.2 610 5.5 720 5.1C820 4.8 900 3.9 960 3.6C980 3.5 993 3.7 1000 4.2L1000 12.2C990 12.5 975 12.3 955 12.1C890 11.6 820 11.4 720 10.8C610 10.2 540 9.9 430 9.7C330 9.6 260 9.1 150 8.9C90 8.8 40 8.9 0 8.9Z'/%3E%3C/svg%3E");
+  --ink-nib: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 14'%3E%3Cpath fill='%232b1d12' d='M0 2.4C7 2 13 2.6 19.5 4.3L29.4 6.6 28.6 7.8 19.5 9.9C13 11.5 7 12.1 0 11.7Z'/%3E%3Cpath fill='%235a3d22' d='M0 2.4C7 2 13 2.6 19.5 4.3L22 4.9C15 4.4 8 4.6 0 5.4Z'/%3E%3Crect x='3.2' y='2.1' width='2.2' height='9.9' rx='.6' fill='%23c9a14a'/%3E%3Cpath d='M28.6 7.1 19.8 7.1' stroke='%23f3e7cc' stroke-width='.7' stroke-linecap='round'/%3E%3Ccircle cx='19.3' cy='7.1' r='1' fill='%23f3e7cc'/%3E%3C/svg%3E");
+  --ink-drop: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 16'%3E%3Cpath fill='%2317110c' d='M6 .4C4.6 3.2 1 6.9 1 10.4a5 5 0 0 0 10 0C11 6.9 7.4 3.2 6 .4Z'/%3E%3Cellipse cx='4.3' cy='10.6' rx='1.1' ry='1.8' fill='%23f3e7cc' opacity='.45'/%3E%3C/svg%3E");
+  --ink-gold-leaf: linear-gradient(90deg, #a77d33 0%, #e3c47c 14%, #b48a3c 27%, #d9b766 41%, #9c742c 55%, #e8cd8a 68%, #b0873a 82%, #d4b060 100%);
+
+  /* Shared panj tokens, re-pointed at paper: an ink ring with a gold halo reads on cream, on video and in popups. */
+  --panj-surface: var(--ink-paper);
+  --panj-on-surface: var(--ink-ink);
+  --panj-accent: var(--ink-ink);
+  --panj-focus-color: var(--ink-ink);
+  --panj-focus-halo: rgb(196 150 62 / 0.55);
+
+  /* Scaffold / public theming props */
+  --media-font-family: var(--ink-serif);
+  --media-foreground: var(--ink-ink);
+  --media-background: transparent;
+  --media-popover: var(--ink-paper-light);
+  --media-popover-foreground: var(--ink-ink);
+  --media-accent: var(--media-accent-color, var(--ink-ink));
+  --media-accent-foreground: var(--ink-paper);
+  --media-ring: var(--ink-ink);
+  --media-button-highlight: var(--ink-wash);
+  --media-muted: var(--ink-paper-deep);
+  --media-tooltip-side-offset: 10px;
+  --media-popover-side-offset: 12px;
+}
+
+@media (forced-colors: active) {
+  .media-skin[data-skin="ink-reed"] {
+    --ink-paper: Canvas;
+    --ink-paper-deep: Canvas;
+    --ink-paper-light: Canvas;
+    --ink-ink: CanvasText;
+    --ink-ink-soft: CanvasText;
+    --ink-rule: CanvasText;
+    --panj-focus-color: Highlight;
+    --media-popover: Canvas;
+    --media-popover-foreground: CanvasText;
+    --media-ring: Highlight;
+  }
 }

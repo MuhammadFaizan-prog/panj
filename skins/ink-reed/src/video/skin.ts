@@ -3,6 +3,7 @@ import './skin.css';
 import '@panj/tokens/tokens.css';
 import '@panj/tokens/essentials.css';
 import '../tokens.css';
+import './ink-reed.css';
 import '@videojs/html/i18n';
 import '@videojs/html/ui/container';
 import '@videojs/html/ui/poster';
@@ -18,7 +19,6 @@ import '@videojs/html/ui/controls-group';
 import '@videojs/html/ui/buffering-indicator';
 import '@videojs/html/ui/controls-content';
 import '@videojs/html/ui/tooltip-group';
-import '@videojs/html/ui/title';
 import '@videojs/html/ui/airplay-button';
 import '@videojs/html/ui/tooltip';
 import '@videojs/html/ui/tooltip-label';
@@ -67,55 +67,45 @@ import '@videojs/html/ui/seek-indicator';
 import '@videojs/html/ui/seek-indicator-value';
 import { registerIcons } from '@videojs/html/icons';
 import {
-  airPlayEnterIcon as airPlayEnterIconScaffold,
-  airPlayExitIcon as airPlayExitIconScaffold,
   captionsOffIcon as captionsOffIconScaffold,
-  captionsOnIcon as captionsOnIconScaffold,
-  castEnterIcon as castEnterIconScaffold,
-  castExitIcon as castExitIconScaffold,
   checkIcon as checkIconScaffold,
   chevronIcon as chevronIconScaffold,
-  fullscreenEnterIcon as fullscreenEnterIconScaffold,
-  fullscreenExitIcon as fullscreenExitIconScaffold,
-  gearIcon as gearIconScaffold,
-  pauseIcon as pauseIconScaffold,
-  pipEnterIcon as pipEnterIconScaffold,
-  pipExitIcon as pipExitIconScaffold,
-  playIcon as playIconScaffold,
-  restartIcon as restartIconScaffold,
-  seekIcon as seekIconScaffold,
   speechIcon as speechIconScaffold,
   speedIcon as speedIconScaffold,
-  spinnerIcon as spinnerIconScaffold,
   switchesIcon as switchesIconScaffold,
-  volumeHighIcon as volumeHighIconScaffold,
-  volumeLowIcon as volumeLowIconScaffold,
-  volumeOffIcon as volumeOffIconScaffold,
 } from '@videojs/html/icons/scaffold';
 
+import * as ink from './icons';
+
+// Menu glyphs stay on the Scaffold set; every control on the bar uses the hand-drawn "ink" family.
 registerIcons('scaffold', {
-  'airplay-enter': airPlayEnterIconScaffold,
-  'airplay-exit': airPlayExitIconScaffold,
   'captions-off': captionsOffIconScaffold,
-  'captions-on': captionsOnIconScaffold,
-  'cast-enter': castEnterIconScaffold,
-  'cast-exit': castExitIconScaffold,
   check: checkIconScaffold,
   chevron: chevronIconScaffold,
-  'fullscreen-enter': fullscreenEnterIconScaffold,
-  'fullscreen-exit': fullscreenExitIconScaffold,
-  gear: gearIconScaffold,
-  pause: pauseIconScaffold,
-  'pip-enter': pipEnterIconScaffold,
-  'pip-exit': pipExitIconScaffold,
-  play: playIconScaffold,
-  restart: restartIconScaffold,
-  seek: seekIconScaffold,
   speech: speechIconScaffold,
   speed: speedIconScaffold,
-  spinner: spinnerIconScaffold,
   switches: switchesIconScaffold,
-  'volume-high': volumeHighIconScaffold,
-  'volume-low': volumeLowIconScaffold,
-  'volume-off': volumeOffIconScaffold,
+});
+
+registerIcons('ink', {
+  'airplay-enter': ink.airplayEnter,
+  'airplay-exit': ink.airplayExit,
+  'captions-off': ink.captionsOff,
+  'captions-on': ink.captionsOn,
+  'cast-enter': ink.castEnter,
+  'cast-exit': ink.castExit,
+  'fullscreen-enter': ink.fullscreenEnter,
+  'fullscreen-exit': ink.fullscreenExit,
+  pause: ink.pause,
+  'pip-enter': ink.pipEnter,
+  'pip-exit': ink.pipExit,
+  play: ink.play,
+  restart: ink.restart,
+  settings: ink.settings,
+  'skip-back': ink.skipBack,
+  'skip-forward': ink.skipForward,
+  spinner: ink.spinner,
+  'volume-high': ink.volumeHigh,
+  'volume-low': ink.volumeLow,
+  'volume-off': ink.volumeOff,
 });

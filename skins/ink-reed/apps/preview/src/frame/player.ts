@@ -1,6 +1,7 @@
 import '@videojs/html/video/player';
 import '@videojs/html/media/mux-video';
 import '@/video/skin';
+import { enhanceInkReed } from '@/behavior';
 import skinTemplate from '@/video/skin.html?raw';
 
 // What the preview plays. Change these to try the skin with your own media; any Mux or HLS URL works.
@@ -19,6 +20,7 @@ export function createPlayer(): HTMLElement {
     MEDIA_PLACEHOLDER,
     `<mux-video src="${SRC}" playsinline crossorigin><track kind="chapters" label="English" srclang="en" src="${CHAPTERS}" default></mux-video>`
   );
+  enhanceInkReed(player);
 
   return player;
 }

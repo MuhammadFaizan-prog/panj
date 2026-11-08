@@ -9,4 +9,9 @@ a:focus-visible { outline: 2px solid #fff; outline-offset: 3px; box-shadow: 0 0 
 .hub-list span { opacity: 0.75; font-size: 0.9rem; }
 .back { display: inline-flex; align-items: center; min-height: 44px; }
 #stage { width: 100%; aspect-ratio: 16 / 9; background: #000; }
-#stage video-player, #stage .media-skin { display: block; width: 100%; height: 100%; }
+#stage video-player { display: block; width: 100%; height: 100%; }
+/* Lowest layer + :where() (zero specificity): a fallback only, so each skin's own layout (grid, flex, sizing) wins,
+   whether the skin's CSS is layered or not. */
+@layer base {
+  :where(#stage .media-skin) { display: block; width: 100%; height: 100%; }
+}

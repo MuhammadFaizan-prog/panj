@@ -7,11 +7,11 @@ Status key: ✅ done · 🔄 in progress · ⏳ next · ⛔ blocked
 | P0 REA map | ⏳ | | REA not installed (needs Faizi's OK); map from v10 source/docs + public Plyr demo |
 | P1 Scaffold | ✅ | aee2ea1 | 5 skins (CLI, html/css/scaffold/video), gallery MPA, docs, licence. Builds + typecheck pass; 6 routes 200 |
 | P2 Essentials | ✅ | see log | All 5 skins: 116 Playwright checks pass at 1440/390 (6 documented skips) |
-| P3 Art | ⛔ on hold | | Faizi wants a deeper creative research pass + mood board first; Phatta art follows the mood board |
-| P4 States | ⏳ | | |
+| P3 Art | ✅ | see log | Phatta ✅ · Glass ✅ · Basant ✅ · Ink & Reed ✅ · Darkroom ✅ (art per skin README; gallery page per skin) |
+| P4 States | ✅ | see log | Phatta ✅ · Glass ✅ · Basant ✅ · Ink & Reed ✅ · Darkroom ✅ (hover/focus/active/disabled, loading, error dialog, touch volume) |
 | P5 Gauntlet | ⏳ | | |
 | P6 A11y + QA | ⏳ | | |
-| P7 Ship | ⏳ | | needs Faizi's OK (Vercel, Mux, portfolio) |
+| P7 Ship | 🔄 | | `vercel.json` ready (static, see README › Deploy); deploying still needs Faizi's OK (Vercel, Mux, portfolio) |
 
 ## Log
 
@@ -32,8 +32,16 @@ Status key: ✅ done · 🔄 in progress · ⏳ next · ⛔ blocked
 - Verification: per skin 23 passed + 1 skipped (desktop-1440 + mobile-390); Ink & Reed ±15 s 1 passed + 1 skipped. Total 116 passed, 6 skipped, 0 failed. `pnpm -r build` and `pnpm -r typecheck` pass.
 - Skips (by design): volume popover on touch is hover-only in the v10 Scaffold; centre skip buttons hidden on coarse pointers.
 
+### 2026-11-09: P3 art + P4 states (all five skins), integration
+- Art + states landed for Phatta (truck-art frame, day/night page), Glass (frosted pill, Film/Bright/Dark footage switch), Basant (kite-string seek, kite volume), Ink & Reed (paper bar, qalam timeline, RTL toggle), Darkroom (film-strip seek, LED time, inline fader). Each skin's README has the design notes.
+- Touch volume per skin: Phatta and Ink & Reed show the slider inline on touch (popover on desktop); Glass opens its capsule on first tap; Basant and Darkroom always show an inline slider. Tab reaches the volume slider on every skin.
+- Shared fixes: `@layer base, components, utilities;` first in `@panj/tokens/tokens.css` (production CSS chunk order no longer flips layers); gallery `#stage .media-skin` sizing moved to `@layer base` + `:where()` so skin layouts win; gallery pages reference their own CSS/TS by absolute path (`/phatta/…`), which fixed 404s when a route is opened without the trailing slash; `glass/`, `phatta/`, `ink-reed/` page scripts are typechecked.
+- Visual fixes: Basant centre play/seek no longer sit under the two-row bar on phones; Ink & Reed poster and indicators stay in the picture cell instead of covering the paper bar.
+- Tests: volume gate is popover-Esc where a desktop popover exists, otherwise Tab-to-slider + ↑/↓; Ink & Reed ±15 s runs on mobile too; new bright-footage check per skin; fullscreen test waits 300 ms before toggling back (headless cold-start race).
+- Verification: 132 Playwright checks pass at 1440 + 390 against the production build (0 skipped, 0 flaky; earlier dev-server run also green); `pnpm -r build` and `pnpm -r typecheck` pass. Vercel build command verified from a clean clone.
+
 ## Open items
-- P4: pick a touch volume affordance per skin (Scaffold popover is hover-only; touch has mute + device volume).
-- Volume slider isn't in the desktop Tab order (Scaffold behaviour); keyboard volume works via ↑/↓ hotkeys. Decide in P4 whether to expose it on mute focus.
 - Read the challenge close date and the one-vs-five-entries rule once the page is live.
-- Add bright + dark sample clips for the readability gate (P5).
+- P5: readability gauntlet on real bright/dark footage (fixtures exist; bright-footage smoke check is in the suite).
+- Darkroom at 390: the deck covers about two thirds of a 16:9 phone picture while controls are showing (auto-hides); consider a slimmer phone deck.
+- Phatta Urdu line needs a Nastaliq/Naskh font on systems without one (falls back; one glyph showed as tofu in the sandbox).

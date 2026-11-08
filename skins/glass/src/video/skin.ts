@@ -65,57 +65,5 @@ import '@videojs/html/ui/status-indicator';
 import '@videojs/html/ui/status-indicator-value';
 import '@videojs/html/ui/seek-indicator';
 import '@videojs/html/ui/seek-indicator-value';
-import { registerIcons } from '@videojs/html/icons';
-import {
-  airPlayEnterIcon as airPlayEnterIconScaffold,
-  airPlayExitIcon as airPlayExitIconScaffold,
-  captionsOffIcon as captionsOffIconScaffold,
-  captionsOnIcon as captionsOnIconScaffold,
-  castEnterIcon as castEnterIconScaffold,
-  castExitIcon as castExitIconScaffold,
-  checkIcon as checkIconScaffold,
-  chevronIcon as chevronIconScaffold,
-  fullscreenEnterIcon as fullscreenEnterIconScaffold,
-  fullscreenExitIcon as fullscreenExitIconScaffold,
-  gearIcon as gearIconScaffold,
-  pauseIcon as pauseIconScaffold,
-  pipEnterIcon as pipEnterIconScaffold,
-  pipExitIcon as pipExitIconScaffold,
-  playIcon as playIconScaffold,
-  restartIcon as restartIconScaffold,
-  seekIcon as seekIconScaffold,
-  speechIcon as speechIconScaffold,
-  speedIcon as speedIconScaffold,
-  spinnerIcon as spinnerIconScaffold,
-  switchesIcon as switchesIconScaffold,
-  volumeHighIcon as volumeHighIconScaffold,
-  volumeLowIcon as volumeLowIconScaffold,
-  volumeOffIcon as volumeOffIconScaffold,
-} from '@videojs/html/icons/scaffold';
-
-registerIcons('scaffold', {
-  'airplay-enter': airPlayEnterIconScaffold,
-  'airplay-exit': airPlayExitIconScaffold,
-  'captions-off': captionsOffIconScaffold,
-  'captions-on': captionsOnIconScaffold,
-  'cast-enter': castEnterIconScaffold,
-  'cast-exit': castExitIconScaffold,
-  check: checkIconScaffold,
-  chevron: chevronIconScaffold,
-  'fullscreen-enter': fullscreenEnterIconScaffold,
-  'fullscreen-exit': fullscreenExitIconScaffold,
-  gear: gearIconScaffold,
-  pause: pauseIconScaffold,
-  'pip-enter': pipEnterIconScaffold,
-  'pip-exit': pipExitIconScaffold,
-  play: playIconScaffold,
-  restart: restartIconScaffold,
-  seek: seekIconScaffold,
-  speech: speechIconScaffold,
-  speed: speedIconScaffold,
-  spinner: spinnerIconScaffold,
-  switches: switchesIconScaffold,
-  'volume-high': volumeHighIconScaffold,
-  'volume-low': volumeLowIconScaffold,
-  'volume-off': volumeOffIconScaffold,
-});
+import './icons';
+import './glass.css';

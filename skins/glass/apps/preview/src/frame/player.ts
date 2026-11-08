@@ -1,6 +1,7 @@
 import '@videojs/html/video/player';
 import '@videojs/html/media/mux-video';
 import '@/video/skin';
+import { enhanceGlass } from '@/video/behaviour';
 import skinTemplate from '@/video/skin.html?raw';
 
 // What the preview plays. Change these to try the skin with your own media; any Mux or HLS URL works.
@@ -20,5 +21,6 @@ export function createPlayer(): HTMLElement {
     `<mux-video src="${SRC}" playsinline crossorigin><track kind="chapters" label="English" srclang="en" src="${CHAPTERS}" default></mux-video>`
   );
 
+  enhanceGlass(player);
   return player;
 }

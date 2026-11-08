@@ -20,7 +20,7 @@
 </media-controls-backdrop>
 <media-controls-group class="media-buffering-indicator-controls">
 <media-buffering-indicator class="media-buffering-indicator media-buffering-indicator-backdrop">
-<media-icon family="scaffold" name="spinner" class="media-buffering-indicator-spinner-icon">
+<media-icon family="basant" name="spinner" class="media-buffering-indicator-spinner-icon">
 </media-icon>
 </media-buffering-indicator>
 </media-controls-group>
@@ -65,18 +65,6 @@
 <media-tooltip-shortcut class="media-tooltip-shortcut">
 </media-tooltip-shortcut>
 </media-tooltip>
-<media-fullscreen-button class="media-button media-fullscreen-button" id="vjs-COsQCb_P-0-4-trigger">
-<media-icon family="scaffold" name="fullscreen-enter" class="media-button-icon media-fullscreen-button-enter-icon">
-</media-icon>
-<media-icon family="scaffold" name="fullscreen-exit" class="media-button-icon media-fullscreen-button-exit-icon">
-</media-icon>
-</media-fullscreen-button>
-<media-tooltip trigger="vjs-COsQCb_P-0-4-trigger" side="top" class="media-popup media-popup-safe-area media-tooltip-popup media-tooltip-screen-popup">
-<media-tooltip-label>
-</media-tooltip-label>
-<media-tooltip-shortcut class="media-tooltip-shortcut">
-</media-tooltip-shortcut>
-</media-tooltip>
 </media-controls-group>
 <media-buffering-indicator class="video-controls-buffering">
 <media-controls-group class="video-controls-center">
@@ -94,11 +82,11 @@
 </media-tooltip-shortcut>
 </media-tooltip>
 <media-play-button class="media-button media-play-button video-controls-center-button video-controls-center-play" id="vjs-COsQCb_P-0-6-trigger">
-<media-icon family="scaffold" name="restart" class="media-button-icon-base media-play-button-restart-icon video-controls-center-play-icon">
+<media-icon family="basant" name="restart" class="media-button-icon-base media-play-button-restart-icon video-controls-center-play-icon">
 </media-icon>
-<media-icon family="scaffold" name="play" class="media-button-icon-base media-play-button-play-icon video-controls-center-play-icon">
+<media-icon family="basant" name="play" class="media-button-icon-base media-play-button-play-icon video-controls-center-play-icon">
 </media-icon>
-<media-icon family="scaffold" name="pause" class="media-button-icon-base media-play-button-pause-icon video-controls-center-play-icon">
+<media-icon family="basant" name="pause" class="media-button-icon-base media-play-button-pause-icon video-controls-center-play-icon">
 </media-icon>
 </media-play-button>
 <media-tooltip trigger="vjs-COsQCb_P-0-6-trigger" disabled side="top" class="media-popup media-popup-safe-area media-tooltip-popup">
@@ -122,9 +110,30 @@
 </media-tooltip>
 </media-controls-group>
 </media-buffering-indicator>
-<div class="video-controls-bottom video-controls-video-bottom">
-<div class="video-controls-slider-row">
-<media-time-slider class="media-time-slider" thumb-alignment="edge">
+<div class="video-controls-bottom video-controls-video-bottom basant-bar">
+<media-controls-group class="basant-row">
+<media-play-button class="media-button media-play-button basant-play" id="basant-play-trigger">
+<media-icon family="basant" name="restart" class="media-button-icon-base media-play-button-restart-icon">
+</media-icon>
+<media-icon family="basant" name="play" class="media-button-icon-base media-play-button-play-icon">
+</media-icon>
+<media-icon family="basant" name="pause" class="media-button-icon-base media-play-button-pause-icon">
+</media-icon>
+</media-play-button>
+<media-tooltip trigger="basant-play-trigger" side="top" class="media-popup media-popup-safe-area media-tooltip-popup">
+<media-tooltip-label>
+</media-tooltip-label>
+<media-tooltip-shortcut class="media-tooltip-shortcut">
+</media-tooltip-shortcut>
+</media-tooltip>
+<div class="video-controls-slider-row basant-seek">
+<media-time-slider class="media-time-slider basant-manja" thumb-alignment="center">
+<span class="basant-charkhi" aria-hidden="true">
+<span class="basant-charkhi-axle"></span>
+<span class="basant-charkhi-drum"><span class="basant-charkhi-wound"></span></span>
+<span class="basant-charkhi-flange basant-charkhi-flange-l"></span>
+<span class="basant-charkhi-flange basant-charkhi-flange-r"></span>
+</span>
 <media-time-slider-chapters class="media-time-slider-chapters">
 <template>
 <div class="media-time-slider-chapter">
@@ -137,7 +146,15 @@
 </div>
 </template>
 </media-time-slider-chapters>
-<media-slider-thumb class="media-time-slider-thumb">
+<media-slider-thumb class="media-time-slider-thumb basant-kite-thumb">
+<svg class="basant-kite" viewBox="0 0 44 44" aria-hidden="true" focusable="false">
+<path class="basant-kite-tail" d="M22 31c-2 3 2 5 0 8s2 4 0 5" fill="none" stroke-width="1.6" stroke-linecap="round"/>
+<path class="basant-kite-tassel" d="M22 31l-3.2 4.2h6.4z"/>
+<path class="basant-kite-a" d="M22 5 33 17.5 22 31z"/>
+<path class="basant-kite-b" d="M22 5 11 17.5 22 31z"/>
+<circle class="basant-kite-patch" cx="22" cy="17.5" r="3.4"/>
+<path class="basant-kite-frame" d="M22 5 33 17.5 22 31 11 17.5zM22 5v26M11.6 17.5Q22 11 32.4 17.5" fill="none" stroke-width="1.4" stroke-linejoin="round"/>
+</svg>
 </media-slider-thumb>
 <media-slider-preview class="media-time-slider-preview">
 <media-slider-thumbnail class="media-slider-thumbnail">
@@ -154,44 +171,6 @@
 </media-slider-preview>
 </media-time-slider>
 </div>
-<media-controls-group class="video-controls-row">
-<media-controls-group class="video-controls-group video-controls-start">
-<media-play-button class="media-button media-play-button" id="vjs-COsQCb_P-0-8-trigger">
-<media-icon family="scaffold" name="restart" class="media-button-icon-base media-play-button-restart-icon">
-</media-icon>
-<media-icon family="scaffold" name="play" class="media-button-icon-base media-play-button-play-icon">
-</media-icon>
-<media-icon family="scaffold" name="pause" class="media-button-icon-base media-play-button-pause-icon">
-</media-icon>
-</media-play-button>
-<media-tooltip trigger="vjs-COsQCb_P-0-8-trigger" side="top" class="media-popup media-popup-safe-area media-tooltip-popup">
-<media-tooltip-label>
-</media-tooltip-label>
-<media-tooltip-shortcut class="media-tooltip-shortcut">
-</media-tooltip-shortcut>
-</media-tooltip>
-<media-mute-button commandfor="vjs-nnOyqmK2-0-popup" class="media-button media-mute-button" id="vjs-COsQCb_P-0-9-trigger">
-<media-icon family="scaffold" name="volume-off" class="media-button-icon media-mute-button-off-icon">
-</media-icon>
-<media-icon family="scaffold" name="volume-high" class="media-button-icon media-mute-button-high-icon">
-</media-icon>
-</media-mute-button>
-<media-tooltip trigger="vjs-COsQCb_P-0-9-trigger" delay="0" disabled side="top" sticky class="media-popup media-popup-safe-area media-tooltip-popup">
-<media-tooltip-label>
-</media-tooltip-label>
-<media-tooltip-shortcut class="media-tooltip-shortcut">
-</media-tooltip-shortcut>
-</media-tooltip>
-<media-volume-popover open-on-hover delay="200" close-delay="100" side="top" class="media-popup media-popup-safe-area media-volume-popover-popup" id="vjs-nnOyqmK2-0-popup">
-<media-volume-slider class="media-volume-slider" orientation="vertical" thumb-alignment="edge">
-<media-slider-track class="media-volume-slider-track">
-<media-slider-fill class="media-volume-slider-fill">
-</media-slider-fill>
-</media-slider-track>
-<media-slider-thumb class="media-volume-slider-thumb">
-</media-slider-thumb>
-</media-volume-slider>
-</media-volume-popover>
 <media-time-group class="media-time-group">
 <media-time class="media-time-toggle" type="current" toggle>
 </media-time>
@@ -202,26 +181,53 @@
 <media-time class="media-time-duration-value" type="duration">
 </media-time>
 </media-time-group>
-</media-controls-group>
-<media-controls-group class="video-controls-group">
-<media-captions-button class="media-button media-captions-button" id="vjs-COsQCb_P-0-10-trigger">
-<media-icon family="scaffold" name="captions-off" class="media-button-icon media-captions-button-off-icon">
+<media-controls-group class="basant-trail">
+<media-mute-button class="media-button media-mute-button" id="basant-mute-trigger">
+<media-icon family="basant" name="volume-off" class="media-button-icon media-mute-button-off-icon">
 </media-icon>
-<media-icon family="scaffold" name="captions-on" class="media-button-icon media-captions-button-on-icon">
+<media-icon family="basant" name="volume-high" class="media-button-icon media-mute-button-high-icon">
 </media-icon>
-</media-captions-button>
-<media-tooltip trigger="vjs-COsQCb_P-0-10-trigger" side="top" class="media-popup media-popup-safe-area media-tooltip-popup">
+</media-mute-button>
+<media-tooltip trigger="basant-mute-trigger" side="top" class="media-popup media-popup-safe-area media-tooltip-popup">
 <media-tooltip-label>
 </media-tooltip-label>
 <media-tooltip-shortcut class="media-tooltip-shortcut">
 </media-tooltip-shortcut>
 </media-tooltip>
-<button commandfor="vjs-Rq0iN2VF-h-popup" class="media-button" id="vjs-COsQCb_P-0-11-trigger">
-<media-icon family="scaffold" name="gear" class="media-button-icon">
+<media-volume-slider class="media-volume-slider basant-volume" thumb-alignment="center">
+<media-slider-track class="media-volume-slider-track">
+<media-slider-fill class="media-volume-slider-fill">
+</media-slider-fill>
+</media-slider-track>
+<media-slider-thumb class="media-volume-slider-thumb basant-kite-thumb basant-kite-thumb-small">
+<svg class="basant-kite" viewBox="0 0 44 44" aria-hidden="true" focusable="false">
+<path class="basant-kite-tail" d="M22 31c-2 3 2 5 0 8s2 4 0 5" fill="none" stroke-width="1.6" stroke-linecap="round"/>
+<path class="basant-kite-tassel" d="M22 31l-3.2 4.2h6.4z"/>
+<path class="basant-kite-a" d="M22 5 33 17.5 22 31z"/>
+<path class="basant-kite-b" d="M22 5 11 17.5 22 31z"/>
+<circle class="basant-kite-patch" cx="22" cy="17.5" r="3.4"/>
+<path class="basant-kite-frame" d="M22 5 33 17.5 22 31 11 17.5zM22 5v26M11.6 17.5Q22 11 32.4 17.5" fill="none" stroke-width="1.4" stroke-linejoin="round"/>
+</svg>
+</media-slider-thumb>
+</media-volume-slider>
+<media-captions-button class="media-button media-captions-button" id="basant-captions-trigger">
+<media-icon family="basant" name="captions-off" class="media-button-icon media-captions-button-off-icon">
+</media-icon>
+<media-icon family="basant" name="captions-on" class="media-button-icon media-captions-button-on-icon">
+</media-icon>
+</media-captions-button>
+<media-tooltip trigger="basant-captions-trigger" side="top" class="media-popup media-popup-safe-area media-tooltip-popup">
+<media-tooltip-label>
+</media-tooltip-label>
+<media-tooltip-shortcut class="media-tooltip-shortcut">
+</media-tooltip-shortcut>
+</media-tooltip>
+<button commandfor="vjs-Rq0iN2VF-h-popup" class="media-button" id="basant-settings-trigger">
+<media-icon family="basant" name="gear" class="media-button-icon">
 </media-icon>
 <media-text class="media-settings-button-label" token="menu.settings">Settings</media-text>
 </button>
-<media-tooltip trigger="vjs-COsQCb_P-0-11-trigger" side="top" class="media-popup media-popup-safe-area media-tooltip-popup">
+<media-tooltip trigger="basant-settings-trigger" side="top" class="media-popup media-popup-safe-area media-tooltip-popup">
 <media-text token="menu.settings">Settings</media-text>
 </media-tooltip>
 <media-menu side="top" align="center" class="media-popup media-popup-safe-area media-menu-popup" id="vjs-Rq0iN2VF-h-popup">
@@ -364,6 +370,18 @@
 </media-menu-content>
 </media-menu-content>
 </media-menu>
+<media-fullscreen-button class="media-button media-fullscreen-button" id="basant-fullscreen-trigger">
+<media-icon family="basant" name="fullscreen-enter" class="media-button-icon media-fullscreen-button-enter-icon">
+</media-icon>
+<media-icon family="basant" name="fullscreen-exit" class="media-button-icon media-fullscreen-button-exit-icon">
+</media-icon>
+</media-fullscreen-button>
+<media-tooltip trigger="basant-fullscreen-trigger" side="top" class="media-popup media-popup-safe-area media-tooltip-popup">
+<media-tooltip-label>
+</media-tooltip-label>
+<media-tooltip-shortcut class="media-tooltip-shortcut">
+</media-tooltip-shortcut>
+</media-tooltip>
 </media-controls-group>
 </media-controls-group>
 </div>

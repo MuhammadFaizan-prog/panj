@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-import { openSkin, SKINS, wake } from './helpers';
+import { openSkin, SKINS, videoProp, wake } from './helpers';
 
 const MIN = 44;
 
@@ -51,20 +51,36 @@ for (const skin of SKINS) {
       for (const want of [/play|pause/i, /mute|unmute/i, /fullscreen/i, /captions/i, /seek/i]) expect(joined).toMatch(want);
     });
 
-    test('Esc closes the volume popover', async ({ page }, info) => {
+    test('volume: Esc closes the popover, or the inline slider is keyboard-operable', async ({ page }, info) => {
       const { container } = await openSkin(page, skin);
       await wake(page, skin);
-      const mute = container.locator('media-mute-button');
       const pop = container.locator('media-volume-popover');
-      // The v10 Scaffold volume popover is open-on-hover; on touch, volume is the device's and mute stays available.
-      // Tracked in Tracker.md (P4: decide a touch volume affordance per skin).
-      test.skip(info.project.name.startsWith('mobile'), 'volume popover is hover-only in the v10 Scaffold');
-      await mute.hover();
-      await expect(pop).toHaveAttribute('data-open', { timeout: 3000 });
-      await container.locator('media-volume-slider [role="slider"]').focus();
-      await page.keyboard.press('Escape');
-      await page.mouse.move(1, 1);
-      await expect(pop).not.toHaveAttribute('data-open');
+      const touch = info.project.name.startsWith('mobile');
+      // Phatta, Glass and Ink & Reed keep a hover popover on desktop and show the slider inline on touch;
+      // Basant and Darkroom always show an inline slider.
+      if ((await pop.count()) > 0 && !touch) {
+        await container.locator('media-mute-button').hover();
+        await expect(pop).toHaveAttribute('data-open', { timeout: 3000 });
+        await container.locator('media-volume-slider [role="slider"]').focus();
+        await page.keyboard.press('Escape');
+        await page.mouse.move(1, 1);
+        await expect(pop).not.toHaveAttribute('data-open');
+        return;
+      }
+      await page.evaluate(() => { (document.querySelector('video') as HTMLVideoElement).volume = 0.5; });
+      await container.focus();
+      let reached = false;
+      for (let i = 0; i < 25 && !reached; i++) {
+        await page.keyboard.press('Tab');
+        reached = await page.evaluate(() => !!document.activeElement?.closest('media-volume-slider'));
+      }
+      expect(reached, 'Tab reaches the volume slider').toBe(true);
+      await page.keyboard.press('ArrowUp');
+      await expect.poll(() => videoProp(page, 'volume')).toBeGreaterThan(0.5);
+      const up = await videoProp(page, 'volume');
+      await page.keyboard.press('ArrowDown');
+      await page.keyboard.press('ArrowDown');
+      await expect.poll(() => videoProp(page, 'volume')).toBeLessThan(up);
     });
 
     test('prefers-reduced-motion stops transitions and animations', async ({ page }) => {

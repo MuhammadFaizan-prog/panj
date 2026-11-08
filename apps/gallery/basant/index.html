@@ -6,14 +6,125 @@
     <title>Basant · panj</title>
     <meta name="description" content="Basant: Lahore kite festival. A Video.js v10 skin." />
     <link rel="stylesheet" href="/src/gallery.css" />
+    <link rel="stylesheet" href="/basant/basant.css" />
   </head>
-  <body>
-    <main class="page">
-      <a class="back" href="/">← All skins</a>
-      <h1>Basant</h1>
-      <p>Lahore kite festival</p>
-      <div id="stage"></div>
-    </main>
+  <body class="basant-page">
+    <svg width="0" height="0" style="position: absolute" aria-hidden="true" focusable="false">
+      <defs>
+        <!-- One hand-drawn patang, recoloured per kite with CSS custom properties. -->
+        <symbol id="patang" viewBox="0 0 60 92">
+          <path d="M30 62c-4 5 4 8 0 13s4 7 0 12" fill="none" stroke="var(--tail, #fff)" stroke-width="2" stroke-linecap="round" />
+          <path d="M30 62l-5 7h10z" fill="var(--tassel, #1f8f4e)" />
+          <path d="M30 4 52 32 30 62z" fill="var(--a, #f5b301)" />
+          <path d="M30 4 8 32 30 62z" fill="var(--b, #d81b60)" />
+          <path d="M30 40 41 50 30 62 19 50z" fill="var(--c, #fffaf0)" opacity=".9" />
+          <circle cx="30" cy="26" r="6" fill="var(--c, #fffaf0)" />
+          <path d="M30 4 52 32 30 62 8 32zM30 4v58M9 32Q30 19 51 32" fill="none" stroke="#1a1430" stroke-width="1.6" stroke-linejoin="round" />
+        </symbol>
+      </defs>
+    </svg>
+
+    <div class="scene">
+      <div class="sky" aria-hidden="true">
+        <div class="sun"></div>
+        <div class="cloud cloud-1"></div>
+        <div class="cloud cloud-2"></div>
+        <div class="cloud cloud-3"></div>
+
+        <div class="kite k1"><svg viewBox="0 0 60 92"><use href="#patang" /></svg></div>
+        <div class="kite k2"><svg viewBox="0 0 60 92"><use href="#patang" /></svg></div>
+        <div class="kite k3"><svg viewBox="0 0 60 92"><use href="#patang" /></svg></div>
+        <div class="kite k4"><svg viewBox="0 0 60 92"><use href="#patang" /></svg></div>
+        <div class="kite k5"><svg viewBox="0 0 60 92"><use href="#patang" /></svg></div>
+        <div class="kite k6"><svg viewBox="0 0 60 92"><use href="#patang" /></svg></div>
+        <div class="kite k7"><svg viewBox="0 0 60 92"><use href="#patang" /></svg></div>
+
+        <!-- Old-city rooftops at dusk: flat roofs, water tanks, parapets, a domed mosque and minarets. Original drawing. -->
+        <svg class="skyline" viewBox="0 0 1440 240" preserveAspectRatio="xMidYMax slice">
+          <g class="far" fill="#4a2b4f">
+            <rect x="0" y="120" width="90" height="120" />
+            <rect x="80" y="96" width="70" height="144" />
+            <rect x="150" y="128" width="110" height="112" />
+            <rect x="250" y="104" width="64" height="136" />
+            <rect x="900" y="110" width="90" height="130" />
+            <rect x="985" y="132" width="120" height="108" />
+            <rect x="1100" y="100" width="70" height="140" />
+            <rect x="1165" y="124" width="130" height="116" />
+            <rect x="1290" y="108" width="150" height="132" />
+            <!-- mosque: dome flanked by minarets -->
+            <rect x="560" y="70" width="12" height="170" />
+            <path d="M556 70h20l-10-22z" />
+            <rect x="808" y="70" width="12" height="170" />
+            <path d="M804 70h20l-10-22z" />
+            <path d="M600 140a90 70 0 0 1 180 0v100H600z" />
+            <path d="M684 70h12l-6-16z" />
+            <path d="M640 140a50 40 0 0 1 100 0" fill="#5a3460" />
+          </g>
+          <g class="near" fill="#2a1830">
+            <rect x="0" y="168" width="140" height="72" />
+            <rect x="20" y="150" width="34" height="20" rx="3" />
+            <rect x="130" y="150" width="120" height="90" />
+            <rect x="240" y="176" width="150" height="64" />
+            <rect x="380" y="140" width="110" height="100" />
+            <rect x="400" y="120" width="30" height="22" rx="3" />
+            <rect x="480" y="172" width="160" height="68" />
+            <rect x="630" y="186" width="190" height="54" />
+            <rect x="810" y="160" width="130" height="80" />
+            <rect x="830" y="140" width="28" height="22" rx="3" />
+            <rect x="930" y="180" width="170" height="60" />
+            <rect x="1090" y="150" width="120" height="90" />
+            <rect x="1200" y="174" width="110" height="66" />
+            <rect x="1250" y="154" width="32" height="22" rx="3" />
+            <rect x="1300" y="146" width="140" height="94" />
+          </g>
+          <!-- lit windows -->
+          <g fill="#ffb347" opacity=".85">
+            <rect x="160" y="176" width="10" height="14" rx="2" />
+            <rect x="196" y="176" width="10" height="14" rx="2" />
+            <rect x="410" y="168" width="10" height="14" rx="2" />
+            <rect x="452" y="168" width="10" height="14" rx="2" />
+            <rect x="842" y="186" width="10" height="14" rx="2" />
+            <rect x="1120" y="176" width="10" height="14" rx="2" />
+            <rect x="1162" y="176" width="10" height="14" rx="2" />
+            <rect x="1330" y="172" width="10" height="14" rx="2" />
+            <rect x="1380" y="172" width="10" height="14" rx="2" />
+          </g>
+          <!-- parapet in the foreground: the roof we are standing on -->
+          <g fill="#170d1c">
+            <rect x="0" y="214" width="1440" height="26" />
+            <path d="M0 214h1440v-6H0z" fill="#3b2233" />
+          </g>
+          <g fill="none" stroke="#3b2233" stroke-width="2">
+            <path d="M0 226h1440" />
+          </g>
+        </svg>
+      </div>
+
+      <main class="page basant-main">
+        <a class="back" href="/">← All skins</a>
+        <header class="basant-head">
+          <h1>Basant</h1>
+          <p>Lahore's kite festival, on a rooftop at dusk. A Video.js v10 skin.</p>
+        </header>
+        <div id="stage"></div>
+      </main>
+    </div>
+
+    <section class="thinking" aria-labelledby="design-thinking">
+      <div class="thinking-inner">
+        <h2 id="design-thinking">Design thinking</h2>
+        <p>
+          Basant is spring in Lahore: kites over the old-city rooftops and yellow everywhere, so the control bar is a strip
+          of daytime sky with a marigold edge. The seek bar is the manja: it unwinds from a wooden charkhi on the left, the
+          wound thread on the spool gets thinner as the video plays, and the playhead is a small kite that sways while
+          playing and tilts as you drag it. Volume is a second kite climbing a slanted string, so its height is the level,
+          and it sits in the bar instead of a hover popover so it can be reached with Tab and dragged on a touch screen.
+          Everything you need to read is navy ink on sky or paper, the kite thumbs keep 44px hit areas around smaller
+          drawings, and all of the sway, unwinding and drifting stops when you ask your system for reduced motion.
+        </p>
+      </div>
+    </section>
+
     <script type="module">
       import '@videojs/html/i18n';
       import { createSkinnedPlayer } from '@panj/basant';

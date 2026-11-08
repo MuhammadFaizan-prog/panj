@@ -1,23 +1,355 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-mode="night">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Phatta · panj</title>
-    <meta name="description" content="Phatta: Pakistani truck art. A Video.js v10 skin." />
+    <meta name="description" content="Phatta: Pakistani truck art. A Video.js v10 skin, hand-painted in code." />
+    <!-- Fix the cascade-layer order before any stylesheet loads: the build can emit the shared essentials
+         (@layer utilities) ahead of the Scaffold (@layer base, components), which would flip their priority. -->
+    <style>
+      @layer base, base.theme, base.preset, base.preferences, components, utilities, phatta;
+    </style>
+    <script>
+      // Pick day or night before first paint, from the visitor's colour-scheme preference.
+      document.documentElement.dataset.mode = matchMedia('(prefers-color-scheme: light)').matches ? 'day' : 'night';
+    </script>
     <link rel="stylesheet" href="/src/gallery.css" />
+    <link rel="stylesheet" href="/phatta/phatta-page.css" />
   </head>
-  <body>
-    <main class="page">
+  <body class="ph-page">
+    <svg class="ph-defs" aria-hidden="true" focusable="false" width="0" height="0">
+      <defs>
+        <radialGradient id="ph-g-brass" cx="35%" cy="30%" r="75%">
+          <stop offset="0" stop-color="#fff3c4" />
+          <stop offset=".35" stop-color="#e6b955" />
+          <stop offset=".8" stop-color="#8a5e17" />
+          <stop offset="1" stop-color="#4d3309" />
+        </radialGradient>
+        <linearGradient id="ph-g-wood" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#9b5a2a" />
+          <stop offset=".5" stop-color="#6d3a17" />
+          <stop offset="1" stop-color="#3e1f0b" />
+        </linearGradient>
+        <linearGradient id="ph-g-letter" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#ffe7a3" />
+          <stop offset=".55" stop-color="#f3b13c" />
+          <stop offset="1" stop-color="#c46a12" />
+        </linearGradient>
+        <radialGradient id="ph-g-iris" cx="45%" cy="40%" r="60%">
+          <stop offset="0" stop-color="#c8873d" />
+          <stop offset=".6" stop-color="#6b3a12" />
+          <stop offset="1" stop-color="#2a1406" />
+        </radialGradient>
+        <linearGradient id="ph-g-peacock" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#3b8cff" />
+          <stop offset="1" stop-color="#123c9c" />
+        </linearGradient>
+        <linearGradient id="ph-g-tail" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#1b9a55" />
+          <stop offset="1" stop-color="#0b5a2c" />
+        </linearGradient>
+
+        <!-- rose: concentric painted petals -->
+        <symbol id="ph-rose" viewBox="-30 -30 60 60" overflow="visible">
+          <circle r="26" style="fill: var(--rose, #d42b2b)" />
+          <path d="M-22 4a22 22 0 0 1 44 0" fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="3" />
+          <path d="M-16 8a16 14 0 0 0 32 0" fill="none" stroke="#000" stroke-opacity=".3" stroke-width="3" />
+          <path d="M-12 -4a12 12 0 0 1 24 0" fill="none" stroke="#fff" stroke-opacity=".4" stroke-width="2.5" />
+          <circle r="8" fill="#000" fill-opacity=".25" />
+          <path d="M-5 0a5 5 0 1 1 5 5" fill="none" stroke="#fff" stroke-opacity=".5" stroke-width="2" />
+        </symbol>
+        <!-- small five-petal flower -->
+        <symbol id="ph-bloom" viewBox="-14 -14 28 28" overflow="visible">
+          <g style="fill: var(--bloom, #2f6fe0)">
+            <circle cy="-7" r="5.5" /><circle cx="6.7" cy="-2.2" r="5.5" /><circle cx="4.1" cy="5.7" r="5.5" />
+            <circle cx="-4.1" cy="5.7" r="5.5" /><circle cx="-6.7" cy="-2.2" r="5.5" />
+          </g>
+          <circle r="3.6" fill="#f2b632" />
+        </symbol>
+        <symbol id="ph-leaf" viewBox="-20 -8 40 16" overflow="visible">
+          <path d="M-18 0C-8-9 8-9 18 0C8 9-8 9-18 0Z" fill="#1f8a43" />
+          <path d="M-16 0H16" stroke="#0c4d22" stroke-width="1.4" />
+        </symbol>
+        <!-- brass bell -->
+        <symbol id="ph-bell" viewBox="-14 0 28 30" overflow="visible">
+          <path d="M-11 22c0-13 3-20 11-20s11 7 11 20l3 3h-28z" fill="url(#ph-g-brass)" stroke="#4d3309" stroke-width="1" />
+          <circle cy="27.5" r="3" fill="#6e4a10" />
+          <circle cy="1.5" r="2.4" fill="none" stroke="#c99a3b" stroke-width="1.6" />
+        </symbol>
+        <!-- painted eye (mudflap) -->
+        <symbol id="ph-eye" viewBox="0 0 200 150">
+          <rect width="200" height="150" fill="#ea8a2e" />
+          <path d="M34 50C70 22 136 22 170 48" fill="none" stroke="#24120a" stroke-width="11" stroke-linecap="round" />
+          <path d="M30 88C66 54 136 54 172 88C136 116 66 116 30 88Z" fill="#f8f3ea" stroke="#24120a" stroke-width="4" />
+          <circle cx="101" cy="86" r="23" fill="url(#ph-g-iris)" />
+          <circle cx="101" cy="86" r="9.5" fill="#0b0604" />
+          <circle cx="108" cy="79" r="4.5" fill="#fff" />
+          <path d="M44 76l-8-10M60 66l-5-11M78 61l-2-12M96 59v-12M114 60l2-12M132 64l5-11M150 71l8-9" stroke="#24120a" stroke-width="3" stroke-linecap="round" />
+          <path d="M46 100C74 114 128 114 158 100" fill="none" stroke="#24120a" stroke-opacity=".5" stroke-width="2.5" />
+        </symbol>
+        <!-- peacock + roses side panel -->
+        <symbol id="ph-panel" viewBox="0 0 200 560" preserveAspectRatio="xMidYMid slice">
+          <rect width="200" height="560" fill="#090807" />
+          <path d="M0 0H200V128H184C184 78 150 56 100 32C50 56 16 78 16 128H0Z" fill="#167a3b" />
+          <path d="M16 128C16 78 50 56 100 32C150 56 184 78 184 128" fill="none" stroke="#e2b54c" stroke-width="4" />
+          <path d="M30 22c10 10 22 10 30 2M140 24c8 8 20 8 30-2M88 12c4 6 20 6 24 0" fill="none" stroke="#f7ecd0" stroke-width="2" stroke-linecap="round" />
+          <circle cx="100" cy="16" r="5" fill="#d42b2b" /><circle cx="24" cy="60" r="4" fill="#f2b632" /><circle cx="176" cy="60" r="4" fill="#f2b632" />
+          <rect x="5" y="5" width="190" height="550" fill="none" stroke="#c8261c" stroke-width="5" />
+          <rect x="11" y="11" width="178" height="538" fill="none" stroke="#1f8a43" stroke-width="2" />
+
+          <!-- tail -->
+          <path d="M96 244C74 300 44 382 30 528C62 474 94 400 116 252Z" fill="url(#ph-g-tail)" />
+          <path d="M98 260C80 320 58 400 40 500M106 258C94 330 76 410 58 486" fill="none" stroke="#7fe0a0" stroke-opacity=".5" stroke-width="1.5" />
+          <g>
+            <ellipse cx="88" cy="300" rx="8" ry="11" fill="#e2b54c" /><ellipse cx="88" cy="301" rx="5" ry="7" fill="#2f6fe0" /><circle cx="88" cy="302" r="2.6" fill="#0b1f55" />
+            <ellipse cx="72" cy="350" rx="8" ry="11" fill="#e2b54c" /><ellipse cx="72" cy="351" rx="5" ry="7" fill="#2f6fe0" /><circle cx="72" cy="352" r="2.6" fill="#0b1f55" />
+            <ellipse cx="96" cy="350" rx="7" ry="10" fill="#e2b54c" /><ellipse cx="96" cy="351" rx="4.5" ry="6.5" fill="#2f6fe0" /><circle cx="96" cy="352" r="2.4" fill="#0b1f55" />
+            <ellipse cx="60" cy="404" rx="8" ry="11" fill="#e2b54c" /><ellipse cx="60" cy="405" rx="5" ry="7" fill="#2f6fe0" /><circle cx="60" cy="406" r="2.6" fill="#0b1f55" />
+            <ellipse cx="82" cy="404" rx="7" ry="10" fill="#e2b54c" /><ellipse cx="82" cy="405" rx="4.5" ry="6.5" fill="#2f6fe0" /><circle cx="82" cy="406" r="2.4" fill="#0b1f55" />
+            <ellipse cx="50" cy="460" rx="7" ry="10" fill="#e2b54c" /><ellipse cx="50" cy="461" rx="4.5" ry="6.5" fill="#2f6fe0" /><circle cx="50" cy="462" r="2.4" fill="#0b1f55" />
+            <ellipse cx="42" cy="508" rx="6" ry="9" fill="#e2b54c" /><ellipse cx="42" cy="509" rx="4" ry="6" fill="#2f6fe0" /><circle cx="42" cy="510" r="2.2" fill="#0b1f55" />
+          </g>
+          <!-- body, neck, head -->
+          <path d="M94 252C70 242 64 206 82 188C96 176 114 180 118 198C122 218 114 244 94 252Z" fill="url(#ph-g-peacock)" />
+          <path d="M102 188C96 160 104 138 118 130C127 126 134 133 129 141C121 152 114 166 114 192Z" fill="url(#ph-g-peacock)" />
+          <circle cx="124" cy="133" r="9" fill="#2f6fe0" />
+          <circle cx="127" cy="131" r="2.6" fill="#fff" /><circle cx="127.6" cy="131" r="1.2" fill="#000" />
+          <path d="M132 132l11 3-11 4Z" fill="#f2a21b" />
+          <path d="M121 124l-7-15M124 123l1-17M127 124l8-14" stroke="#1d4fb8" stroke-width="1.6" />
+          <circle cx="114" cy="108" r="3" fill="#f2b632" /><circle cx="125" cy="105" r="3" fill="#f2b632" /><circle cx="135" cy="109" r="3" fill="#f2b632" />
+          <!-- wing -->
+          <path d="M84 200C100 194 116 206 113 228C102 234 90 226 84 200Z" fill="#c8261c" />
+          <path d="M90 206c6 2 12 2 18 0M90 214c6 2 14 2 20 0M92 222c6 2 12 2 17 0" fill="none" stroke="#f7ecd0" stroke-width="1.8" />
+          <path d="M98 250l-4 22M106 248l2 22" stroke="#f2a21b" stroke-width="2.4" />
+          <path d="M70 274C100 266 130 270 160 280" fill="none" stroke="#6b3a12" stroke-width="5" stroke-linecap="round" />
+
+          <!-- flowers -->
+          <use href="#ph-leaf" x="130" y="300" width="40" height="16" transform="rotate(-30 150 308)" />
+          <use href="#ph-leaf" x="150" y="390" width="40" height="16" transform="rotate(35 170 398)" />
+          <use href="#ph-leaf" x="116" y="470" width="40" height="16" transform="rotate(-20 136 478)" />
+          <use href="#ph-leaf" x="34" y="214" width="40" height="16" transform="rotate(25 54 222)" />
+          <use href="#ph-rose" x="128" y="306" width="48" height="48" style="--rose:#d42b2b" />
+          <use href="#ph-rose" x="118" y="364" width="44" height="44" style="--rose:#f2a21b" />
+          <use href="#ph-rose" x="122" y="436" width="54" height="54" style="--rose:#d42b2b" />
+          <use href="#ph-rose" x="28" y="150" width="36" height="36" style="--rose:#e8556d" />
+          <use href="#ph-bloom" x="30" y="222" width="24" height="24" />
+          <use href="#ph-bloom" x="152" y="232" width="24" height="24" />
+          <use href="#ph-bloom" x="160" y="404" width="22" height="22" style="--bloom:#e8556d" />
+          <use href="#ph-bloom" x="98" y="496" width="22" height="22" />
+        </symbol>
+      </defs>
+    </svg>
+
+    <header class="ph-topbar">
       <a class="back" href="/">← All skins</a>
-      <h1>Phatta</h1>
-      <p>Pakistani truck art</p>
-      <div id="stage"></div>
+      <p class="ph-brand">PHATTA</p>
+      <button class="ph-mode" type="button" aria-pressed="false">
+        <svg class="ph-mode-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <circle cx="12" cy="12" r="4.5" fill="currentColor" />
+          <path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9 7 7M17 17l2.1 2.1M4.9 19.1 7 17M17 7l2.1-2.1" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+        </svg>
+        <span>Day mode</span>
+      </button>
+    </header>
+
+    <main class="ph-main">
+      <h1 class="ph-sr">Phatta: a Pakistani truck-art skin for Video.js</h1>
+
+      <div class="truck">
+        <!-- crown: wide carved board (desktop) -->
+        <svg class="crown" viewBox="0 0 1380 176" role="img" aria-labelledby="ph-crown-title">
+          <title id="ph-crown-title">Truck crown painted “Dekh magar pyar se” (look, but with love)</title>
+          <path d="M60 92C60 80 70 72 90 72H300L330 48Q690 -8 1050 48L1080 72H1290C1310 72 1320 80 1320 92V160H60Z" fill="url(#ph-g-wood)" stroke="#2a1406" stroke-width="3" />
+          <g fill="none" stroke="#e2a85a" stroke-width="3" stroke-linecap="round" opacity=".85">
+            <path d="M100 140c20-34 60-34 70-8s-30 30-34 10 30-28 52-6M190 136c26-30 70-30 92 0" />
+            <path d="M1280 140c-20-34-60-34-70-8s30 30 34 10-30-28-52-6M1190 136c-26-30-70-30-92 0" />
+            <path d="M360 52q330-40 660 0" stroke-width="2.5" />
+          </g>
+          <g fill="#f2b632"><circle cx="240" cy="110" r="5" /><circle cx="1140" cy="110" r="5" /><circle cx="690" cy="22" r="6" /></g>
+          <rect x="330" y="50" width="720" height="104" rx="10" fill="#0a0806" stroke="#e2b54c" stroke-width="4" />
+          <rect x="340" y="60" width="700" height="84" rx="6" fill="none" stroke="#c8261c" stroke-width="2" />
+          <text class="crown-text" x="690" y="124" text-anchor="middle" textLength="640" lengthAdjust="spacingAndGlyphs">DEKH MAGAR PYAR SE</text>
+          <rect x="60" y="160" width="1260" height="14" fill="#c8261c" />
+          <path d="M60 167H1320" stroke="#1f8a43" stroke-width="3" stroke-dasharray="14 8" />
+          <g class="leds">
+<circle class="led" cx="359" cy="37" r="4.2" style="--led:#ff3b30;--n:0"/>
+<circle class="led" cx="406" cy="30" r="4.2" style="--led:#30d158;--n:1"/>
+<circle class="led" cx="453" cy="25" r="4.2" style="--led:#0a84ff;--n:2"/>
+<circle class="led" cx="501" cy="21" r="4.2" style="--led:#ffd60a;--n:3"/>
+<circle class="led" cx="548" cy="17" r="4.2" style="--led:#ff9f0a;--n:4"/>
+<circle class="led" cx="595" cy="15" r="4.2" style="--led:#bf5af2;--n:5"/>
+<circle class="led" cx="643" cy="13" r="4.2" style="--led:#ff3b30;--n:6"/>
+<circle class="led" cx="690" cy="13" r="4.2" style="--led:#30d158;--n:7"/>
+<circle class="led" cx="737" cy="13" r="4.2" style="--led:#0a84ff;--n:8"/>
+<circle class="led" cx="785" cy="15" r="4.2" style="--led:#ffd60a;--n:9"/>
+<circle class="led" cx="832" cy="17" r="4.2" style="--led:#ff9f0a;--n:10"/>
+<circle class="led" cx="879" cy="21" r="4.2" style="--led:#bf5af2;--n:11"/>
+<circle class="led" cx="927" cy="25" r="4.2" style="--led:#ff3b30;--n:12"/>
+<circle class="led" cx="974" cy="30" r="4.2" style="--led:#30d158;--n:13"/>
+<circle class="led" cx="1021" cy="37" r="4.2" style="--led:#0a84ff;--n:14"/>
+<circle class="led" cx="110" cy="84" r="4.2" style="--led:#ffd60a;--n:15"/>
+<circle class="led" cx="148" cy="84" r="4.2" style="--led:#ff9f0a;--n:16"/>
+<circle class="led" cx="186" cy="84" r="4.2" style="--led:#bf5af2;--n:17"/>
+<circle class="led" cx="224" cy="84" r="4.2" style="--led:#ff3b30;--n:18"/>
+<circle class="led" cx="262" cy="84" r="4.2" style="--led:#30d158;--n:19"/>
+<circle class="led" cx="1100" cy="84" r="4.2" style="--led:#0a84ff;--n:20"/>
+<circle class="led" cx="1138" cy="84" r="4.2" style="--led:#ffd60a;--n:21"/>
+<circle class="led" cx="1176" cy="84" r="4.2" style="--led:#ff9f0a;--n:22"/>
+<circle class="led" cx="1214" cy="84" r="4.2" style="--led:#bf5af2;--n:23"/>
+<circle class="led" cx="1252" cy="84" r="4.2" style="--led:#ff3b30;--n:24"/>
+          </g>
+        </svg>
+        <!-- crown: compact header (phones) -->
+        <div class="crown-compact" role="img" aria-label="Truck crown painted “Dekh magar pyar se” (look, but with love)">
+          <span aria-hidden="true">DEKH MAGAR PYAR SE</span>
+        </div>
+
+        <div class="truck-body">
+          <svg class="panel panel-left" aria-hidden="true" focusable="false"><use href="#ph-panel" width="100%" height="100%" /></svg>
+          <div class="scene">
+            <div id="stage"></div>
+          </div>
+          <svg class="panel panel-right" aria-hidden="true" focusable="false"><use href="#ph-panel" width="100%" height="100%" /></svg>
+          <span class="side-leds side-leds-left" aria-hidden="true"></span>
+          <span class="side-leds side-leds-right" aria-hidden="true"></span>
+        </div>
+
+        <div class="sill" aria-hidden="true"></div>
+        <div class="bumper" aria-hidden="true"></div>
+
+        <div class="under" aria-hidden="true">
+          <svg class="flap flap-left" viewBox="0 0 200 260" focusable="false">
+            <use href="#ph-eye" width="200" height="150" />
+            <rect x="0" y="0" width="16" height="150" fill="#1f8a43" /><rect x="184" y="0" width="16" height="150" fill="#1f8a43" />
+            <path d="M8 10v130M192 10v130" stroke="#f7ecd0" stroke-width="2" stroke-dasharray="6 6" />
+            <rect x="0" y="150" width="200" height="110" rx="0" fill="#0a0806" />
+            <rect x="2" y="2" width="196" height="256" rx="10" fill="none" stroke="#c9ced4" stroke-width="4" />
+          </svg>
+          <svg class="bells" viewBox="0 0 900 190" preserveAspectRatio="xMidYMin meet" focusable="false">
+            <rect x="0" y="0" width="900" height="6" rx="3" fill="#8f949b" />
+<g transform="translate(22.0 0)"><g class="swing" style="--i:0"><line x1="0" y1="0" x2="0" y2="70" class="chain"/><circle cx="0" cy="3" r="3.2" class="bead"/><use href="#ph-bell" x="-14" y="70" width="28" height="30"/></g></g>
+<g transform="translate(64.8 0)"><g class="swing" style="--i:1"><line x1="0" y1="0" x2="0" y2="118" class="chain"/><circle cx="0" cy="3" r="3.2" class="bead"/><use href="#ph-bell" x="-14" y="118" width="28" height="30"/></g></g>
+<g transform="translate(107.6 0)"><g class="swing" style="--i:2"><line x1="0" y1="0" x2="0" y2="92" class="chain"/><circle cx="0" cy="3" r="3.2" class="bead"/><use href="#ph-bell" x="-14" y="92" width="28" height="30"/></g></g>
+<g transform="translate(150.4 0)"><g class="swing" style="--i:3"><line x1="0" y1="0" x2="0" y2="140" class="chain"/><circle cx="0" cy="3" r="3.2" class="bead"/><use href="#ph-bell" x="-14" y="140" width="28" height="30"/></g></g>
+<g transform="translate(193.2 0)"><g class="swing" style="--i:4"><line x1="0" y1="0" x2="0" y2="80" class="chain"/><circle cx="0" cy="3" r="3.2" class="bead"/><use href="#ph-bell" x="-14" y="80" width="28" height="30"/></g></g>
+<g transform="translate(236.0 0)"><g class="swing" style="--i:5"><line x1="0" y1="0" x2="0" y2="126" class="chain"/><circle cx="0" cy="3" r="3.2" class="bead"/><use href="#ph-bell" x="-14" y="126" width="28" height="30"/></g></g>
+<g transform="translate(278.8 0)"><g class="swing" style="--i:6"><line x1="0" y1="0" x2="0" y2="100" class="chain"/><circle cx="0" cy="3" r="3.2" class="bead"/><use href="#ph-bell" x="-14" y="100" width="28" height="30"/></g></g>
+<g transform="translate(321.6 0)"><g class="swing" style="--i:7"><line x1="0" y1="0" x2="0" y2="70" class="chain"/><circle cx="0" cy="3" r="3.2" class="bead"/><use href="#ph-bell" x="-14" y="70" width="28" height="30"/></g></g>
+<g transform="translate(364.4 0)"><g class="swing" style="--i:8"><line x1="0" y1="0" x2="0" y2="118" class="chain"/><circle cx="0" cy="3" r="3.2" class="bead"/><use href="#ph-bell" x="-14" y="118" width="28" height="30"/></g></g>
+<g transform="translate(407.2 0)"><g class="swing" style="--i:9"><line x1="0" y1="0" x2="0" y2="92" class="chain"/><circle cx="0" cy="3" r="3.2" class="bead"/><use href="#ph-bell" x="-14" y="92" width="28" height="30"/></g></g>
+<g transform="translate(450.0 0)"><g class="swing" style="--i:10"><line x1="0" y1="0" x2="0" y2="140" class="chain"/><circle cx="0" cy="3" r="3.2" class="bead"/><use href="#ph-bell" x="-14" y="140" width="28" height="30"/></g></g>
+<g transform="translate(492.8 0)"><g class="swing" style="--i:11"><line x1="0" y1="0" x2="0" y2="80" class="chain"/><circle cx="0" cy="3" r="3.2" class="bead"/><use href="#ph-bell" x="-14" y="80" width="28" height="30"/></g></g>
+<g transform="translate(535.6 0)"><g class="swing" style="--i:12"><line x1="0" y1="0" x2="0" y2="126" class="chain"/><circle cx="0" cy="3" r="3.2" class="bead"/><use href="#ph-bell" x="-14" y="126" width="28" height="30"/></g></g>
+<g transform="translate(578.4 0)"><g class="swing" style="--i:13"><line x1="0" y1="0" x2="0" y2="100" class="chain"/><circle cx="0" cy="3" r="3.2" class="bead"/><use href="#ph-bell" x="-14" y="100" width="28" height="30"/></g></g>
+<g transform="translate(621.2 0)"><g class="swing" style="--i:14"><line x1="0" y1="0" x2="0" y2="70" class="chain"/><circle cx="0" cy="3" r="3.2" class="bead"/><use href="#ph-bell" x="-14" y="70" width="28" height="30"/></g></g>
+<g transform="translate(664.0 0)"><g class="swing" style="--i:15"><line x1="0" y1="0" x2="0" y2="118" class="chain"/><circle cx="0" cy="3" r="3.2" class="bead"/><use href="#ph-bell" x="-14" y="118" width="28" height="30"/></g></g>
+<g transform="translate(706.8 0)"><g class="swing" style="--i:16"><line x1="0" y1="0" x2="0" y2="92" class="chain"/><circle cx="0" cy="3" r="3.2" class="bead"/><use href="#ph-bell" x="-14" y="92" width="28" height="30"/></g></g>
+<g transform="translate(749.6 0)"><g class="swing" style="--i:17"><line x1="0" y1="0" x2="0" y2="140" class="chain"/><circle cx="0" cy="3" r="3.2" class="bead"/><use href="#ph-bell" x="-14" y="140" width="28" height="30"/></g></g>
+<g transform="translate(792.4 0)"><g class="swing" style="--i:18"><line x1="0" y1="0" x2="0" y2="80" class="chain"/><circle cx="0" cy="3" r="3.2" class="bead"/><use href="#ph-bell" x="-14" y="80" width="28" height="30"/></g></g>
+<g transform="translate(835.2 0)"><g class="swing" style="--i:19"><line x1="0" y1="0" x2="0" y2="126" class="chain"/><circle cx="0" cy="3" r="3.2" class="bead"/><use href="#ph-bell" x="-14" y="126" width="28" height="30"/></g></g>
+<g transform="translate(878.0 0)"><g class="swing" style="--i:20"><line x1="0" y1="0" x2="0" y2="100" class="chain"/><circle cx="0" cy="3" r="3.2" class="bead"/><use href="#ph-bell" x="-14" y="100" width="28" height="30"/></g></g>
+          </svg>
+          <svg class="flap flap-right" viewBox="0 0 200 260" focusable="false">
+            <g transform="translate(200 0) scale(-1 1)"><use href="#ph-eye" width="200" height="150" /></g>
+            <rect x="0" y="0" width="16" height="150" fill="#1f8a43" /><rect x="184" y="0" width="16" height="150" fill="#1f8a43" />
+            <path d="M8 10v130M192 10v130" stroke="#f7ecd0" stroke-width="2" stroke-dasharray="6 6" />
+            <rect x="0" y="150" width="200" height="110" fill="#0a0806" />
+            <rect x="2" y="2" width="196" height="256" rx="10" fill="none" stroke="#c9ced4" stroke-width="4" />
+          </svg>
+        </div>
+      </div>
+
+      <section class="workshop" aria-labelledby="ph-design-title">
+        <svg class="workshop-art" viewBox="0 0 640 420" role="img" aria-labelledby="ph-workshop-title">
+          <title id="ph-workshop-title">A painter's bench: paint pots, brushes, foil strips and the Phatta player being decorated</title>
+          <defs>
+            <pattern id="ph-vine-p" width="16" height="16" patternUnits="userSpaceOnUse">
+              <rect width="16" height="16" fill="#9c140e" />
+              <path d="M0 8c2.5-3.6 5.5-3.6 8 0s5.5 3.6 8 0" fill="none" stroke="#21914a" stroke-width="1.7" />
+              <circle cx="8" cy="8" r="2.3" fill="#f2b632" /><circle cx="8" cy="8" r=".95" fill="#d8261b" />
+            </pattern>
+            <linearGradient id="ph-g-sky" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#8fb9d9" /><stop offset="1" stop-color="#e9d3b0" />
+            </linearGradient>
+            <linearGradient id="ph-g-bench" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#5a3a22" /><stop offset=".5" stop-color="#4a2f1b" /><stop offset="1" stop-color="#3a2414" />
+            </linearGradient>
+          </defs>
+          <rect width="640" height="420" rx="18" fill="url(#ph-g-bench)" />
+          <path d="M0 140H640M0 290H640" stroke="#2a190d" stroke-width="3" />
+          <path d="M40 60c80 6 160-4 240 2M330 220c90 4 180-6 270 0M20 350c120 6 240-4 380 4" stroke="#6b4a2e" stroke-width="1.5" fill="none" />
+          <!-- paint pots -->
+          <g>
+            <circle cx="150" cy="62" r="40" fill="#b8bec5" /><circle cx="150" cy="62" r="33" fill="#c8261c" />
+            <circle cx="250" cy="56" r="40" fill="#b8bec5" /><circle cx="250" cy="56" r="33" fill="#1f8a43" />
+            <circle cx="350" cy="62" r="40" fill="#b8bec5" /><circle cx="350" cy="62" r="33" fill="#f2b632" />
+            <circle cx="574" cy="132" r="40" fill="#b8bec5" /><circle cx="574" cy="132" r="33" fill="#2456c9" />
+            <circle cx="142" cy="54" r="8" fill="#fff" opacity=".25" /><circle cx="242" cy="48" r="8" fill="#fff" opacity=".25" />
+            <circle cx="342" cy="54" r="8" fill="#fff" opacity=".25" /><circle cx="566" cy="124" r="8" fill="#fff" opacity=".25" />
+          </g>
+          <!-- brush jar -->
+          <g>
+            <path d="M470 20l-14 70M486 16l-10 72M500 22l-4 68M514 18l2 70M528 26l-8 64" stroke="#d9a441" stroke-width="5" stroke-linecap="round" />
+            <path d="M470 20l-3 -10M486 16l0 -10M514 18l3 -10" stroke="#c8261c" stroke-width="6" stroke-linecap="round" />
+            <circle cx="494" cy="96" r="30" fill="#c79a6a" /><circle cx="494" cy="96" r="22" fill="#7a4f2a" />
+          </g>
+          <!-- foil strips (chamak-patti) -->
+          <g transform="translate(46 190)">
+            <rect width="70" height="12" rx="2" fill="#d9dde2" transform="rotate(-18)" />
+            <rect y="22" width="70" height="12" rx="2" fill="#e2b54c" transform="rotate(10)" />
+            <rect x="10" y="48" width="64" height="12" rx="2" fill="#d63a8a" transform="rotate(-6)" />
+            <rect x="4" y="74" width="66" height="12" rx="2" fill="#21914a" transform="rotate(14)" />
+          </g>
+          <!-- the player being painted -->
+          <g transform="translate(180 150)">
+            <rect width="300" height="200" rx="6" fill="url(#ph-vine-p)" />
+            <rect x="12" y="12" width="276" height="136" fill="url(#ph-g-sky)" />
+            <path d="M12 148L150 70L288 148Z" fill="#6b6f74" />
+            <path d="M150 74v74" stroke="#f7ecd0" stroke-width="3" stroke-dasharray="10 8" />
+            <rect x="132" y="84" width="36" height="38" rx="4" fill="#d8261b" /><rect x="136" y="90" width="28" height="12" fill="#2a3a4a" /><rect x="132" y="76" width="36" height="10" rx="3" fill="#f2b632" />
+            <rect x="12" y="148" width="276" height="40" fill="#0d0a08" />
+            <rect x="24" y="152" width="252" height="6" rx="3" fill="#d9dde2" /><rect x="24" y="152" width="96" height="6" rx="3" fill="#f5a10f" /><circle cx="120" cy="155" r="6" fill="#e6b955" />
+            <g fill="none" stroke="#e2b54c" stroke-width="2"><circle cx="38" cy="172" r="10" /><circle cx="64" cy="172" r="10" /><circle cx="210" cy="172" r="10" /><circle cx="236" cy="172" r="10" /><circle cx="262" cy="172" r="10" /></g>
+          </g>
+          <!-- stencil + scissors -->
+          <g transform="translate(520 250) rotate(12)">
+            <rect width="96" height="120" rx="4" fill="#c99a3b" />
+            <g fill="#4a2f1b"><circle cx="24" cy="26" r="9" /><circle cx="56" cy="26" r="6" /><circle cx="78" cy="40" r="8" /><circle cx="40" cy="60" r="12" /><circle cx="72" cy="80" r="7" /><circle cx="24" cy="94" r="8" /><circle cx="54" cy="100" r="6" /></g>
+          </g>
+          <g transform="translate(70 330)" fill="none" stroke="#9aa1a9" stroke-width="5" stroke-linecap="round">
+            <path d="M0 0L80 30M0 30L80 0" /><circle cx="-10" cy="-4" r="10" /><circle cx="-10" cy="34" r="10" />
+          </g>
+        </svg>
+        <div class="workshop-text">
+          <h2 id="ph-design-title">Design thinking</h2>
+          <p>
+            Phatta borrows from the painted backs of Pakistani goods trucks, where every surface is decorated yet the road
+            still has to read the plate; so the loud art lives on the page and the frame, while the controls stay a calm
+            black lacquer strip with cream icons that read over bright and dark footage.
+          </p>
+          <p>
+            The seek bar is <i>chamak-patti</i>, the reflective foil tape truck artists cut into patterns: gold beads for
+            what you have watched, silver for what is left, and a polished brass stud for the playhead.
+          </p>
+          <p>
+            The crown carries a line often painted on truck backs, “Dekh magar pyar se”
+            (<span lang="ur" dir="rtl">دیکھ مگر پیار سے</span>): look, but with love.
+          </p>
+          <p>
+            Every motif is hand-written SVG and CSS; the bells only sway when you hover the truck and stay still if you
+            prefer reduced motion, and every control keeps a 44 px target and a visible focus ring.
+          </p>
+        </div>
+      </section>
     </main>
+
     <script type="module">
       import '@videojs/html/i18n';
       import { createSkinnedPlayer } from '@panj/phatta';
       import { mount } from '/src/mount.ts';
+      import { initModeToggle } from '/phatta/phatta-page.ts';
+      initModeToggle();
       mount(createSkinnedPlayer);
     </script>
   </body>

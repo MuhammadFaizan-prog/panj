@@ -1,0 +1,561 @@
+/* /phatta page: the back of a Pakistani decorated truck, built around the player.
+   Original hand-written CSS + inline SVG (Apache-2.0). No raster images, no hotlinks.
+   Night is the default; [data-mode="day"] on <html> switches the scene to daylight. */
+
+:root {
+  --ph-sign-font: "Rockwell", "Roboto Slab", "Clarendon", "Georgia", "Times New Roman", serif;
+  --ph-cream: #f7ecd0;
+  --ph-gold: #e2b54c;
+  --ph-brass: #c99a3b;
+  --ph-red: #c8261c;
+  --ph-green: #1f8a43;
+  --ph-lacquer: #0d0a08;
+  --ph-vine: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%239c140e'/%3E%3Cpath d='M0 8c2.5-3.6 5.5-3.6 8 0s5.5 3.6 8 0' fill='none' stroke='%2321914a' stroke-width='1.7'/%3E%3Cpath d='M4 5.2c.9-1.6 2.3-1.8 2.3-1.8s-.2 1.6-2.3 1.8zM12 10.8c-.9 1.6-2.3 1.8-2.3 1.8s.2-1.6 2.3-1.8z' fill='%2321914a'/%3E%3Ccircle cx='8' cy='8' r='2.3' fill='%23f2b632'/%3E%3Ccircle cx='8' cy='8' r='.95' fill='%23d8261b'/%3E%3Ccircle cx='0' cy='8' r='1.3' fill='%23f7ecd0'/%3E%3Ccircle cx='16' cy='8' r='1.3' fill='%23f7ecd0'/%3E%3C/svg%3E");
+  --ph-silver-beads:
+    radial-gradient(circle at 40% 38%, #fff 0 1px, transparent 1.6px) 0 0 / 8px 8px,
+    radial-gradient(circle, #f1f4f7 0 1.8px, #a7aeb6 2.7px, #464b52 3.6px, transparent 4px) 0 0 / 8px 8px,
+    #2a2d32;
+}
+
+/* ── modes ─────────────────────────────────────────────── */
+html[data-mode="night"] {
+  color-scheme: dark;
+  --ph-ink: #f3e6c4;
+  --ph-ink-soft: #cdbf9d;
+  --ph-sky: radial-gradient(ellipse 120% 70% at 50% 0%, #1f3160 0%, #0d1734 45%, #05070f 100%);
+}
+
+html[data-mode="day"] {
+  color-scheme: light;
+  --ph-ink: #2a160a;
+  --ph-ink-soft: #4d3220;
+  --ph-sky: linear-gradient(180deg, #9cc0dc 0%, #d9cdbf 38%, #ecc6a1 58%, #b98d6e 80%, #7a5b47 100%);
+}
+
+html {
+  background: #05070f;
+}
+
+body.ph-page {
+  min-height: 100vh;
+  margin: 0;
+  color: var(--ph-ink);
+  background: var(--ph-sky) fixed;
+  font-family: system-ui, sans-serif;
+}
+
+.ph-defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+.ph-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ── top bar ───────────────────────────────────────────── */
+.ph-topbar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 12px 20px;
+}
+
+.ph-topbar .back {
+  color: var(--ph-ink);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.ph-brand {
+  margin: 0 auto 0 8px;
+  font: 800 22px/1 var(--ph-sign-font);
+  letter-spacing: 0.08em;
+  color: var(--ph-ink);
+}
+
+.ph-mode {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  min-width: 44px;
+  padding: 0 16px;
+  border: 1.5px solid currentColor;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ph-ink);
+  font: 600 15px/1 system-ui, sans-serif;
+  cursor: pointer;
+}
+
+.ph-mode svg {
+  width: 20px;
+  height: 20px;
+}
+
+.ph-mode[aria-pressed="true"] {
+  background: #2a160a;
+  color: #fff3d0;
+  border-color: #2a160a;
+}
+
+.ph-mode:hover {
+  box-shadow: 0 0 0 3px rgb(226 181 76 / 0.45);
+}
+
+:is(.ph-mode, .ph-topbar .back):focus-visible {
+  outline: 2px solid #fff4cc;
+  outline-offset: 3px;
+  box-shadow: 0 0 0 7px #000;
+}
+
+/* ── truck ─────────────────────────────────────────────── */
+.ph-main {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 16px 64px;
+}
+
+.truck {
+  position: relative;
+  max-width: 1380px;
+  margin: 0 auto;
+}
+
+.crown {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-bottom: -1px;
+}
+
+.crown-text {
+  font: 800 60px/1 var(--ph-sign-font);
+  letter-spacing: 0.04em;
+  fill: url(#ph-g-letter);
+  stroke: #5a1a08;
+  stroke-width: 2;
+  paint-order: stroke;
+}
+
+html[data-mode="night"] .crown-text {
+  filter: drop-shadow(0 0 5px #ffb347) drop-shadow(0 0 14px rgb(255 138 0 / 0.75));
+}
+
+html[data-mode="day"] .crown-text {
+  filter: drop-shadow(2px 2px 0 #3b1306);
+}
+
+.led {
+  fill: var(--led);
+}
+
+html[data-mode="night"] .led {
+  filter: drop-shadow(0 0 4px var(--led)) drop-shadow(0 0 8px var(--led));
+}
+
+html[data-mode="day"] .led {
+  fill: #e9e2d6;
+  stroke: #6b5a48;
+  stroke-width: 1;
+}
+
+.crown-compact {
+  display: none;
+}
+
+.truck-body {
+  position: relative;
+  display: grid;
+  grid-template-columns: 12% minmax(0, 1fr) 12%;
+  gap: 10px;
+  margin-inline: 4.35%;
+  padding: 12px;
+  border: 4px solid #2a0907;
+  background:
+    linear-gradient(90deg, transparent 0 6px, rgb(31 138 67 / 0.9) 6px 9px, transparent 9px calc(100% - 9px), rgb(31 138 67 / 0.9) calc(100% - 9px) calc(100% - 6px), transparent calc(100% - 6px)),
+    #7d130e;
+  box-shadow: inset 0 0 0 2px #e2b54c, 0 18px 40px rgb(0 0 0 / 0.45);
+}
+
+.panel {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 2px solid #e2b54c;
+  background: #090807;
+}
+
+.panel-right {
+  transform: scaleX(-1);
+}
+
+.scene {
+  min-width: 0;
+  padding: 10px;
+  border-radius: 4px;
+  background: #050403;
+  box-shadow: inset 0 0 0 2px #2b2420, 0 0 0 2px #e2b54c;
+}
+
+html[data-mode="day"] .scene {
+  padding: 14px;
+  background: var(--ph-silver-beads);
+  box-shadow: inset 0 0 0 2px #1d1f22, 0 0 0 2px #e9ecef;
+}
+
+.scene #stage {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+}
+
+/* coloured LED dots running down both outer edges */
+.side-leds {
+  position: absolute;
+  top: 28px;
+  bottom: 28px;
+  width: 10px;
+  pointer-events: none;
+  background:
+    radial-gradient(circle, #ff3b30 0 3px, transparent 3.6px) 0 0 / 10px 72px repeat-y,
+    radial-gradient(circle, #30d158 0 3px, transparent 3.6px) 0 18px / 10px 72px repeat-y,
+    radial-gradient(circle, #0a84ff 0 3px, transparent 3.6px) 0 36px / 10px 72px repeat-y,
+    radial-gradient(circle, #ffd60a 0 3px, transparent 3.6px) 0 54px / 10px 72px repeat-y;
+}
+
+.side-leds-left {
+  left: -20px;
+}
+
+.side-leds-right {
+  right: -20px;
+}
+
+html[data-mode="night"] .side-leds {
+  filter: drop-shadow(0 0 4px rgb(255 255 255 / 0.55));
+}
+
+html[data-mode="day"] .side-leds {
+  opacity: 0.35;
+  filter: saturate(0.2);
+}
+
+.sill {
+  height: 26px;
+  margin-inline: 4.35%;
+  border: 4px solid #2a0907;
+  border-top: 0;
+  background: var(--ph-vine) 0 0 / 22px 22px;
+}
+
+.bumper {
+  position: relative;
+  z-index: 1;
+  height: 30px;
+  margin-inline: 1.5%;
+  border-radius: 15px;
+  background: linear-gradient(180deg, #f6f8fa 0%, #a3a9b0 28%, #eef1f3 46%, #5d636a 72%, #c4c9ce 100%);
+  box-shadow: 0 6px 14px rgb(0 0 0 / 0.5), inset 0 -2px 0 rgb(0 0 0 / 0.25);
+}
+
+.under {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: 15% minmax(0, 1fr) 15%;
+  gap: 2%;
+  align-items: start;
+  margin-inline: 5%;
+}
+
+/* headlight glow spilling onto the road (night only) */
+html[data-mode="night"] .under::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0 10% -60px;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 26% 70% at 34% 15%, rgb(255 244 210 / 0.32), transparent 72%),
+    radial-gradient(ellipse 26% 70% at 66% 15%, rgb(255 244 210 / 0.32), transparent 72%);
+}
+
+.flap {
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 8px 12px rgb(0 0 0 / 0.45));
+}
+
+/* bells: decoration only, never a hit area */
+.bells {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-top: -2px;
+  pointer-events: none;
+}
+
+.bells .chain {
+  stroke: #b08a3e;
+  stroke-width: 2;
+  stroke-dasharray: 3 2;
+}
+
+.bells .bead {
+  fill: #e6b955;
+}
+
+.bells .swing {
+  transform-box: fill-box;
+  transform-origin: 50% 0;
+}
+
+@keyframes ph-sway {
+  from {
+    transform: rotate(-5deg);
+  }
+  to {
+    transform: rotate(5deg);
+  }
+}
+
+@keyframes ph-twinkle {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .truck:hover .bells .swing {
+    animation: ph-sway 1.4s ease-in-out infinite alternate;
+    animation-delay: calc(var(--i) * -0.17s);
+  }
+
+  html[data-mode="night"] .led {
+    animation: ph-twinkle 3.2s ease-in-out infinite;
+    animation-delay: calc(var(--n) * -0.37s);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bells .swing,
+  .led {
+    animation: none !important;
+  }
+}
+
+/* ── design thinking ───────────────────────────────────── */
+.workshop {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: 40px;
+  align-items: center;
+  max-width: 1240px;
+  margin: 72px auto 0;
+  padding: 28px;
+  border: 1px solid rgb(201 154 59 / 0.7);
+  border-radius: 18px;
+  background: rgb(13 10 8 / 0.82);
+  color: var(--ph-cream);
+}
+
+.workshop-art {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.workshop-text h2 {
+  margin: 0 0 12px;
+  font: 800 30px/1.1 var(--ph-sign-font);
+  color: var(--ph-gold);
+}
+
+.workshop-text p {
+  margin: 0 0 12px;
+  line-height: 1.6;
+  font-size: 16px;
+}
+
+.workshop-text [lang="ur"] {
+  font-family: "Noto Nastaliq Urdu", "Jameel Noori Nastaleeq", "Noto Naskh Arabic", serif;
+}
+
+/* ── phones and narrow windows ─────────────────────────── */
+@media (max-width: 760px) {
+  .ph-topbar {
+    padding: 8px 12px;
+    gap: 10px;
+  }
+
+  .ph-brand {
+    font-size: 18px;
+  }
+
+  .ph-mode {
+    padding: 0 12px;
+  }
+
+  .ph-main {
+    display: flex;
+    flex-direction: column;
+    padding: 0 0 24px;
+  }
+
+  /* flatten the truck so its parts can be re-ordered: crown, player, bumper … then the mudflaps as the footer */
+  .truck {
+    display: contents;
+  }
+
+  .crown {
+    display: none;
+  }
+
+  .crown-compact {
+    order: 1;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    margin: 0 8px;
+    padding: 18px 12px 10px;
+    border: 2px solid #2a1406;
+    border-bottom: 0;
+    border-radius: 50% 50% 0 0 / 30px 30px 0 0;
+    background: linear-gradient(180deg, #9b5a2a, #6d3a17 55%, #3e1f0b);
+  }
+
+  .crown-compact::before {
+    content: "";
+    position: absolute;
+    top: 7px;
+    left: 18%;
+    right: 18%;
+    height: 8px;
+    background:
+      radial-gradient(circle, #ff3b30 0 3px, transparent 3.5px) 0 0 / 48px 8px repeat-x,
+      radial-gradient(circle, #30d158 0 3px, transparent 3.5px) 16px 0 / 48px 8px repeat-x,
+      radial-gradient(circle, #ffd60a 0 3px, transparent 3.5px) 32px 0 / 48px 8px repeat-x;
+  }
+
+  html[data-mode="night"] .crown-compact::before {
+    filter: drop-shadow(0 0 3px rgb(255 255 255 / 0.7));
+  }
+
+  html[data-mode="day"] .crown-compact::before {
+    opacity: 0.35;
+    filter: saturate(0.2);
+  }
+
+  .crown-compact span {
+    display: block;
+    width: 100%;
+    padding: 8px 6px;
+    border: 2px solid #e2b54c;
+    border-radius: 6px;
+    background: #0a0806;
+    text-align: center;
+    font: 800 clamp(17px, 5.8vw, 26px)/1.1 var(--ph-sign-font);
+    letter-spacing: 0.03em;
+    color: #ffc857;
+    white-space: nowrap;
+  }
+
+  html[data-mode="night"] .crown-compact span {
+    text-shadow: 0 0 6px #ff9f1c, 0 0 14px rgb(255 138 0 / 0.6);
+  }
+
+  html[data-mode="day"] .crown-compact span {
+    text-shadow: 1px 1px 0 #5a1a08;
+  }
+
+  .truck-body {
+    order: 2;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+    margin-inline: 0;
+    padding: 4px;
+    border-width: 2px;
+  }
+
+  .panel,
+  .side-leds {
+    display: none;
+  }
+
+  .scene,
+  html[data-mode="day"] .scene {
+    padding: 4px;
+  }
+
+  .sill {
+    order: 3;
+    height: 12px;
+    margin-inline: 0;
+    border-width: 2px;
+    background-size: 14px 14px;
+  }
+
+  .bumper {
+    order: 4;
+    height: 16px;
+    margin-inline: 4px;
+    border-radius: 8px;
+  }
+
+  .workshop {
+    order: 6;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 18px;
+    margin: 28px 12px 0;
+    padding: 18px;
+  }
+
+  .workshop-text h2 {
+    font-size: 24px;
+  }
+
+  .under {
+    order: 7;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-areas:
+      "bells bells"
+      "left right";
+    gap: 12px;
+    margin: 28px 12px 0;
+  }
+
+  .under .bells {
+    grid-area: bells;
+    max-height: 90px;
+  }
+
+  .flap-left {
+    grid-area: left;
+    justify-self: end;
+    max-width: 150px;
+  }
+
+  .flap-right {
+    grid-area: right;
+    justify-self: start;
+    max-width: 150px;
+  }
+}

@@ -3,6 +3,7 @@ import './skin.css';
 import '@panj/tokens/tokens.css';
 import '@panj/tokens/essentials.css';
 import '../tokens.css';
+import './basant.css';
 import '@videojs/html/i18n';
 import '@videojs/html/ui/container';
 import '@videojs/html/ui/poster';
@@ -39,7 +40,6 @@ import '@videojs/html/ui/slider-thumbnail';
 import '@videojs/html/ui/slider-value';
 import '@videojs/html/ui/time-slider-chapter-title';
 import '@videojs/html/ui/mute-button';
-import '@videojs/html/ui/volume-popover';
 import '@videojs/html/ui/volume-slider';
 import '@videojs/html/ui/time-group';
 import '@videojs/html/ui/time';
@@ -66,6 +66,7 @@ import '@videojs/html/ui/status-indicator-value';
 import '@videojs/html/ui/seek-indicator';
 import '@videojs/html/ui/seek-indicator-value';
 import { registerIcons } from '@videojs/html/icons';
+import { basantIcons } from './icons';
 import {
   airPlayEnterIcon as airPlayEnterIconScaffold,
   airPlayExitIcon as airPlayExitIconScaffold,
@@ -119,3 +120,6 @@ registerIcons('scaffold', {
   'volume-low': volumeLowIconScaffold,
   'volume-off': volumeOffIconScaffold,
 });
+
+// Basant's own hand-drawn icons (play, pause, volume, captions, fullscreen, charkhi settings + spinner).
+registerIcons('basant', basantIcons);

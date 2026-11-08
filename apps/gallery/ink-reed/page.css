@@ -1,0 +1,180 @@
+/* /ink-reed page: a quiet manuscript leaf. Only this route loads this file. */
+:root:has(body.ink-page) {
+  color-scheme: light;
+  background: #e9dfc8;
+}
+
+body.ink-page {
+  --leaf: #f8f2e4;
+  --leaf-ink: #1c1611;
+  --leaf-ink-soft: #5c4d3d;
+  --leaf-gold: #b08a3e;
+  --leaf-rule: rgb(125 106 80 / 0.17);
+  --leaf-serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", "URW Palladio L", P052, Georgia, "Noto Serif", "DejaVu Serif", serif;
+  min-height: 100vh;
+  color: var(--leaf-ink);
+  font-family: var(--leaf-serif);
+  /* faint ruled lines in the margins (the leaf covers them in the middle) */
+  background:
+    repeating-linear-gradient(to bottom, transparent 0 31px, var(--leaf-rule) 31px 32px),
+    #ece3cd;
+}
+
+body.ink-page .leaf {
+  position: relative;
+  box-sizing: border-box;
+  max-width: 1160px;
+  margin: clamp(0px, 3vw, 40px) auto;
+  padding: clamp(16px, 3.4vw, 52px) clamp(12px, 4vw, 60px) clamp(24px, 3vw, 44px);
+  background: var(--leaf);
+  /* double rule (jadval) framing the text block */
+  box-shadow:
+    inset 0 0 0 clamp(6px, 1vw, 12px) var(--leaf),
+    inset 0 0 0 calc(clamp(6px, 1vw, 12px) + 1px) var(--leaf-gold),
+    inset 0 0 0 calc(clamp(6px, 1vw, 12px) + 4px) var(--leaf),
+    inset 0 0 0 calc(clamp(6px, 1vw, 12px) + 5px) rgb(176 138 62 / 0.45),
+    0 30px 60px -40px rgb(60 40 15 / 0.55);
+}
+
+body.ink-page a:focus-visible,
+body.ink-page button:focus-visible {
+  outline: 2px solid var(--leaf-ink);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 7px rgb(196 150 62 / 0.55);
+}
+
+body.ink-page .back {
+  color: var(--leaf-ink-soft);
+  text-decoration: none;
+  border-radius: 4px;
+}
+
+body.ink-page .back:hover {
+  color: var(--leaf-ink);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.leaf-head {
+  margin: 4px 0 clamp(16px, 2.4vw, 28px);
+  text-align: center;
+}
+
+.leaf-head h1 {
+  margin: 0;
+  font-size: clamp(2rem, 4.4vw, 3.4rem);
+  font-weight: 400;
+  letter-spacing: 0.02em;
+}
+
+.leaf-head p {
+  margin: 6px 0 0;
+  color: var(--leaf-ink-soft);
+  font-style: italic;
+  font-size: clamp(1rem, 1.6vw, 1.15rem);
+}
+
+/* a small gold fleuron between title and subtitle */
+.leaf-head h1::after {
+  content: "";
+  display: block;
+  width: 64px;
+  height: 1px;
+  margin: 12px auto 0;
+  background: linear-gradient(90deg, transparent, var(--leaf-gold) 30% 70%, transparent);
+}
+
+body.ink-page #stage {
+  aspect-ratio: auto;
+  background: none;
+}
+
+.leaf-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  margin-top: 18px;
+}
+
+.leaf-tools p {
+  margin: 0;
+  flex: 1 1 260px;
+  color: var(--leaf-ink-soft);
+  font-size: 0.95rem;
+}
+
+.rtl-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 0 16px;
+  color: var(--leaf-ink);
+  font: inherit;
+  background: #fbf7ee;
+  border: 1px solid var(--leaf-gold);
+  border-radius: 22px;
+  cursor: pointer;
+}
+
+.rtl-toggle:hover {
+  background: #fffaf0;
+}
+
+.rtl-toggle-mark {
+  width: 14px;
+  height: 14px;
+  border: 1.5px solid var(--leaf-ink);
+  border-radius: 50%;
+}
+
+.rtl-toggle[aria-pressed="true"] .rtl-toggle-mark {
+  background: var(--leaf-ink);
+  box-shadow: inset 0 0 0 2px #fbf7ee;
+}
+
+.thinking {
+  max-width: 68ch;
+  margin: clamp(28px, 4vw, 48px) auto 0;
+}
+
+.thinking h2 {
+  margin: 0 0 10px;
+  font-size: 1.35rem;
+  font-weight: 400;
+  font-variant: small-caps;
+  letter-spacing: 0.06em;
+  text-align: center;
+}
+
+.thinking p {
+  margin: 0;
+  font-size: 1.06rem;
+  line-height: 1.7;
+  text-align: justify;
+  hyphens: auto;
+}
+
+.colophon {
+  margin-top: clamp(24px, 3vw, 40px);
+  color: var(--leaf-ink-soft);
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+@media (max-width: 480px) {
+  body.ink-page .leaf {
+    margin: 0;
+  }
+
+  .thinking p {
+    text-align: start;
+  }
+}
+
+/* gallery.css sizes `#stage .media-skin` as a block (ID specificity); the Ink & Reed leaf is a grid
+   (picture row + paper bar), so restore it on this route. */
+body.ink-page #stage .media-skin[data-skin="ink-reed"] {
+  display: grid;
+}

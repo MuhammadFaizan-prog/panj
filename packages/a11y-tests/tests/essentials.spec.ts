@@ -17,6 +17,16 @@ for (const skin of SKINS) {
       await expect(container.locator('button[commandfor]')).toBeVisible(); // settings (speed)
     });
 
+    test('bright footage: controls stay visible, no console errors', async ({ page }) => {
+      const { container, errors } = await openSkin(page, skin, 'bright');
+      await wake(page, skin);
+      await expect(container.locator('.video-controls-content media-play-button').last()).toBeVisible();
+      await expect(container.locator('media-time-slider')).toBeVisible();
+      await expect(container.locator('media-mute-button')).toBeVisible();
+      await page.waitForTimeout(300);
+      expect(errors).toEqual([]);
+    });
+
     test('play / pause by button and by keyboard (Space, K)', async ({ page }) => {
       const { container } = await openSkin(page, skin);
       await wake(page, skin);
@@ -66,6 +76,8 @@ for (const skin of SKINS) {
       await container.focus();
       await page.keyboard.press('f');
       await expect.poll(() => page.evaluate(() => !!document.fullscreenElement)).toBe(true);
+      // let the player store catch up with the fullscreenchange before toggling back (cold-start race in headless)
+      await page.waitForTimeout(300);
       await page.keyboard.press('f');
       await expect.poll(() => page.evaluate(() => !!document.fullscreenElement)).toBe(false);
       await wake(page, skin);
@@ -109,8 +121,7 @@ for (const skin of SKINS) {
 }
 
 test.describe('ink-reed: ±15 s skip', () => {
-  test('skip buttons step 15 seconds', async ({ page }, info) => {
-    test.skip(info.project.name.startsWith('mobile'), 'centre skip buttons show on fine pointers only (Scaffold layout)');
+  test('skip buttons step 15 seconds', async ({ page }) => {
     const { container } = await openSkin(page, 'ink-reed');
     await wake(page, 'ink-reed');
     const fwd = container.locator('media-seek-button[seconds="15"]');

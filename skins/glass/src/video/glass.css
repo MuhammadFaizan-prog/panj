@@ -1,0 +1,766 @@
+/* Glass: liquid-glass art and states for the panj Glass skin.
+   Loaded after the Scaffold (layer `components`) and @panj/tokens essentials (layer `utilities`).
+   The `glass` layer is declared last, so it wins over both without !important; the essentials'
+   reduced-motion `!important` rules still win (important declarations reverse layer order).
+   Every rule is scoped to .media-skin[data-skin="glass"]. */
+
+@layer glass {
+  @scope (.media-skin[data-skin="glass"]) {
+    /* ── Frame ─────────────────────────────────────────────────────────── */
+    :scope {
+      font-family: var(--glass-font);
+      font-size: 13px;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      color: #fff;
+      background: #000;
+      --glass-caption-y: -12px;
+    }
+
+    :scope[data-controls-visible] {
+      --glass-caption-y: -76px;
+    }
+
+    @container media-root (width < 34rem) {
+      :scope[data-controls-visible] {
+        --glass-caption-y: -112px;
+      }
+    }
+
+    video::-webkit-media-text-track-container {
+      translate: 0 var(--glass-caption-y);
+      transition: translate var(--panj-motion-slow) var(--glass-ease);
+    }
+
+    video::cue {
+      font-family: var(--glass-font);
+      background: rgb(10 11 15 / 0.66);
+      color: #fff;
+    }
+
+    /* ── Scrim: keeps the controls legible over bright footage ───────────── */
+    .video-controls-backdrop {
+      display: block;
+      background-image: var(--panj-scrim);
+      opacity: 1;
+      transition: opacity var(--panj-motion-slow) var(--glass-ease);
+    }
+
+    .video-controls-backdrop:not([data-visible]) {
+      display: block;
+      opacity: 0;
+    }
+
+    /* ── Shared surface: frosted glass + specular edge ──────────────────── */
+    :is(
+        .glass-pill,
+        .video-controls-center-button,
+        .video-controls-top .media-button,
+        .media-menu-popup,
+        .media-volume-popover-popup,
+        .media-tooltip-popup,
+        .media-time-slider-preview-meta,
+        .media-indicator,
+        .media-dialog-popup
+      ) {
+      background-color: var(--glass-tint);
+      -webkit-backdrop-filter: var(--glass-blur);
+      backdrop-filter: var(--glass-blur);
+      box-shadow: var(--glass-shadow), inset 0 0 0 1px var(--glass-edge-solid);
+      color: #fff;
+      isolation: isolate;
+    }
+
+    /* The specular rim: a 1px gradient ring, brighter where light would catch the top edge.
+       ::after because the Scaffold uses ::before on popups for their hover safe area. */
+    :is(
+        .glass-pill,
+        .video-controls-center-button,
+        .video-controls-top .media-button,
+        .media-menu-popup,
+        .media-volume-popover-popup,
+        .media-tooltip-popup,
+        .media-time-slider-preview-meta,
+        .media-indicator,
+        .media-dialog-popup
+      )::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      border-radius: inherit;
+      padding: 1px;
+      background: var(--glass-specular);
+      -webkit-mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor;
+      mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+
+    :is(.media-time-slider-preview-meta, .media-indicator) {
+      position: relative;
+    }
+
+    /* ── The floating pill ──────────────────────────────────────────────── */
+    .glass-pill {
+      position: absolute;
+      inset-inline: var(--glass-inset);
+      bottom: var(--glass-inset);
+      max-width: 920px;
+      margin-inline: auto;
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) auto auto;
+      grid-template-areas: "start scrub time end";
+      align-items: center;
+      column-gap: 4px;
+      row-gap: 0;
+      padding: 6px;
+      border-radius: var(--glass-radius-pill);
+      transition:
+        opacity var(--panj-motion-base) var(--glass-ease),
+        translate var(--panj-motion-slow) var(--glass-ease),
+        scale var(--panj-motion-slow) var(--glass-ease);
+    }
+
+    /* Soft refraction: a light pool that sits inside the glass, under the controls. */
+    .glass-pill::before {
+      content: "";
+      position: absolute;
+      inset: 1px;
+      z-index: 0;
+      border-radius: inherit;
+      background: var(--glass-sheen);
+      pointer-events: none;
+      opacity: 0.85;
+      transition: opacity var(--panj-motion-slow) var(--glass-ease);
+    }
+
+    @media (hover: hover) {
+      .glass-pill:hover::before {
+        opacity: 1;
+      }
+    }
+
+    .glass-pill > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .video-controls-content:not([data-visible]) .glass-pill {
+      opacity: 0;
+      translate: 0 10px;
+      scale: 0.985;
+    }
+
+    .video-controls-content:has(:focus-visible) .glass-pill {
+      opacity: 1;
+      translate: 0 0;
+      scale: 1;
+      pointer-events: auto;
+    }
+
+    .glass-start {
+      grid-area: start;
+      gap: 2px;
+    }
+
+    .glass-scrub {
+      grid-area: scrub;
+      min-width: 0;
+      padding-inline: 10px 6px;
+    }
+
+    .glass-end {
+      grid-area: end;
+      gap: 2px;
+    }
+
+    /* Narrow players: buttons on top, the scrubber along the bottom edge (thumb-reach on phones), so the
+       volume popover above the speaker clears the pill. */
+    @container media-root (width < 34rem) {
+      .glass-pill {
+        grid-template-columns: auto minmax(0, 1fr) auto;
+        grid-template-areas:
+          "start time end"
+          "scrub scrub scrub";
+        padding: 6px 6px 0;
+        border-radius: 26px;
+      }
+
+      .glass-scrub {
+        padding-inline: 12px;
+      }
+
+      /* The pill's play button is the primary control here; the centre cluster would sit on the pill. */
+      .video-controls-center {
+        display: none !important;
+      }
+
+      /* Popovers render in the top layer, where container queries do not reach them; inherited custom
+         properties still do, so the size is handed down from an ancestor. */
+      .glass-start {
+        --glass-vol-h: 100px;
+        --glass-vol-pad: 12px;
+        --glass-vol-offset: 10px;
+      }
+    }
+
+    @container media-root (width < 22rem) {
+      .glass-pill {
+        padding: 2px 2px 0;
+        border-radius: 24px;
+        column-gap: 0;
+      }
+
+      .glass-start,
+      .glass-end {
+        gap: 0;
+      }
+
+      .glass-start {
+        --glass-vol-h: 62px;
+        --glass-vol-pad: 8px;
+        --glass-vol-offset: 6px;
+      }
+    }
+
+    /* ── Buttons ────────────────────────────────────────────────────────── */
+    .media-button {
+      width: max(var(--panj-target-min), 44px);
+      height: max(var(--panj-target-min), 44px);
+      border-radius: var(--glass-radius-pill);
+      background-color: transparent;
+      color: #fff;
+      transition:
+        background-color var(--panj-motion-fast) ease,
+        box-shadow var(--panj-motion-fast) ease,
+        scale var(--panj-motion-base) var(--glass-spring);
+    }
+
+    :is(.media-button-icon, .media-button-icon-base) {
+      width: var(--glass-icon);
+      height: var(--glass-icon);
+      filter: drop-shadow(0 1px 1px rgb(0 0 0 / 0.28));
+      transition: scale var(--panj-motion-base) var(--glass-spring);
+    }
+
+    @media (hover: hover) {
+      .media-button:hover {
+        background-color: var(--glass-hover);
+      }
+    }
+
+    .media-button:active {
+      background-color: var(--glass-press);
+    }
+
+    .media-button[aria-expanded="true"] {
+      background-color: var(--glass-selected);
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+      @media (hover: hover) {
+        .media-button:hover :is(.media-button-icon, .media-button-icon-base) {
+          scale: 1.08;
+        }
+      }
+
+      .media-button:active {
+        scale: 0.9;
+      }
+    }
+
+    /* Primary: the pill's play button wears a thin luminous ring. */
+    .glass-start .media-play-button {
+      box-shadow:
+        inset 0 0 0 1.5px rgb(255 255 255 / 0.62),
+        0 0 14px -2px rgb(255 255 255 / 0.28);
+    }
+
+    .glass-start .media-play-button :is(.media-button-icon-base) {
+      width: 24px;
+      height: 24px;
+    }
+
+    /* Optical centring for the triangle. */
+    .media-play-button-play-icon {
+      translate: 1px 0;
+    }
+
+    /* Centre cluster: shown while paused or ended, out of the way while playing. */
+    .video-controls-center {
+      gap: 20px;
+    }
+
+    :scope:not(:has(.glass-start .media-play-button:is([data-paused], [data-ended], :not([data-started]))))
+      .video-controls-center {
+      display: none;
+    }
+
+    /* The Scaffold pins these with !important in an earlier layer (which wins over ours), so the glass
+       tint rides on background-image and the Scaffold's sizes (58px play, 44px seek) stay. */
+    .video-controls-center-button {
+      border-radius: var(--glass-radius-pill);
+      background-image: linear-gradient(var(--glass-tint), var(--glass-tint));
+    }
+
+    .video-controls-center-play {
+      box-shadow:
+        var(--glass-shadow),
+        inset 0 0 0 1px var(--glass-edge-solid),
+        0 0 24px -6px rgb(255 255 255 / 0.3);
+    }
+
+    .media-seek-button-label {
+      font-size: 8px;
+      font-weight: 650;
+      letter-spacing: 0.02em;
+      bottom: auto;
+      top: 50%;
+      left: 50%;
+      right: auto;
+      translate: -50% -42%;
+    }
+
+    /* ── Top: title and secondary actions as small floating lenses ──────── */
+    .video-controls-top {
+      padding: var(--glass-inset);
+      gap: 8px;
+      transition: opacity var(--panj-motion-base) var(--glass-ease);
+    }
+
+    .video-controls-content:not([data-visible]) .video-controls-top {
+      opacity: 0;
+    }
+
+    .media-title {
+      background: none;
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      text-shadow: 0 1px 3px rgb(0 0 0 / 0.45);
+    }
+
+    .video-controls-top .media-button {
+      position: relative;
+    }
+
+    /* ── Time ───────────────────────────────────────────────────────────── */
+    .media-time-group {
+      grid-area: time;
+      min-width: 0;
+      height: 44px;
+      padding-inline: 6px 10px;
+      gap: 5px;
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.01em;
+      font-variant-numeric: tabular-nums;
+      text-shadow: 0 1px 2px rgb(0 0 0 / 0.35);
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    .media-time-duration-value,
+    .media-time-separator {
+      opacity: 0.72;
+    }
+
+    .media-time-toggle {
+      min-height: 44px;
+      min-width: 44px;
+      display: inline-grid;
+      place-items: center;
+      border-radius: var(--glass-radius-pill);
+    }
+
+    @container media-root (width >= 20rem) {
+      .media-time-toggle {
+        display: none;
+      }
+    }
+
+    @container media-root (width < 34rem) {
+      .media-time-group {
+        justify-self: start;
+        padding-inline: 4px;
+      }
+    }
+
+    /* ── Time slider ────────────────────────────────────────────────────── */
+    .media-time-slider {
+      height: var(--panj-target-min);
+    }
+
+    .media-time-slider-track {
+      height: 4px;
+      border-radius: var(--glass-radius-pill);
+      transition: height var(--panj-motion-base) var(--glass-ease);
+    }
+
+    .media-time-slider:is(:hover, [data-dragging], [data-pointing], :focus-within) .media-time-slider-track {
+      height: 6px;
+    }
+
+    .media-time-slider-track::before {
+      background-color: var(--glass-track);
+      border-radius: var(--glass-radius-pill);
+      box-shadow: inset 0 1px 1px rgb(0 0 0 / 0.18);
+    }
+
+    .media-time-slider-buffer {
+      background-color: var(--glass-buffer);
+      border-radius: var(--glass-radius-pill);
+    }
+
+    .media-time-slider-fill {
+      background-color: var(--glass-fill);
+      border-radius: var(--glass-radius-pill);
+      box-shadow: var(--glass-fill-glow);
+      clip-path: inset(-10px 0);
+    }
+
+    .media-time-slider-thumb {
+      width: 14px;
+      height: 14px;
+      border: 0;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow:
+        0 1px 3px rgb(0 0 0 / 0.4),
+        0 0 0 0.5px rgb(0 0 0 / 0.12);
+      transition: scale var(--panj-motion-base) var(--glass-spring);
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+      .media-time-slider:is(:hover, [data-dragging]) .media-time-slider-thumb {
+        scale: 1.2;
+      }
+    }
+
+    /* Hover preview: a small lens with the time (and chapter) inside. */
+    .media-time-slider-preview {
+      gap: 6px;
+      transition:
+        opacity var(--panj-motion-fast) ease,
+        translate var(--panj-motion-base) var(--glass-ease);
+    }
+
+    .media-time-slider-preview-meta {
+      width: auto;
+      padding: 5px 10px;
+      border-radius: var(--glass-radius-pill);
+      font-size: 12px;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .media-slider-thumbnail {
+      border-radius: var(--glass-radius-item);
+      background: var(--glass-tint);
+      box-shadow:
+        var(--glass-shadow),
+        0 0 0 1px rgb(255 255 255 / 0.22);
+    }
+
+    /* ── Volume ─────────────────────────────────────────────────────────── */
+    .media-volume-popover-popup {
+      width: 44px;
+      min-width: 44px;
+      height: var(--glass-vol-h, 136px);
+      padding: var(--glass-vol-pad, 16px) 0;
+      border-radius: var(--glass-radius-pill);
+      --media-popover-side-offset: var(--glass-vol-offset, 14px);
+      --media-popup-side-offset: var(--media-popover-side-offset);
+      transition:
+        opacity var(--panj-motion-base) var(--glass-ease),
+        scale var(--panj-motion-base) var(--glass-spring),
+        translate var(--panj-motion-base) var(--glass-ease),
+        filter var(--panj-motion-base) ease;
+    }
+
+    .media-volume-slider {
+      min-width: 44px;
+      --media-accent: var(--glass-fill);
+    }
+
+    .media-volume-slider-track {
+      width: 4px;
+      border-radius: var(--glass-radius-pill);
+      background-color: var(--glass-track);
+    }
+
+    .media-volume-slider-fill {
+      border-radius: var(--glass-radius-pill);
+      background-color: var(--glass-fill);
+      box-shadow: var(--glass-fill-glow);
+    }
+
+    .media-volume-slider-thumb {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow:
+        0 1px 3px rgb(0 0 0 / 0.4),
+        0 0 0 0.5px rgb(0 0 0 / 0.12);
+    }
+
+    /* ── Tooltips ───────────────────────────────────────────────────────── */
+    .media-tooltip-popup {
+      padding: 5px 10px;
+      border-radius: var(--glass-radius-pill);
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.01em;
+      --media-tooltip-side-offset: 14px;
+      transition:
+        opacity var(--panj-motion-fast) ease,
+        scale var(--panj-motion-base) var(--glass-ease),
+        translate var(--panj-motion-base) var(--glass-ease);
+    }
+
+    .media-tooltip-shortcut {
+      min-width: 18px;
+      padding: 1px 5px;
+      border-radius: 5px;
+      background: rgb(255 255 255 / 0.16);
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    /* ── Settings menu ──────────────────────────────────────────────────── */
+    .media-menu-popup {
+      min-width: 224px;
+      border-radius: var(--glass-radius-panel);
+      --media-popover-side-offset: 14px;
+      --media-popup-side-offset: var(--media-popover-side-offset);
+      transition:
+        opacity var(--panj-motion-base) var(--glass-ease),
+        scale var(--panj-motion-base) var(--glass-spring),
+        translate var(--panj-motion-base) var(--glass-ease),
+        filter var(--panj-motion-base) ease,
+        height var(--panj-motion-base) var(--glass-ease);
+    }
+
+    .media-menu-content {
+      padding: 6px;
+      transition:
+        transform var(--panj-motion-base) var(--glass-ease),
+        clip-path var(--panj-motion-base) var(--glass-ease);
+    }
+
+    :is(.media-menu-item, .media-menu-radio-item, .media-menu-back-item) {
+      min-height: var(--panj-target-min);
+      padding-inline: 12px;
+      border-radius: var(--glass-radius-item);
+      background-color: transparent;
+      font-size: 14px;
+      font-weight: 500;
+      transition: background-color var(--panj-motion-fast) ease;
+    }
+
+    :is(.media-menu-item, .media-menu-radio-item, .media-menu-back-item)[data-highlighted] {
+      background-color: var(--glass-hover);
+    }
+
+    .media-menu-back-item {
+      font-weight: 650;
+    }
+
+    .media-menu-separator {
+      display: block;
+      height: 1px;
+      margin: 2px 10px 4px;
+      background: rgb(255 255 255 / 0.14);
+    }
+
+    .media-menu-radio-group {
+      gap: 2px;
+    }
+
+    :is(.media-menu-trigger-icon, .media-menu-radio-icon) {
+      width: 18px;
+      height: 18px;
+      opacity: 0.85;
+    }
+
+    :is(.media-menu-forward-chevron, .media-menu-back-chevron) {
+      width: 16px;
+      height: 16px;
+    }
+
+    .media-menu-hint {
+      opacity: 0.68;
+      font-weight: 450;
+    }
+
+    .media-menu-badge {
+      padding: 1px 6px;
+      border-radius: 6px;
+      background: rgb(255 255 255 / 0.16);
+      font-size: 10px;
+      font-weight: 650;
+      letter-spacing: 0.04em;
+    }
+
+    /* ── Indicators (volume / seek / status flashes) ────────────────────── */
+    .media-indicator {
+      padding: 8px 14px;
+      border-radius: var(--glass-radius-pill);
+      font-size: 13px;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* ── Buffering: a spinner inside a lens ─────────────────────────────── */
+    .media-buffering-indicator.media-buffering-indicator-backdrop::before {
+      content: "";
+      grid-area: 1 / 1;
+      width: 68px;
+      height: 68px;
+      border-radius: 50%;
+      background: var(--glass-tint);
+      -webkit-backdrop-filter: var(--glass-blur);
+      backdrop-filter: var(--glass-blur);
+      box-shadow: var(--glass-shadow), inset 0 0 0 1px var(--glass-edge-solid), inset 0 1px 0 rgb(255 255 255 / 0.3);
+    }
+
+    .media-buffering-indicator-spinner-icon {
+      grid-area: 1 / 1;
+      width: 30px;
+      height: 30px;
+      position: relative;
+    }
+
+    @scope (.media-buffering-indicator-controls) {
+      &:not([data-visible]) .media-buffering-indicator-backdrop {
+        background-color: rgb(0 0 0 / 0.25);
+      }
+    }
+
+    /* ── Error dialog ───────────────────────────────────────────────────── */
+    .media-dialog-backdrop {
+      background-color: rgb(6 7 10 / 0.5);
+      -webkit-backdrop-filter: blur(10px);
+      backdrop-filter: blur(10px);
+    }
+
+    .media-dialog-popup {
+      padding: 24px;
+      gap: 12px;
+      border-radius: 24px;
+    }
+
+    .media-dialog-title {
+      font-size: 17px;
+      font-weight: 650;
+      line-height: 1.3;
+      letter-spacing: -0.01em;
+    }
+
+    .media-dialog-description {
+      font-size: 14px;
+      line-height: 1.45;
+      opacity: 0.8;
+    }
+
+    .media-dialog-close {
+      width: auto;
+      min-width: 64px;
+      height: auto;
+      min-height: 44px;
+      font-size: 14px;
+      padding-inline: 18px;
+      border-radius: var(--glass-radius-pill);
+      border: 1px solid rgb(255 255 255 / 0.35) !important;
+      font-weight: 600;
+    }
+
+    /* ── Focus: white ring + dark halo, visible on snow and on night ────── */
+    :is(
+        .media-button,
+        .media-time-toggle,
+        .media-time-slider-thumb,
+        .media-volume-slider-thumb,
+        [role="slider"],
+        .media-dialog-close
+      ):focus-visible {
+      outline: var(--panj-focus-width) solid var(--panj-focus-color);
+      outline-offset: var(--panj-focus-offset);
+      box-shadow: 0 0 0 calc(var(--panj-focus-offset) + var(--panj-focus-width) + 2px) var(--panj-focus-halo);
+    }
+
+    :scope:focus-visible {
+      outline: var(--panj-focus-width) solid var(--panj-focus-color);
+      outline-offset: calc(var(--panj-focus-width) * -1);
+      box-shadow: inset 0 0 0 calc(var(--panj-focus-width) + 2px) var(--panj-focus-halo);
+    }
+
+    /* Menu rows clip their overflow, so their ring sits inside: white outer, dark inner. */
+    :is(.media-menu-item, .media-menu-radio-item, .media-menu-back-item):focus-visible {
+      outline: var(--panj-focus-width) solid var(--panj-focus-color);
+      outline-offset: calc(var(--panj-focus-width) * -1);
+      box-shadow: inset 0 0 0 calc(var(--panj-focus-width) + 2px) var(--panj-focus-halo);
+    }
+
+    /* ── Fallback: solid tint where blur is missing ─────────────────────── */
+    /* (handled by tokens.css swapping --glass-tint / --glass-blur) */
+
+    /* ── Reduced transparency / more contrast: drop the sheen ───────────── */
+    @media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
+      .glass-pill::before {
+        display: none;
+      }
+
+      .video-controls-backdrop {
+        background-image:
+          linear-gradient(to top, rgb(0 0 0 / 0.75) 0%, rgb(0 0 0 / 0) 45%),
+          linear-gradient(to bottom, rgb(0 0 0 / 0.45) 0%, rgb(0 0 0 / 0) 25%);
+      }
+    }
+
+    /* ── Forced colors: system colours, real borders ────────────────────── */
+    @media (forced-colors: active) {
+      :is(
+          .glass-pill,
+          .video-controls-center-button,
+          .video-controls-top .media-button,
+          .media-menu-popup,
+          .media-volume-popover-popup,
+          .media-tooltip-popup,
+          .media-time-slider-preview-meta,
+          .media-indicator,
+          .media-dialog-popup
+        ) {
+        background: Canvas !important;
+        color: CanvasText;
+        border: 1px solid CanvasText;
+        box-shadow: none;
+        -webkit-backdrop-filter: none;
+        backdrop-filter: none;
+      }
+
+      :is(.glass-pill, .media-popup, .media-indicator, .video-controls-center-button)::after,
+      .glass-pill::before {
+        display: none;
+      }
+
+      .media-button:focus-visible {
+        outline-color: Highlight;
+        box-shadow: none;
+      }
+
+      .media-time-slider-fill,
+      .media-volume-slider-fill {
+        background-color: Highlight;
+        box-shadow: none;
+      }
+    }
+  }
+}

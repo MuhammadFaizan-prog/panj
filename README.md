@@ -18,6 +18,20 @@ pnpm dev      # gallery: /, /phatta, /glass, /basant, /ink-reed, /darkroom
 pnpm build
 ```
 
+## Deploy (Vercel, static)
+
+`vercel.json` at the repo root carries the settings; nothing needs setting in the dashboard beyond importing the repo.
+
+| Setting | Value |
+|---|---|
+| Framework preset | Other |
+| Root directory | `.` (repo root) |
+| Install command | `pnpm install` |
+| Build command | `pnpm --filter @panj/gallery build` |
+| Output directory | `apps/gallery/dist` |
+
+Rewrites map `/phatta`, `/glass`, `/basant`, `/ink-reed` and `/darkroom` to each page's `index.html`; built pages load assets from absolute `/assets/…` paths, so the routes work with or without a trailing slash.
+
 Docs: [PRD](PRD.md) · [Techspec](Techspec.md) · [Appflow](Appflow.md) · [Schema](Schema.md) · [Implementation plan](ImplementationPlan.md) · [Tracker](Tracker.md) · [Rules](Rules.md) · [Security](Security.md) · [Structure](Structure.md)
 
 Licence: Apache-2.0 © 2026 Muhammad Faizan.
