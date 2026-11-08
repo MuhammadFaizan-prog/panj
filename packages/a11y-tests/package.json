@@ -1,0 +1,15 @@
+{
+  "name": "@panj/a11y-tests",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "license": "Apache-2.0",
+  "description": "Playwright gates for every panj skin: controls, keyboard, Esc, focus, 44px targets, reduced motion, at 1440 and 390.",
+  "scripts": {
+    "test": "playwright test",
+    "test:install": "playwright install chromium"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.56.1"
+  }
+}

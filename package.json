@@ -9,7 +9,10 @@
   "scripts": {
     "dev": "pnpm --filter @panj/gallery dev",
     "build": "pnpm -r --workspace-concurrency=1 build",
-    "typecheck": "pnpm -r typecheck"
+    "typecheck": "pnpm -r typecheck",
+    "test": "pnpm --filter @panj/a11y-tests test"
   },
-  "engines": { "node": ">=20" }
+  "engines": {
+    "node": ">=20"
+  }
 }

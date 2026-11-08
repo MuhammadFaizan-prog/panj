@@ -1899,8 +1899,9 @@
 
     .video-controls-center-seek {
       display: none;
-      width: calc(var(--media-spacing) * 8) !important;
-      height: calc(var(--media-spacing) * 8) !important;
+      /* panj P2: 44px target (was spacing * 8 = 32px) */
+      width: max(var(--panj-target-min, 44px), calc(var(--media-spacing) * 8)) !important;
+      height: max(var(--panj-target-min, 44px), calc(var(--media-spacing) * 8)) !important;
     }
 
     @media (pointer: fine) {

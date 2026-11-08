@@ -6,8 +6,8 @@ Status key: ✅ done · 🔄 in progress · ⏳ next · ⛔ blocked
 |---|---|---|---|
 | P0 REA map | ⏳ | | REA not installed (needs Faizi's OK); map from v10 source/docs + public Plyr demo |
 | P1 Scaffold | ✅ | aee2ea1 | 5 skins (CLI, html/css/scaffold/video), gallery MPA, docs, licence. Builds + typecheck pass; 6 routes 200 |
-| P2 Essentials | ⏳ | | Playwright suite + keyboard map in all 5 skins |
-| P3 Art | ⏳ | | Phatta first (mockup concept-phatta.png) |
+| P2 Essentials | ✅ | see log | All 5 skins: 116 Playwright checks pass at 1440/390 (6 documented skips) |
+| P3 Art | ⛔ on hold | | Faizi wants a deeper creative research pass + mood board first; Phatta art follows the mood board |
 | P4 States | ⏳ | | |
 | P5 Gauntlet | ⏳ | | |
 | P6 A11y + QA | ⏳ | | |
@@ -23,6 +23,17 @@ Status key: ✅ done · 🔄 in progress · ⏳ next · ⛔ blocked
 - Verification: `pnpm install` ok; `pnpm -r build` ok (6 packages); `pnpm -r typecheck` ok; dev server `/`, `/phatta`, `/glass`, `/basant`, `/ink-reed`, `/darkroom` → 200.
 - Repo: `MuhammadFaizan-prog/panj` already existed as a **public** empty repo (created 2026-11-08 23:47 PKT). Faizi approved pushing to it public (23:59: "its ok push it to public ones").
 
+### 2026-11-09: P2 essentials
+- `@panj/tokens/essentials.css` (imported by every skin, `utilities` layer): 44 px buttons, 44 px time-slider hit area, 44 px menu items and volume popover, light ring + dark halo focus on every control, controls stay visible while focus is inside, reduced motion zeroes every transition/animation, forced-colours focus.
+- Scaffold centre seek buttons used `!important` 32 px; patched in each skin's `skin.css` to `max(44px, …)` (layers can't override an earlier-layer `!important`).
+- Ink & Reed: skip buttons now ±15 s (`seconds="±15"`, labels 15).
+- Gallery: English subtitles track (`public/captions/en.vtt`) so captions can be exercised.
+- `packages/a11y-tests`: Playwright 1.56.1 suite (`essentials.spec.ts`, `a11y-gates.spec.ts`); local bright/dark VP9 fixtures served over the Mux sample URL with Range support.
+- Verification: per skin 23 passed + 1 skipped (desktop-1440 + mobile-390); Ink & Reed ±15 s 1 passed + 1 skipped. Total 116 passed, 6 skipped, 0 failed. `pnpm -r build` and `pnpm -r typecheck` pass.
+- Skips (by design): volume popover on touch is hover-only in the v10 Scaffold; centre skip buttons hidden on coarse pointers.
+
 ## Open items
+- P4: pick a touch volume affordance per skin (Scaffold popover is hover-only; touch has mute + device volume).
+- Volume slider isn't in the desktop Tab order (Scaffold behaviour); keyboard volume works via ↑/↓ hotkeys. Decide in P4 whether to expose it on mute focus.
 - Read the challenge close date and the one-vs-five-entries rule once the page is live.
 - Add bright + dark sample clips for the readability gate (P5).

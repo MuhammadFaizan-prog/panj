@@ -12,7 +12,7 @@ panj/
 │   └── research/           P0 output: rea-map.md (planned)
 ├── packages/
 │   ├── tokens/             @panj/tokens: shared --panj-* CSS tokens
-│   └── a11y-tests/         planned (P2/P6): Playwright + axe suites
+│   └── a11y-tests/         @panj/a11y-tests: Playwright gates (P2), axe at P6
 ├── skins/
 │   └── <slug>/             @panj/<slug>, one per skin: phatta, glass, basant, ink-reed, darkroom
 │       ├── README.md       concept brief + status
@@ -46,5 +46,6 @@ pnpm install
 pnpm dev                       # gallery at http://localhost:5173
 pnpm build                     # every skin workbench + gallery
 pnpm typecheck
+pnpm test                      # Playwright gates (needs `pnpm --filter @panj/a11y-tests test:install` once)
 pnpm --filter @panj/phatta dev # one skin's CLI workbench
 ```

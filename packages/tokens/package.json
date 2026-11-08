@@ -4,5 +4,8 @@
   "private": true,
   "license": "Apache-2.0",
   "description": "Shared tokens for the panj skins: spacing, focus ring, motion, 44px target.",
-  "exports": { "./tokens.css": "./tokens.css" }
+  "exports": {
+    "./tokens.css": "./tokens.css",
+    "./essentials.css": "./essentials.css"
+  }
 }

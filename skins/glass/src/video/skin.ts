@@ -1,6 +1,7 @@
 import '../styles/video/scaffold.css';
 import './skin.css';
 import '@panj/tokens/tokens.css';
+import '@panj/tokens/essentials.css';
 import '../tokens.css';
 import '@videojs/html/i18n';
 import '@videojs/html/ui/container';
