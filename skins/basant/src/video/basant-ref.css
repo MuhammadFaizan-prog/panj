@@ -1,0 +1,646 @@
+/* Basant, reference geometry: the player as Faizi's locked reference paints it (basant-ref.webp, 1376 x 768).
+   The player is the white card (1014 x 582 reference pixels): a 7px frame around the video and the sky-blue control
+   bar under it. Every size below is in reference pixels times --bp, one reference pixel at the current player width,
+   so the card keeps the reference's proportions at any size. The kites and the charkhi are cut from the reference
+   by tools/build_assets.py (their boxes and anchors must match B there); everything else is CSS.
+   Players narrower than 44rem switch to a compact bar in the same materials (bottom of this file). */
+
+@property --bp {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 1px;
+}
+
+@font-face {
+  font-family: "Basant Nunito";
+  src: url("../assets/fonts/nunito-var.woff2") format("woff2");
+  font-weight: 200 1000;
+  font-display: block;
+}
+
+@layer basant {
+  @scope (.media-skin[data-skin="basant"]) {
+    :scope {
+      --basant-card: #fdfffe;
+      --basant-bar: rgb(140 212 249);
+      --basant-ring: rgb(253 232 10);
+      /* the translucent warm-grey disc inside the ring; build_assets.py undoes exactly this for the poster */
+      --basant-ring-veil: rgb(189 180 174 / 0.4);
+      --basant-disc-ink: rgb(80 129 154);
+      --basant-arrow-ink: rgb(80 129 154);
+      --basant-string: rgb(44 54 55);
+      --basant-ref-font: "Basant Nunito", ui-rounded, system-ui, sans-serif;
+      background: var(--basant-card);
+      border-radius: calc(28 / 1014 * 100%) / calc(28 / 582 * 100%);
+      overflow: visible;
+      font-family: var(--basant-ref-font);
+    }
+
+    /* the video sits in the card's frame; the controls layer may spill past the card (kite tails) */
+    :scope > :is(video, mux-video, hls-video, media-poster) {
+      --bp: calc(100cqw / 1014);
+      position: absolute;
+      left: calc(7 * var(--bp));
+      top: calc(7 * var(--bp));
+      width: calc(1000 * var(--bp));
+      height: calc(100% - 120 * var(--bp));
+      border-radius: calc(13 * var(--bp));
+      overflow: hidden;
+      object-fit: cover;
+    }
+
+    .media-poster-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    media-controls,
+    .video-controls-content {
+      --bp: calc(100cqw / 1014);
+    }
+
+    /* the reference paints no scrim, no top row and no seek buttons */
+    .video-controls-backdrop,
+    .video-controls-backdrop:not([data-visible]) {
+      display: none;
+    }
+
+    .video-controls-top .media-button,
+    .video-controls-center-seek {
+      display: none !important;
+    }
+
+    .media-button-icon svg,
+    .media-button-icon-base svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+
+    /* ── the centre ring ─────────────────────────────────────────────────── */
+    .video-controls-center {
+      display: flex;
+      left: calc(507 * var(--bp));
+      top: calc(7 * var(--bp) + (100% - 120 * var(--bp)) * 274 / 462);
+      transform: none;
+      translate: -50% -50%;
+      gap: 0;
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .video-controls-center-play {
+      --media-background: var(--basant-ring-veil);
+      --media-button-highlight: var(--basant-ring-veil);
+      /* the Scaffold sizes this button with !important from --media-spacing (x 14.5) */
+      --media-spacing: max(calc(44px / 14.5), calc(143 * var(--bp) / 14.5));
+      box-sizing: border-box;
+      border: calc(10 * var(--bp)) solid var(--basant-ring);
+      border-radius: 50%;
+      background-clip: padding-box;
+      color: #fff;
+      box-shadow: none;
+    }
+
+    .video-controls-center-play :is(.media-play-button-play-icon, .media-play-button-pause-icon) {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: calc(142 * var(--bp));
+      height: calc(142 * var(--bp));
+      max-width: none;
+      translate: -50% -50%;
+    }
+
+    .video-controls-center-play .media-play-button-restart-icon {
+      width: calc(54 * var(--bp));
+      height: calc(54 * var(--bp));
+    }
+
+    /* playing: the ring steps back with the controls */
+    .video-controls-content:not([data-visible]) .video-controls-center:has(.media-play-button[data-started]:not([data-paused], [data-ended])) {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* ── the bar ─────────────────────────────────────────────────────────── */
+    .basant-bar.basant-bar {
+      position: absolute;
+      inset: auto 0 0;
+      height: calc(106 * var(--bp));
+      padding: 0;
+      gap: 0;
+      display: block;
+      background: var(--basant-bar);
+      border-radius: 0 0 calc(28 * var(--bp)) calc(28 * var(--bp));
+      box-shadow:
+        inset 0 calc(1 * var(--bp)) 0 rgb(40 80 100 / 0.32),
+        inset 0 calc(3 * var(--bp)) calc(2 * var(--bp)) rgb(255 255 255 / 0.12);
+      color: #fff;
+      opacity: 1;
+      pointer-events: none;
+      translate: none;
+    }
+
+    .video-controls-content:not([data-visible]) .basant-bar {
+      opacity: 1;
+      translate: none;
+    }
+
+    .basant-bar > *,
+    .basant-trail > * {
+      position: absolute;
+    }
+
+    .basant-trail,
+    .basant-seek {
+      inset: 0;
+      display: block;
+      padding: 0;
+      width: auto;
+      pointer-events: none;
+    }
+
+    .basant-bar :is(.media-button, .media-time-slider, .media-volume-slider, .media-menu-popup, .media-tooltip-popup) {
+      pointer-events: auto;
+    }
+
+    /* clock: live time in the reference's rounded white */
+    .basant-clock {
+      left: calc(22.6 * var(--bp));
+      top: calc(54.4 * var(--bp));
+      translate: 0 -50%;
+      pointer-events: none;
+    }
+
+    .basant-bar .media-time-group {
+      display: flex;
+      align-items: baseline;
+      gap: 0;
+      height: auto;
+      font-family: var(--basant-ref-font);
+      font-size: calc(33.6 * var(--bp));
+      font-weight: 950;
+      line-height: 1;
+      letter-spacing: 0;
+      color: #fff;
+      text-shadow: calc(-1 * var(--bp)) calc(1 * var(--bp)) calc(2 * var(--bp)) rgb(30 70 95 / 0.45);
+      font-variant-numeric: proportional-nums;
+      white-space: nowrap;
+    }
+
+    .basant-bar .media-time-toggle {
+      display: none;
+    }
+
+    .basant-bar :is(.media-time-separator, .media-time-duration-value) {
+      font-size: calc(25.4 * var(--bp));
+      font-weight: 800;
+      letter-spacing: calc(1 * var(--bp));
+      color: #fff;
+      opacity: 1;
+    }
+
+    .basant-bar .media-time-separator {
+      padding-inline: calc(6 * var(--bp)) calc(7.5 * var(--bp));
+    }
+
+    .basant-bar .media-time-duration-value {
+      translate: 0 calc(-2 * var(--bp));
+    }
+
+    /* charkhi: the spool the string unwinds from (decoration, never a target) */
+    .basant-charkhi {
+      left: calc(217 * var(--bp));
+      top: calc(13 * var(--bp));
+      width: calc(184 * var(--bp));
+      height: calc(82 * var(--bp));
+      background: url("../assets/charkhi.webp") 0 0 / 100% 100% no-repeat;
+      pointer-events: none;
+    }
+
+    /* seek: the string climbs from the spool's tip to the kite (the slider is tilted along the string) */
+    .basant-seek .media-time-slider {
+      position: absolute;
+      left: calc(393 * var(--bp));
+      top: calc(51 * var(--bp));
+      width: calc(296.8 * var(--bp));
+      height: max(44px, calc(30 * var(--bp)));
+      translate: 0 calc(-50% + 0.5 * var(--bp));
+      transform-origin: 0 50%;
+      rotate: -4.296deg;
+      padding: 0;
+      margin: 0;
+    }
+
+    .basant-seek .media-time-slider-chapters,
+    .basant-seek .media-time-slider-chapter {
+      position: absolute;
+      inset: 0;
+      margin: 0;
+    }
+
+    .basant-seek .media-time-slider-track,
+    .basant-seek .media-time-slider:is(:hover, [data-dragging], [data-pointing], :focus-within) .media-time-slider-track {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 50%;
+      height: calc(2.9 * var(--bp));
+      translate: 0 -50%;
+      background: transparent;
+      border-radius: 0;
+      overflow: visible;
+    }
+
+    .basant-seek .media-time-slider-buffer {
+      display: none;
+    }
+
+    .basant-seek .media-time-slider-fill {
+      background: var(--basant-string);
+      border-radius: calc(1.2 * var(--bp));
+    }
+
+    .basant-kite-thumb.basant-kite-thumb {
+      width: 44px;
+      height: 44px;
+      background: transparent;
+      border: 0;
+      border-radius: 50%;
+      box-shadow: none;
+      opacity: 1;
+      scale: 1;
+    }
+
+    .basant-kite {
+      position: absolute;
+      display: block;
+      pointer-events: none;
+      background: 0 0 / 100% 100% no-repeat;
+    }
+
+    /* the kite stays upright on the tilted string (counter-rotated about its bridle, the playhead) */
+
+    .basant-kite-seek {
+      left: calc(50% - 81 * var(--bp));
+      top: calc(50% - 35.4 * var(--bp));
+      width: calc(118 * var(--bp));
+      height: calc(142 * var(--bp));
+      background-image: url("../assets/kite-seek.webp");
+      transform-origin: calc(81 * var(--bp)) calc(35.4 * var(--bp));
+      transform: rotate(4.296deg);
+    }
+
+    .basant-seek .media-time-slider-preview {
+      font-family: var(--basant-ref-font);
+      font-weight: 800;
+    }
+
+    /* volume: a second kite on a short white string; its height is the level */
+    .basant-volume.basant-volume {
+      left: calc(762.5 * var(--bp));
+      top: calc(19 * var(--bp));
+      width: 44px;
+      min-width: 44px;
+      height: calc(47 * var(--bp));
+      translate: -50% 0;
+      padding: 0;
+      margin: 0;
+    }
+
+    .basant-volume .media-volume-slider-track {
+      position: absolute;
+      left: 50%;
+      top: 0;
+      bottom: 0;
+      width: calc(4.6 * var(--bp));
+      height: auto;
+      translate: -50% 0;
+      background: transparent;
+      border-radius: 0;
+      overflow: visible;
+    }
+
+    .basant-volume .media-volume-slider-fill {
+      width: 100%;
+      background: #fff;
+      border-radius: calc(2.3 * var(--bp));
+    }
+
+    .basant-kite-volume {
+      left: calc(50% - 39.5 * var(--bp));
+      top: calc(50% - 73.5 * var(--bp));
+      width: calc(72 * var(--bp));
+      height: calc(120 * var(--bp));
+      background-image: url("../assets/kite-volume.webp");
+    }
+
+    /* buttons: invisible 44px targets around the reference's glyphs */
+    .basant-bar .media-button {
+      --cx: 0;
+      --cy: 52.5;
+      position: absolute;
+      left: calc(var(--cx) * var(--bp));
+      top: calc(var(--cy) * var(--bp));
+      width: max(44px, calc(47 * var(--bp)));
+      height: max(44px, calc(47 * var(--bp)));
+      translate: -50% -50%;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      place-items: center;
+      background: transparent;
+      border-radius: 50%;
+      box-shadow: none;
+      color: #fff;
+    }
+
+    @media (hover: hover) {
+      .basant-bar .media-button:hover {
+        background-color: transparent;
+      }
+    }
+
+    .basant-bar .media-button:active {
+      background-color: transparent;
+      translate: -50% -50%;
+    }
+
+    .basant-bar .media-mute-button {
+      --cx: 763;
+      --cy: 84.5;
+      width: 44px;
+      height: 44px;
+    }
+
+    .basant-bar .media-mute-button .media-button-icon {
+      width: calc(32 * var(--bp));
+      height: calc(26 * var(--bp));
+      translate: 0 calc(-2.5 * var(--bp));
+    }
+
+    .basant-divider {
+      left: calc(791 * var(--bp));
+      top: calc(21 * var(--bp));
+      width: calc(2 * var(--bp));
+      height: calc(64 * var(--bp));
+      background: rgb(255 255 255 / 0.62);
+      border-radius: calc(1 * var(--bp));
+    }
+
+    /* the white discs */
+    .basant-bar .basant-disc::before {
+      content: "";
+      grid-area: 1 / 1;
+      width: calc(47 * var(--bp));
+      height: calc(47 * var(--bp));
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: 0 calc(1.5 * var(--bp)) calc(2 * var(--bp)) rgb(30 80 110 / 0.3);
+    }
+
+    .basant-bar .basant-disc > * {
+      grid-area: 1 / 1;
+      z-index: 1;
+    }
+
+    .basant-bar .media-captions-button {
+      --cx: 836.5;
+    }
+
+    .basant-bar button[commandfor] {
+      --cx: 899.6;
+    }
+
+    .basant-bar .media-fullscreen-button {
+      --cx: 962.9;
+      --cy: 52.8;
+      color: var(--basant-arrow-ink);
+    }
+
+    .basant-bar .media-fullscreen-button .media-button-icon {
+      width: calc(48 * var(--bp));
+      height: calc(48 * var(--bp));
+    }
+
+    .basant-face {
+      display: block;
+      font-family: var(--basant-ref-font);
+      font-size: calc(20 * var(--bp));
+      font-weight: 780;
+      line-height: 1;
+      letter-spacing: 0;
+      color: var(--basant-disc-ink);
+    }
+
+    .basant-bar .media-captions-button .media-button-icon,
+    .basant-bar button[commandfor] .media-button-icon,
+    .basant-bar button[commandfor] .media-settings-button-label {
+      display: none;
+    }
+
+    /* captions on: the disc turns marigold */
+    .basant-bar .media-captions-button[data-active]::before {
+      background: var(--basant-ring);
+    }
+
+    .basant-bar .media-captions-button[data-active] .basant-cc {
+      color: #3b2f00;
+    }
+
+    /* ── focus: a navy ring with a white halo, around each visible shape ── */
+    .basant-bar .media-button:focus-visible,
+    .video-controls-center-play:focus-visible,
+    .basant-kite-thumb:focus-visible {
+      outline: 3px solid var(--basant-ink);
+      outline-offset: 2px;
+      box-shadow: 0 0 0 7px #fff;
+    }
+
+    /* ── compact bar (players under 44rem): the same pieces at a fixed, finger-sized scale ── */
+    @container media-root (width < 44rem) {
+      :scope > :is(video, mux-video, hls-video, media-poster) {
+        left: 5px;
+        top: 5px;
+        width: calc(100% - 10px);
+        height: calc(100% - 5px - 92px);
+        border-radius: 12px;
+      }
+
+      media-controls,
+      .video-controls-content {
+        --bp: 0.62px;
+      }
+
+      .video-controls-center {
+        left: 50%;
+        top: calc((100% - 92px) / 2 + 3px);
+      }
+
+      .video-controls-center-play {
+        --media-spacing: calc(76px / 14.5);
+        border-width: 5px;
+      }
+
+      .video-controls-center-play :is(.media-play-button-play-icon, .media-play-button-pause-icon) {
+        width: 76px;
+        height: 76px;
+      }
+
+      .basant-bar.basant-bar {
+        height: 87px;
+        border-radius: 0 0 18px 18px;
+      }
+
+      /* top row: clock left, the volume kite and discs right; bottom row: the string */
+      .basant-clock {
+        left: 14px;
+        top: 24px;
+      }
+
+      .basant-bar .media-time-group {
+        font-size: 16px;
+      }
+
+      .basant-bar .media-time-separator {
+        padding-inline: 4px;
+      }
+
+      .basant-charkhi {
+        left: 6px;
+        top: 44px;
+        width: calc(184 * var(--bp));
+        height: calc(82 * var(--bp));
+      }
+
+      .basant-seek .media-time-slider {
+        left: calc(6px + 176 * var(--bp));
+        top: 66px;
+        width: calc(100% - 6px - 176 * var(--bp) - 34px);
+        rotate: -3deg;
+      }
+
+      .basant-kite-seek {
+        transform: rotate(3deg);
+      }
+
+      .basant-bar .media-button {
+        top: 24px;
+        left: auto;
+        translate: 50% -50%;
+      }
+
+      .basant-bar .media-button:active {
+        translate: 50% -50%;
+      }
+
+      .basant-bar .media-fullscreen-button {
+        right: 26px;
+      }
+
+      .basant-bar button[commandfor] {
+        right: 72px;
+      }
+
+      .basant-bar .media-captions-button {
+        right: 118px;
+      }
+
+      .basant-divider {
+        left: auto;
+        right: 147px;
+        top: 10px;
+        height: 28px;
+      }
+
+      .basant-volume.basant-volume {
+        left: auto;
+        right: 170px;
+        top: 2px;
+        height: 44px;
+        translate: 50% 0;
+      }
+
+      .basant-bar .media-mute-button {
+        right: 206px;
+        top: 24px;
+      }
+
+      .basant-bar .media-mute-button .media-button-icon {
+        width: 22px;
+        height: 18px;
+        translate: none;
+      }
+    }
+
+    /* narrow: the clock keeps only the current time */
+    @container media-root (width < 22rem) {
+      .basant-bar :is(.media-time-separator, .media-time-duration-value) {
+        display: none;
+      }
+
+      .basant-bar .media-time-current-value {
+        display: inline;
+      }
+    }
+
+    /* very narrow: the clock gives way */
+    @container media-root (width < 17rem) {
+      .basant-clock {
+        display: none;
+      }
+    }
+
+    @media (forced-colors: active) {
+      .basant-bar.basant-bar {
+        background: Canvas;
+        border-top: 1px solid CanvasText;
+      }
+
+      .basant-bar .basant-disc::before {
+        background: Canvas;
+        outline: 1px solid CanvasText;
+      }
+
+      .basant-face,
+      .basant-bar .media-time-group {
+        color: CanvasText;
+        text-shadow: none;
+      }
+
+      .basant-seek .media-time-slider-fill,
+      .basant-volume .media-volume-slider-fill {
+        background: CanvasText;
+      }
+
+      .video-controls-center-play {
+        border-color: ButtonText;
+      }
+    }
+  }
+}
+
+/* Icon state swaps. The Scaffold writes these as `&[data-…]` inside nested @scope, which current Chromium does not
+   match (verified on Chrome 141), so Basant states them plainly. */
+@layer basant {
+  @scope (.media-skin[data-skin="basant"]) {
+    .media-play-button .media-button-icon-base,
+    .media-mute-button .media-button-icon,
+    .media-fullscreen-button .media-button-icon {
+      display: none;
+    }
+
+    .media-play-button:not([data-ended]):is([data-paused], :not([data-started])) .media-play-button-play-icon,
+    .media-play-button[data-started]:not([data-paused], [data-ended]) .media-play-button-pause-icon,
+    .media-play-button[data-ended] .media-play-button-restart-icon,
+    .media-mute-button:not([data-muted]) .media-mute-button-high-icon,
+    .media-mute-button[data-muted] .media-mute-button-off-icon,
+    .media-fullscreen-button:not([data-fullscreen]) .media-fullscreen-button-enter-icon,
+    .media-fullscreen-button[data-fullscreen] .media-fullscreen-button-exit-icon {
+      display: block;
+    }
+  }
+}

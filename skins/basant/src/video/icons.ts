@@ -5,14 +5,16 @@
 const svg = (body: string, fill = 'currentColor') =>
   `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="${fill}" aria-hidden="true">${body}</svg>`;
 
-/** Play: a rounded paper-kite triangle with a little bridle notch. */
-const play = svg('<path d="M8.2 4.6c-.9-.6-2.2 0-2.2 1.1v12.6c0 1.1 1.3 1.7 2.2 1.1l9.7-6.3c.8-.5.8-1.7 0-2.2z"/>');
+// Play, pause and the speaker are drawn in the reference's own pixel boxes (see basant-ref.css), so the live
+// glyphs land where the locked reference paints them.
 
-/** Pause: two bamboo kite spars. */
-const pause = svg(
-  '<rect x="6" y="4.5" width="4" height="15" rx="1.6"/><rect x="14" y="4.5" width="4" height="15" rx="1.6"/>' +
-    '<path d="M6 9h4M14 9h4M6 15h4M14 15h4" stroke="#fff" stroke-opacity=".35" stroke-width="1"/>'
-);
+/** Play: the reference's rounded white triangle, in the 142px box of the centre ring. */
+const ringBox = (body: string) =>
+  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 142 142" fill="currentColor" aria-hidden="true">${body}</svg>`;
+const play = ringBox('<path d="M52.3 41.6 101.6 70.6 52.3 99.6z" stroke="currentColor" stroke-width="10" stroke-linejoin="round"/>');
+
+/** Pause: two rounded spars in the same box. */
+const pause = ringBox('<rect x="50" y="42" width="15" height="58" rx="5"/><rect x="77" y="42" width="15" height="58" rx="5"/>');
 
 /** Restart: string looping back onto the spool. */
 const restart = svg(
@@ -21,29 +23,29 @@ const restart = svg(
   'none'
 );
 
-/** Speaker with sound as two kite-string arcs. */
-const speaker = '<path d="M4 9.2h3.2L12 5v14l-4.8-4.2H4a1 1 0 0 1-1-1V10.2a1 1 0 0 1 1-1z" fill="currentColor"/>';
-const volumeHigh = svg(
+/** Speaker (reference box 32 x 26) with two sound arcs. */
+const speakerBox = (body: string) =>
+  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 26" fill="none" aria-hidden="true">${body}</svg>`;
+const speaker = '<path d="M6.4 8.6h4.6L17.2 3.6v18.8L11 17.4H6.4a1 1 0 0 1-1-1V9.6a1 1 0 0 1 1-1z" fill="currentColor"/>';
+const volumeHigh = speakerBox(
   speaker +
-    '<path d="M15.2 9a4.2 4.2 0 0 1 0 6M17.8 6.4a8 8 0 0 1 0 11.2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>',
-  'none'
+    '<path d="M19.6 9.6a4.6 4.6 0 0 1 0 6.8M22.4 6.6a8.8 8.8 0 0 1 0 12.8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>'
 );
-const volumeLow = svg(speaker + '<path d="M15.2 9a4.2 4.2 0 0 1 0 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>', 'none');
+const volumeLow = speakerBox(speaker + '<path d="M19.6 9.6a4.6 4.6 0 0 1 0 6.8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>');
 /** Muted: the string is cut. */
-const volumeOff = svg(
-  speaker + '<path d="m15.5 9.5 5 5m0-5-5 5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>',
-  'none'
+const volumeOff = speakerBox(
+  speaker + '<path d="m20 9.4 6 6.6m0-6.6-6 6.6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>'
 );
 
-/** Fullscreen: four kite corners pulling outward. */
-const fullscreenEnter = svg(
-  '<path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>',
-  'none'
-);
-const fullscreenExit = svg(
-  '<path d="M9 4v5H4M20 9h-5V4M15 20v-5h5M4 15h5v5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>',
-  'none'
-);
+/** Fullscreen: four arrows pulling out of the disc's centre (reference box 48 x 48). */
+const discBox = (body: string) =>
+  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="currentColor" aria-hidden="true">${body}</svg>`;
+const arrowOut = '<path d="M12.6 13.2 19.6 13.6 13 20.2z"/><path d="M15.2 16 21 21.6" stroke="currentColor" stroke-width="3"/>';
+const arrowIn = '<path d="M21 21.4 12.6 21 20.6 12.9z"/><path d="M17.9 18.3 11.8 12.4" stroke="currentColor" stroke-width="3.7"/>';
+const four = (a: string) =>
+  `<g>${a}</g><g transform="matrix(-1 0 0 1 48 0)">${a}</g><g transform="matrix(1 0 0 -1 0 48)">${a}</g><g transform="matrix(-1 0 0 -1 48 48)">${a}</g>`;
+const fullscreenEnter = discBox(four(arrowOut));
+const fullscreenExit = discBox(four(arrowIn));
 
 /** Captions: a paper tag. */
 const captionsOff = svg(

@@ -1,221 +1,270 @@
-/* /basant gallery page: a Lahore rooftop at dusk framing the player.
-   Page-only styles; the skin itself lives in skins/basant. All art is CSS + inline SVG in index.html. */
-
-.basant-page {
-  --dusk-0: #17183f;
-  --dusk-1: #33296a;
-  --dusk-2: #8a3f7a;
-  --dusk-3: #e0705a;
-  --dusk-4: #ffbf69;
-  --roof: #170d1c;
-  background: var(--roof);
-  color: #fdf6ec;
-  overflow-x: hidden;
+/* /basant showcase chrome. Page-only; the skin's own CSS lives in skins/basant. */
+:root {
+  --b-bg: #13202b;
+  --b-ink: #f4f7fa;
+  --b-ink-soft: rgb(244 247 250 / 0.72);
+  --b-line: rgb(255 255 255 / 0.12);
+  --b-chip: rgb(255 255 255 / 0.07);
+  --b-chip-on: #fde80a;
+  --b-chip-on-ink: #13202b;
+  color-scheme: dark;
+  background: var(--b-bg);
+  color: var(--b-ink);
+  font-family: ui-rounded, "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* ── Scene: sky behind, rooftops in front of the strings, player on top ─── */
-.basant-page .scene {
-  position: relative;
-  isolation: isolate;
+body.basant-page {
+  min-height: 100vh;
+  background: var(--b-bg);
+  overflow-x: clip;
+}
+
+.basant-page a:focus-visible,
+.basant-page button:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+  box-shadow: 0 0 0 6px #000;
+}
+
+.bs-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
   overflow: hidden;
-  padding-bottom: clamp(70px, 11vw, 150px);
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
-.basant-page .sky {
+/* hidden until focused: the reference paints no navigation */
+.bs-skip {
   position: absolute;
-  inset: 0;
-  z-index: -1;
-  background: linear-gradient(
-    to bottom,
-    var(--dusk-0) 0%,
-    var(--dusk-1) 30%,
-    var(--dusk-2) 58%,
-    var(--dusk-3) 78%,
-    var(--dusk-4) 94%
-  );
-}
-
-.basant-page .sun {
-  position: absolute;
-  left: 50%;
-  bottom: clamp(40px, 7vw, 100px);
-  width: clamp(160px, 26vw, 380px);
-  aspect-ratio: 1;
-  translate: -50% 40%;
-  border-radius: 50%;
-  background: radial-gradient(circle, #fff1c1 0 22%, #ffd27a 34%, rgb(255 191 105 / 0.35) 52%, transparent 70%);
-}
-
-.basant-page .cloud {
-  position: absolute;
-  height: 18px;
+  z-index: 10;
+  left: 12px;
+  top: 8px;
+  padding: 0 14px;
   border-radius: 999px;
-  background: rgb(255 214 190 / 0.18);
-  filter: blur(1px);
+  background: #13202b;
+  color: #fff;
+  font: 15px/44px ui-sans-serif, system-ui, sans-serif;
+  text-decoration: none;
+  translate: 0 -200%;
 }
 
-.basant-page .cloud-1 { top: 16%; left: 6%; width: 180px; }
-.basant-page .cloud-2 { top: 9%; right: 10%; width: 240px; }
-.basant-page .cloud-3 { top: 44%; left: 62%; width: 140px; background: rgb(255 214 190 / 0.14); }
-
-.basant-page .skyline {
-  position: absolute;
-  inset-inline: 0;
-  bottom: 0;
-  width: 100%;
-  height: clamp(120px, 17vw, 240px);
-  z-index: 2; /* in front of the kite strings */
-  display: block;
+.bs-skip:focus-visible {
+  translate: none;
 }
 
-/* ── Kites: a hand-drawn patang (see #patang), recoloured per kite ──────── */
-.basant-page .kite {
-  --size: 64px;
-  --a: #f5b301;
-  --b: #d81b60;
-  --c: #fffaf0;
-  --tassel: #1f8f4e;
-  --tail: #fff3d6;
-  --tilt: -8deg;
-  --string-angle: 18deg;
-  position: absolute;
-  z-index: 1;
-  width: var(--size);
-  rotate: var(--tilt);
-  transform-origin: 50% 45%;
-  filter: drop-shadow(0 4px 6px rgb(10 8 30 / 0.35));
+/* ── hero: Faizi's reference, rebuilt. The plate (assets/plate.webp, 1376 x 768) is the reference with the kite tails
+   under the card filled in; the live player is the card, placed exactly on it in plate pixels. ── */
+.bs-hero {
+  position: relative;
+  overflow: hidden;
+  background: #5d5a5e;
+  isolation: isolate;
 }
 
-.basant-page .kite svg {
-  display: block;
-  width: 100%;
-  height: auto;
-  overflow: visible;
-}
-
-/* the string, from the bridle down to a rooftop out of sight */
-.basant-page .kite::after {
+/* past the plate's aspect ratio the same backdrop carries on, blurred, to the edges */
+.bs-hero::before {
   content: "";
   position: absolute;
-  left: 50%;
-  top: 44%;
-  width: 1px;
-  height: 140vh;
-  background: linear-gradient(to bottom, rgb(255 246 230 / 0.75), rgb(255 246 230 / 0.25));
-  transform-origin: top center;
-  rotate: var(--string-angle);
+  inset: -60px;
   z-index: -1;
+  background: url("./assets/backdrop.webp") center / cover no-repeat;
+  filter: blur(12px);
 }
 
-.basant-page .k1 { top: 6%;  left: 4%;   --size: 72px; --tilt: -10deg; --string-angle: -14deg; }
-.basant-page .k2 { top: 22%; left: 13%;  --size: 46px; --a: #1f8f4e; --b: #9be15d; --c: #d81b60; --tassel: #f5b301; --tilt: 6deg; --string-angle: 10deg; }
-.basant-page .k3 { top: 4%;  left: 38%;  --size: 40px; --a: #e94e1b; --b: #f5b301; --tilt: 12deg; --string-angle: 26deg; }
-.basant-page .k4 { top: 3%;  right: 18%; --size: 52px; --a: #d81b60; --b: #ff8fb8; --c: #f5b301; --tassel: #2c7be5; --tilt: -4deg; --string-angle: -24deg; }
-.basant-page .k5 { top: 18%; right: 5%;  --size: 78px; --a: #f5b301; --b: #1f8f4e; --c: #fffaf0; --tassel: #d81b60; --tilt: 9deg; --string-angle: -8deg; }
-.basant-page .k6 { top: 46%; left: 2%;   --size: 38px; --a: #6c3fd1; --b: #f5b301; --tilt: -14deg; --string-angle: 22deg; }
-.basant-page .k7 { top: 50%; right: 2%;  --size: 44px; --a: #2c7be5; --b: #fffaf0; --c: #d81b60; --tilt: 4deg; --string-angle: -18deg; }
+.bs-plate {
+  position: relative;
+  width: min(100%, calc(100svh * 1376 / 768));
+  min-width: 700px;
+  margin-inline: auto;
+  aspect-ratio: 1376 / 768;
+  container-type: inline-size;
+  background: url("./assets/plate.webp") 0 0 / 100% 100% no-repeat;
+}
 
-@media (prefers-reduced-motion: no-preference) {
-  .basant-page .kite {
-    animation: basant-drift var(--dur, 7s) ease-in-out var(--delay, 0s) infinite alternate;
+.basant-page .bs-plate > #stage {
+  position: absolute;
+  left: calc(181 / 1376 * 100cqw);
+  top: calc(103 / 1376 * 100cqw);
+  width: calc(1014 / 1376 * 100cqw);
+  height: calc(582 / 1376 * 100cqw);
+  aspect-ratio: auto;
+  background: transparent;
+}
+
+/* phones: the backdrop stays behind, the card spans the width */
+@media (max-width: 699.98px) {
+  .bs-plate {
+    width: 100%;
+    min-width: 0;
+    aspect-ratio: auto;
+    padding: 56px 12px 48px;
+    box-sizing: border-box;
+    background: none;
   }
 
-  .basant-page .k2 { --dur: 5.5s; --delay: -2s; }
-  .basant-page .k3 { --dur: 6.2s; --delay: -4s; }
-  .basant-page .k4 { --dur: 8s;   --delay: -1s; }
-  .basant-page .k5 { --dur: 9s;   --delay: -3s; }
-  .basant-page .k6 { --dur: 6.8s; --delay: -5s; }
-  .basant-page .k7 { --dur: 7.6s; --delay: -2.5s; }
+  .basant-page .bs-plate > #stage {
+    position: relative;
+    left: auto;
+    top: auto;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 3.6;
+  }
 }
 
-@keyframes basant-drift {
-  0%   { translate: 0 0;       rotate: var(--tilt); }
-  50%  { translate: 10px -8px; rotate: calc(var(--tilt) + 5deg); }
-  100% { translate: -6px 4px;  rotate: calc(var(--tilt) - 4deg); }
-}
-
-/* ── Page column ────────────────────────────────────────────────────────── */
-.basant-page .basant-main {
-  position: relative;
-  z-index: 3; /* the player sits in front of the rooftops */
-  max-width: 1080px;
-  padding: 20px clamp(12px, 3vw, 24px) 0;
+/* ── below the hero ── */
+.basant-showcase.page {
+  max-width: 1240px;
+  padding: clamp(16px, 3vw, 40px) clamp(12px, 3vw, 40px) 64px;
 }
 
 .basant-page .back {
-  color: #fdf6ec;
-  font-weight: 600;
+  color: var(--b-ink-soft);
+  text-decoration: none;
+  font-size: 0.95rem;
 }
 
-.basant-page .basant-head {
-  margin: 8px 0 24px;
+.basant-page .back:hover {
+  color: var(--b-ink);
 }
 
-.basant-page h1 {
+.basant-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px 32px;
+  margin: 12px 0 24px;
+}
+
+.basant-eyebrow,
+.basant-switch-label,
+.basant-thinking h2 {
+  margin: 0 0 6px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--b-ink-soft);
+}
+
+.basant-title {
   margin: 0;
-  font-size: clamp(2.2rem, 6vw, 4rem);
+  font-size: clamp(2.4rem, 5vw, 3.6rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
   line-height: 1;
-  letter-spacing: 0.02em;
-  color: #ffd25e;
-  text-shadow: 0 2px 0 #3a1a40, 0 6px 18px rgb(0 0 0 / 0.35);
 }
 
-.basant-page .basant-head p {
-  margin: 10px 0 0;
-  max-width: 46ch;
-  font-size: clamp(1rem, 2.2vw, 1.15rem);
-  color: #fdf6ec;
+.basant-lede {
+  max-width: 36rem;
+  margin: 12px 0 0;
+  font-size: clamp(1rem, 1.4vw, 1.125rem);
+  line-height: 1.5;
+  color: var(--b-ink-soft);
 }
 
-.basant-page #stage {
-  border-radius: 18px;
-  background: #0b0b14;
-  box-shadow:
-    0 0 0 3px #f5b301,
-    0 0 0 6px #3a1a40,
-    0 24px 60px rgb(10 6 30 / 0.55);
+.basant-switch {
+  display: grid;
+  gap: 8px;
 }
 
-.basant-page #stage .media-skin {
-  border-radius: 16px;
+.basant-segments {
+  display: inline-flex;
+  padding: 4px;
+  gap: 2px;
+  border-radius: 999px;
+  background: var(--b-chip);
+  box-shadow: inset 0 0 0 1px var(--b-line);
 }
 
-/* ── Design thinking: on the roof, under the parapet ────────────────────── */
-.basant-page .thinking {
-  background: var(--roof);
-  border-top: 1px solid #3b2233;
+.basant-segments button {
+  min-width: 72px;
+  min-height: 44px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--b-ink);
+  font: inherit;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
 }
 
-.basant-page .thinking-inner {
-  max-width: 1080px;
-  margin: 0 auto;
-  padding: clamp(28px, 5vw, 56px) clamp(12px, 3vw, 24px) clamp(40px, 6vw, 72px);
+.basant-segments button:hover {
+  background: var(--b-chip);
 }
 
-.basant-page .thinking h2 {
-  margin: 0 0 12px;
-  font-size: 1.35rem;
-  color: #ffd25e;
+.basant-segments button[aria-pressed="true"] {
+  background: var(--b-chip-on);
+  color: var(--b-chip-on-ink);
 }
 
-.basant-page .thinking p {
+.basant-note {
+  margin: 14px 4px 0;
+  font-size: 0.9rem;
+  color: var(--b-ink-soft);
+}
+
+.basant-thinking {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  gap: 24px 56px;
+  margin-top: 56px;
+  padding-top: 32px;
+  border-top: 1px solid var(--b-line);
+}
+
+.basant-thinking h2 {
+  grid-column: 1 / -1;
   margin: 0;
-  max-width: 70ch;
+}
+
+.basant-thinking p {
+  margin: 0;
+  max-width: 40rem;
   font-size: 1.05rem;
   line-height: 1.65;
-  color: #f3e9dc;
 }
 
-/* ── Small screens: fewer, smaller kites so the player stays the subject ── */
-@media (max-width: 720px) {
-  .basant-page .k2,
-  .basant-page .k6,
-  .basant-page .k7 {
-    display: none;
+.basant-facts {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 14px;
+  align-content: start;
+}
+
+.basant-facts li {
+  display: grid;
+  gap: 2px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--b-line);
+  font-size: 0.92rem;
+}
+
+.basant-facts span {
+  color: var(--b-ink-soft);
+}
+
+@media (max-width: 760px) {
+  .basant-thinking {
+    grid-template-columns: 1fr;
   }
 
-  .basant-page .k1 { --size: 48px; left: 70%; top: 2%; }
-  .basant-page .k3 { --size: 30px; left: 48%; top: 6%; }
-  .basant-page .k4 { --size: 36px; right: 4%; top: 12%; }
-  .basant-page .k5 { --size: 40px; right: auto; left: 3%; top: 64%; }
+  .basant-head {
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 400px) {
+  .basant-segments button {
+    min-width: 0;
+    padding: 0 14px;
+  }
 }
