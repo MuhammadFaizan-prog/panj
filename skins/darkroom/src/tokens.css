@@ -1,0 +1,9 @@
+/* Darkroom skin tokens.
+   P1/P2: neutral placeholders (the Scaffold look) while controls are wired. Art lands in P3.
+   Planned: --panj-safelight, --panj-film, --panj-segment, --panj-led.
+   Scope every rule to [data-skin="darkroom"]. */
+.media-skin[data-skin="darkroom"] {
+  --panj-surface: rgb(0 0 0 / 0.6);
+  --panj-on-surface: #fff;
+  --panj-accent: #fff;
+}

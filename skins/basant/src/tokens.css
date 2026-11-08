@@ -1,0 +1,9 @@
+/* Basant skin tokens.
+   P1/P2: neutral placeholders (the Scaffold look) while controls are wired. Art lands in P3.
+   Planned: --panj-sky, --panj-string (manja), --panj-spool (charkhi wood), --panj-kite-*.
+   Scope every rule to [data-skin="basant"]. */
+.media-skin[data-skin="basant"] {
+  --panj-surface: rgb(0 0 0 / 0.6);
+  --panj-on-surface: #fff;
+  --panj-accent: #fff;
+}

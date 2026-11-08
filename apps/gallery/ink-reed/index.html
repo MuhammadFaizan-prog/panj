@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Ink &amp; Reed · panj</title>
+    <meta name="description" content="Ink &amp; Reed: Urdu calligraphy podcast player. A Video.js v10 skin." />
+    <link rel="stylesheet" href="/src/gallery.css" />
+  </head>
+  <body>
+    <main class="page">
+      <a class="back" href="/">← All skins</a>
+      <h1>Ink &amp; Reed</h1>
+      <p>Urdu calligraphy podcast player</p>
+      <div id="stage"></div>
+    </main>
+    <script type="module">
+      import '@videojs/html/i18n';
+      import { createSkinnedPlayer } from '@panj/ink-reed';
+      import { mount } from '/src/mount.ts';
+      mount(createSkinnedPlayer);
+    </script>
+  </body>
+</html>

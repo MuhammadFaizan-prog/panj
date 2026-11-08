@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Darkroom · panj</title>
+    <meta name="description" content="Darkroom: Film lab. A Video.js v10 skin." />
+    <link rel="stylesheet" href="/src/gallery.css" />
+  </head>
+  <body>
+    <main class="page">
+      <a class="back" href="/">← All skins</a>
+      <h1>Darkroom</h1>
+      <p>Film lab</p>
+      <div id="stage"></div>
+    </main>
+    <script type="module">
+      import '@videojs/html/i18n';
+      import { createSkinnedPlayer } from '@panj/darkroom';
+      import { mount } from '/src/mount.ts';
+      mount(createSkinnedPlayer);
+    </script>
+  </body>
+</html>

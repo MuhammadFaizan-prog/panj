@@ -1,0 +1,9 @@
+/* Ink & Reed skin tokens.
+   P1/P2: neutral placeholders (the Scaffold look) while controls are wired. Art lands in P3.
+   Planned: --panj-paper (cream), --panj-ink, --panj-gold; skip step 15 s.
+   Scope every rule to [data-skin="ink-reed"]. */
+.media-skin[data-skin="ink-reed"] {
+  --panj-surface: rgb(0 0 0 / 0.6);
+  --panj-on-surface: #fff;
+  --panj-accent: #fff;
+}

@@ -1,0 +1,9 @@
+/* Phatta skin tokens.
+   P1/P2: neutral placeholders (the Scaffold look) while controls are wired. Art lands in P3.
+   Planned: --panj-rail (lacquer black), --panj-border-*, --panj-track (chamak-patti foil), --panj-thumb (brass).
+   Scope every rule to [data-skin="phatta"]. */
+.media-skin[data-skin="phatta"] {
+  --panj-surface: rgb(0 0 0 / 0.6);
+  --panj-on-surface: #fff;
+  --panj-accent: #fff;
+}

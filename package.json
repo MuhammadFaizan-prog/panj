@@ -1,0 +1,15 @@
+{
+  "name": "panj",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "license": "Apache-2.0",
+  "description": "Five Video.js v10 skins: Phatta, Glass, Basant, Ink & Reed, Darkroom",
+  "packageManager": "pnpm@10.14.0",
+  "scripts": {
+    "dev": "pnpm --filter @panj/gallery dev",
+    "build": "pnpm -r --workspace-concurrency=1 build",
+    "typecheck": "pnpm -r typecheck"
+  },
+  "engines": { "node": ">=20" }
+}
