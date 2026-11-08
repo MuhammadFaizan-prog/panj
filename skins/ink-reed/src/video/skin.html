@@ -28,7 +28,7 @@
 <media-tooltip-group>
 <div class="video-controls-bottom video-controls-video-bottom ink-bar">
 <div class="video-controls-slider-row">
-<media-time-slider class="media-time-slider" thumb-alignment="edge">
+<media-time-slider class="media-time-slider" thumb-alignment="center">
 <media-time-slider-chapters class="media-time-slider-chapters">
 <template>
 <div class="media-time-slider-chapter">
@@ -129,7 +129,9 @@
 </media-icon>
 <media-icon family="ink" name="captions-on" class="media-button-icon media-captions-button-on-icon">
 </media-icon>
+<span class="ink-cc" aria-hidden="true">CC</span>
 </media-captions-button>
+<span class="ink-divider" aria-hidden="true"></span>
 <media-tooltip trigger="vjs-COsQCb_P-0-10-trigger" side="top" class="media-popup media-popup-safe-area media-tooltip-popup">
 <media-tooltip-label>
 </media-tooltip-label>
@@ -137,8 +139,7 @@
 </media-tooltip-shortcut>
 </media-tooltip>
 <button commandfor="vjs-Rq0iN2VF-h-popup" class="media-button" id="vjs-COsQCb_P-0-11-trigger">
-<media-icon family="ink" name="settings" class="media-button-icon">
-</media-icon>
+<ink-rate class="ink-rate" aria-hidden="true">1×</ink-rate>
 <media-text class="media-settings-button-label" token="menu.settings">Settings</media-text>
 </button>
 <media-tooltip trigger="vjs-COsQCb_P-0-11-trigger" side="top" class="media-popup media-popup-safe-area media-tooltip-popup">

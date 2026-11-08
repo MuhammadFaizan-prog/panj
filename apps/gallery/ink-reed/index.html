@@ -7,16 +7,23 @@
     <meta name="description" content="Ink &amp; Reed: Urdu calligraphy podcast player. A Video.js v10 skin." />
     <meta name="theme-color" content="#efe6d2" />
     <link rel="stylesheet" href="/src/gallery.css" />
+    <link rel="preload" as="image" href="/ink-reed/assets/plate.webp" fetchpriority="high" />
     <link rel="stylesheet" href="/ink-reed/page.css" />
   </head>
   <body class="ink-page">
+    <a class="ir-skip" href="/">← All skins</a>
+    <section class="ir-hero" aria-label="The Ink &amp; Reed player on a sheet of cream paper">
+      <div class="ir-plate">
+        <h1 class="ir-sr">Ink &amp; Reed</h1>
+        <div id="stage"></div>
+      </div>
+    </section>
     <main class="page leaf">
       <a class="back" href="/">← All skins</a>
       <header class="leaf-head">
-        <h1>Ink &amp; Reed</h1>
+        <h2 class="leaf-title">Ink &amp; Reed</h2>
         <p>Urdu calligraphy podcast player</p>
       </header>
-      <div id="stage"></div>
       <div class="leaf-tools">
         <button type="button" class="rtl-toggle" id="rtl-toggle" aria-pressed="false" aria-describedby="rtl-note">
           <span class="rtl-toggle-mark" aria-hidden="true"></span>
@@ -29,23 +36,18 @@
         <p>
           Ink &amp; Reed treats the player as a page on a calligrapher’s desk rather than a layer over the picture: the
           controls sit on cream paper below the video, so their contrast never depends on how bright the frame is.
-          The timeline is a reed-pen (<i>qalam</i>) stroke that starts as a hairline and swells towards the end, and the
-          playhead is the nib with an ink drop gathering under its tip.
-          The ±15&nbsp;s skips, serif time numerals and thin gold-leaf edge come from the same desk, and every piece of
-          art is hand-written SVG and CSS.
-          Under a right-to-left layout the bar mirrors and the stroke is written from right to left, as Urdu is, with
-          pointer and arrow-key input mirrored to match.
-          The only motion is the drop gathering while the episode plays, and it stops when reduced motion is requested.
+          The page above is our own AI-generated reference, rebuilt: the sheet behind is the reference itself and the card
+          is the live player, placed on it pixel for pixel. Its paper, gold rule, timeline rule, serif clock and speed are
+          CSS; the gold-leaf band, the reed pen and the hand-drawn glyphs are cut from the reference so they match it
+          exactly. The timeline is a reed pen (<i>qalam</i>): its tapered body is the played stroke and grows as the
+          episode is written, and the nib with its ink drop is the playhead. The ±15&nbsp;s skips, the “CC” captions
+          bubble and “1×” are stock Video.js v10 controls with 44px targets around smaller drawings.
+          Under a right-to-left layout the bar mirrors and the pen writes from right to left, as Urdu is, with pointer
+          and arrow-key input mirrored to match.
         </p>
       </section>
-      <footer class="colophon">Video.js v10.3.0 · HTML custom elements · art in hand-authored SVG and CSS</footer>
+      <footer class="colophon">Video.js v10.3.0 · HTML custom elements · CSS chrome, glyphs cut from the reference · EB Garamond (SIL OFL)</footer>
     </main>
-    <script type="module">
-      import '@videojs/html/i18n';
-      import { createSkinnedPlayer } from '@panj/ink-reed';
-      import { mount } from '/src/mount.ts';
-      mount(createSkinnedPlayer);
-    </script>
     <script type="module" src="/ink-reed/page.ts"></script>
   </body>
 </html>

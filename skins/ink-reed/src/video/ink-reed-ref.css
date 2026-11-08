@@ -1,0 +1,594 @@
+/* Ink & Reed, reference geometry: the player as Faizi's locked reference paints it (ink-reed-ref.webp, 1408 x 768).
+   The player is the cream card (844 x 638 reference pixels): the video in a 34px paper margin, the reed-pen timeline
+   and the controls on the paper under it, a thin gold rule inside the edge and a gold-leaf band along the foot.
+   Every size is in reference pixels times --bp (one reference pixel at the current player width), so the card keeps
+   the reference's proportions at any size. Glyphs are cut from the reference by tools/build_assets.py; the card,
+   rules, track, time and speed text are CSS. Plain selectors on purpose: Chrome 141 drops the Scaffold's nested
+   `@scope { &[data-…] }` icon rules, so the state swaps are restated here. Players narrower than 32rem switch to a
+   compact bar in the same materials (bottom of this file). Unlayered and loaded after ink-reed.css, which keeps
+   the popups, menus, focus rings, RTL and preference rules. */
+
+@property --bp {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 1px;
+}
+
+@font-face {
+  font-family: "Ink EB Garamond";
+  src: url("../assets/fonts/eb-garamond-var.woff2") format("woff2");
+  font-weight: 400 800;
+  font-display: block;
+}
+
+.media-skin[data-skin="ink-reed"] {
+  --ink-card: #f9f4e8;
+  --ink-black: #0b0806;
+  --ink-track: rgb(222 217 200);
+  --ink-ref-serif: "Ink EB Garamond", "EB Garamond", Garamond, var(--ink-serif);
+  --ink-play-tri: url("../assets/play.webp");
+  --ink-sprite-pause: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 34 44'%3E%3Crect x='7.2' y='9.2' width='6.4' height='25.6' rx='1.6' fill='none' stroke='%23000' stroke-width='2.4'/%3E%3Crect x='20.4' y='9.2' width='6.4' height='25.6' rx='1.6' fill='none' stroke='%23000' stroke-width='2.4'/%3E%3C/svg%3E");
+  --ink-sprite-mute-x: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 40'%3E%3Cpath d='M3.5 14.5l10 10M13.5 14.5l-10 10' fill='none' stroke='%23000' stroke-width='2.2' stroke-linecap='round'/%3E%3C/svg%3E");
+  --ink-sprite-fs-exit: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 42 42'%3E%3Cg fill='none' stroke='%23000' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 15h6V9M9 9l6 6M33 15h-6V9M33 9l-6 6M9 27h6v6M9 33l6-6M33 27h-6v6M33 33l-6-6'/%3E%3C/g%3E%3C/svg%3E");
+  position: relative;
+  display: block;
+  aspect-ratio: 844 / 638;
+  padding: 0;
+  color: var(--ink-black);
+  background: var(--ink-card);
+  background-image: none;
+  border-radius: calc(10 / 844 * 100%) / calc(10 / 638 * 100%);
+  box-shadow: none;
+}
+
+.media-skin[data-skin="ink-reed"] > *,
+.media-skin[data-skin="ink-reed"] media-controls,
+.media-skin[data-skin="ink-reed"] .video-controls-content {
+  --bp: calc(100cqw / 844);
+}
+
+/* the thin gold rule inside the edge (its weight wanders along each side, so the strips are cut from the
+   reference); the band closes it at the foot */
+.media-skin[data-skin="ink-reed"]::before {
+  --bp: calc(100cqw / 844);
+  inset: calc(7 * var(--bp)) calc(9 * var(--bp)) calc(24 * var(--bp));
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  background:
+    url("../assets/frame-top.webp") 0 0 / 100% calc(8 * var(--bp)) no-repeat,
+    url("../assets/frame-left.webp") 0 calc(8 * var(--bp)) / calc(7 * var(--bp)) calc(100% - 8 * var(--bp)) no-repeat,
+    url("../assets/frame-right.webp") 100% calc(8 * var(--bp)) / calc(7 * var(--bp)) calc(100% - 8 * var(--bp)) no-repeat;
+}
+
+/* the gold-leaf band along the foot, cut from the reference */
+.media-skin[data-skin="ink-reed"]::after {
+  --bp: calc(100cqw / 844);
+  inset-inline: calc(12 * var(--bp));
+  bottom: calc(11 * var(--bp));
+  height: calc(13 * var(--bp));
+  background: url("../assets/gold-band.webp") 0 0 / 100% 100% no-repeat;
+  border-radius: 0;
+}
+
+/* the picture: 34px paper margin, 32px from the top; the bar takes the last 174px */
+.media-skin[data-skin="ink-reed"] > :is(video, mux-video, hls-video),
+.media-skin[data-skin="ink-reed"] :is(.media-poster, .media-indicator-group),
+.media-skin[data-skin="ink-reed"] .media-buffering-indicator {
+  position: absolute;
+  inset: auto;
+  left: calc(34 * var(--bp));
+  top: calc(32 * var(--bp));
+  width: calc(100% - 68 * var(--bp));
+  height: calc(100% - 206 * var(--bp));
+  min-height: 0;
+  aspect-ratio: auto;
+  contain: none;
+  border-radius: calc(7 * var(--bp));
+  box-shadow: none;
+}
+
+/* a hairline of shadow along the picture's top edge, as the reference draws it */
+.media-skin[data-skin="ink-reed"] > :is(video, mux-video, hls-video),
+.media-skin[data-skin="ink-reed"] .media-poster {
+  box-shadow: 0 calc(-1 * var(--bp)) 0 rgb(192 179 160);
+}
+
+.media-skin[data-skin="ink-reed"] > :is(video, mux-video, hls-video) {
+  object-fit: cover;
+  background: #0c0907;
+}
+
+.media-skin[data-skin="ink-reed"] .media-poster-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ── the bar: everything on the paper is placed in reference pixels ── */
+.media-skin[data-skin="ink-reed"] media-controls {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.media-skin[data-skin="ink-reed"] .video-controls-content {
+  position: absolute;
+  inset: 0;
+  z-index: auto;
+  grid-area: auto;
+  pointer-events: none;
+}
+
+.media-skin[data-skin="ink-reed"] .video-controls-bottom,
+.media-skin[data-skin="ink-reed"] .video-controls-content:not([data-visible]) .video-controls-bottom {
+  position: absolute;
+  inset: 0;
+  display: block;
+  padding: 0;
+  opacity: 1;
+  translate: none;
+  background: none;
+  pointer-events: none;
+}
+
+.media-skin[data-skin="ink-reed"] :is(.video-controls-slider-row, .video-controls-row, .video-controls-group) {
+  position: static;
+  display: block;
+  padding: 0;
+  border: 0;
+}
+
+.media-skin[data-skin="ink-reed"] .ink-bar :is(.media-button, .media-time-slider, .media-time-group, .ink-divider) {
+  position: absolute;
+  pointer-events: auto;
+}
+
+/* the bar's layers let the picture take clicks; popups and menus take their own */
+.media-skin[data-skin="ink-reed"] .ink-bar :is(.media-popup, media-menu, media-volume-popover) {
+  pointer-events: auto;
+}
+
+/* stock extras the reference does not paint */
+.media-skin[data-skin="ink-reed"] .ink-bar :is(.media-pip-button, .media-airplay-button, .media-cast-button, .media-time-toggle) {
+  display: none;
+}
+
+/* ── buttons: invisible 44px targets centred on the reference glyphs ── */
+.media-skin[data-skin="ink-reed"] .ink-bar .media-button {
+  --cx: 0;
+  --cy: 0;
+  --gw: 44;
+  --gh: 44;
+  --w: max(44px, calc(var(--gw) * var(--bp)));
+  --h: max(44px, calc(var(--gh) * var(--bp)));
+  inset: auto;
+  inset-inline-start: calc(var(--cx) * var(--bp) - var(--w) / 2);
+  bottom: calc(var(--cy) * var(--bp) - var(--h) / 2);
+  width: var(--w);
+  height: var(--h);
+  margin: 0;
+  padding: 0;
+  display: block;
+  color: var(--ink-black);
+  background: transparent;
+  border-radius: 50%;
+  box-shadow: none;
+  transform: none;
+  translate: none;
+}
+
+@media (hover: hover) {
+  .media-skin[data-skin="ink-reed"] .ink-bar .media-button:hover {
+    background-color: transparent;
+  }
+}
+
+.media-skin[data-skin="ink-reed"] .ink-bar .media-button:active {
+  background-color: transparent;
+  transform: none;
+}
+
+/* the glyph layers: ::before is the art, sized in reference pixels around the button's centre */
+.media-skin[data-skin="ink-reed"] .ink-bar .media-button::before,
+.media-skin[data-skin="ink-reed"] .ink-bar .media-button::after {
+  content: "";
+  position: absolute;
+  left: calc(50% + var(--sx, 0) * var(--bp));
+  top: calc(50% + var(--sy, 0) * var(--bp));
+  width: calc(var(--sw, 0) * var(--bp));
+  height: calc(var(--sh, 0) * var(--bp));
+  background: var(--art, none) 0 0 / 100% 100% no-repeat;
+  pointer-events: none;
+}
+
+.media-skin[data-skin="ink-reed"] .ink-bar .media-button::after {
+  left: calc(50% + var(--ax, 0) * var(--bp));
+  top: calc(50% + var(--ay, 0) * var(--bp));
+  width: calc(var(--aw, 0) * var(--bp));
+  height: calc(var(--ah, 0) * var(--bp));
+  background-image: var(--art2, none);
+}
+
+.media-skin[data-skin="ink-reed"] .ink-bar .media-button :is(media-icon, .media-button-icon, .media-button-icon-base, .media-seek-button-content) {
+  display: none;
+}
+
+/* play: the raised disc with its halo (80 x 80), the triangle or the pause bars on it */
+.media-skin[data-skin="ink-reed"] .ink-bar .ink-play {
+  --cx: 72;
+  --cy: 68;
+  --gw: 52;
+  --gh: 52;
+  --sx: -40;
+  --sy: -40;
+  --sw: 80;
+  --sh: 80;
+  --art: url("../assets/play-disc.webp");
+  --ax: -16;
+  --ay: -23;
+  --aw: 34;
+  --ah: 44;
+  --art2: var(--ink-play-tri);
+}
+
+.media-skin[data-skin="ink-reed"] .ink-bar .ink-play[data-started]:not([data-paused], [data-ended]) {
+  --art2: var(--ink-sprite-pause);
+}
+
+.media-skin[data-skin="ink-reed"] .ink-bar .ink-play[data-ended] {
+  --art2: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 34 44'%3E%3Cpath d='M9 15.5a10 10 0 1 1-1.2 9.5' fill='none' stroke='%23000' stroke-width='2.2' stroke-linecap='round'/%3E%3Cpath d='M6.5 10.5l1.6 6.8 6.4-2.4z'/%3E%3C/svg%3E");
+}
+
+.media-skin[data-skin="ink-reed"] .ink-bar .ink-play:focus-visible {
+  border-radius: 50%;
+}
+
+/* ±15 s */
+.media-skin[data-skin="ink-reed"] .ink-bar .ink-skip-back {
+  --cx: 147;
+  --cy: 70;
+  --sx: -23;
+  --sy: -23;
+  --sw: 46;
+  --sh: 46;
+  --art: url("../assets/skip-back.webp");
+}
+
+.media-skin[data-skin="ink-reed"] .ink-bar .ink-skip-forward {
+  --cx: 221;
+  --cy: 70;
+  --sx: -23;
+  --sy: -23;
+  --sw: 46;
+  --sh: 46;
+  --art: url("../assets/skip-forward.webp");
+}
+
+/* speaker: body + waves; muted swaps the waves for a cross */
+.media-skin[data-skin="ink-reed"] .ink-bar .media-mute-button {
+  --cx: 298;
+  --cy: 69;
+  --sx: -22;
+  --sy: -20;
+  --sw: 26;
+  --sh: 40;
+  --art: url("../assets/speaker.webp");
+  --ax: 4;
+  --ay: -20;
+  --aw: 18;
+  --ah: 40;
+  --art2: url("../assets/waves.webp");
+}
+
+.media-skin[data-skin="ink-reed"] .ink-bar .media-mute-button[data-muted] {
+  --art2: var(--ink-sprite-mute-x);
+}
+
+/* captions: the speech bubble with a live "CC" label; on, the bubble is inked */
+.media-skin[data-skin="ink-reed"] .ink-bar .media-captions-button {
+  --cx: 374;
+  --cy: 69;
+  --sx: -22;
+  --sy: -22;
+  --sw: 44;
+  --sh: 44;
+  --art: url("../assets/bubble.webp");
+}
+
+.media-skin[data-skin="ink-reed"] .ink-bar .media-captions-button[data-active] {
+  background-color: transparent;
+}
+
+.media-skin[data-skin="ink-reed"] .ink-bar .ink-cc {
+  position: absolute;
+  left: calc(50% - 11 * var(--bp));
+  top: calc(50% - 12 * var(--bp));
+  width: calc(23 * var(--bp));
+  height: calc(18 * var(--bp));
+  display: grid;
+  place-items: center;
+  font: 700 calc(12.6 * var(--bp)) / 1 "Ink Sans", ui-sans-serif, system-ui, "Segoe UI", Roboto, Arial, sans-serif;
+  letter-spacing: calc(0.2 * var(--bp));
+  color: var(--ink-black);
+  border-radius: calc(2 * var(--bp));
+  pointer-events: none;
+}
+
+.media-skin[data-skin="ink-reed"] .ink-bar .media-captions-button[data-active] .ink-cc {
+  color: var(--ink-card);
+  background: var(--ink-black);
+}
+
+/* the hairline between the transport and the page tools */
+.media-skin[data-skin="ink-reed"] .ink-bar .ink-divider {
+  inset-inline-start: calc(420 * var(--bp));
+  bottom: calc(54 * var(--bp));
+  width: calc(2 * var(--bp));
+  height: calc(32 * var(--bp));
+  background: rgb(223 216 201);
+  pointer-events: none;
+}
+
+/* speed: the live rate in the serif ("1×") */
+.media-skin[data-skin="ink-reed"] .ink-bar button[commandfor] {
+  --cx: 464;
+  --cy: 69;
+  --gw: 50;
+}
+
+.media-skin[data-skin="ink-reed"] .ink-bar .ink-rate {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  translate: calc(-1 * var(--bp)) 0;
+  font-family: var(--ink-ref-serif);
+  font-size: calc(30 * var(--bp));
+  font-weight: 400;
+  line-height: 1;
+  font-variant-numeric: lining-nums;
+  color: var(--ink-black);
+  white-space: nowrap;
+  direction: ltr;
+  unicode-bidi: isolate;
+  pointer-events: none;
+}
+
+.media-skin[data-skin="ink-reed"] .ink-bar .ink-rate-x {
+  /* the reference's multiplication sign is a hairline cross, lighter than the font's */
+  display: inline-block;
+  width: calc(17 * var(--bp));
+  height: calc(16 * var(--bp));
+  margin-inline-start: calc(0.5 * var(--bp));
+  overflow: hidden;
+  color: transparent;
+  font-size: 0;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 15'%3E%3Cpath d='M1.2 1.2l13.6 12.6M14.8 1.2L1.2 13.8' fill='none' stroke='%23000' stroke-width='1.45' stroke-linecap='round'/%3E%3C/svg%3E") 0 0 / 100% 100% no-repeat;
+  translate: 0 calc(1 * var(--bp));
+}
+
+.media-skin[data-skin="ink-reed"] .ink-bar button[commandfor][aria-expanded="true"] {
+  background-color: transparent;
+}
+
+/* fullscreen */
+.media-skin[data-skin="ink-reed"] .ink-bar .media-fullscreen-button {
+  --cx: 539;
+  --cy: 70;
+  --sx: -21;
+  --sy: -21;
+  --sw: 42;
+  --sh: 42;
+  --art: url("../assets/fullscreen.webp");
+}
+
+.media-skin[data-skin="ink-reed"] .ink-bar .media-fullscreen-button[data-fullscreen] {
+  --art: var(--ink-sprite-fs-exit);
+}
+
+/* time: serif numerals, right-aligned on the reference's right edge */
+.media-skin[data-skin="ink-reed"] .ink-bar .media-time-group {
+  inset: auto;
+  inset-inline-end: calc(51 * var(--bp));
+  bottom: calc(47 * var(--bp));
+  height: calc(44 * var(--bp));
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  font-family: var(--ink-ref-serif);
+  font-size: calc(25.5 * var(--bp));
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0;
+  font-variant-numeric: lining-nums proportional-nums;
+  color: var(--ink-black);
+  pointer-events: none;
+}
+
+.media-skin[data-skin="ink-reed"] .ink-bar :is(.media-time-current-value, .media-time-separator, .media-time-duration-value) {
+  display: inline;
+  color: var(--ink-black);
+  opacity: 1;
+}
+
+.media-skin[data-skin="ink-reed"] .ink-bar .media-time-separator {
+  padding-inline: calc(4.6 * var(--bp));
+}
+
+/* ── timeline: the reed pen. A 5px rule, the pen's body is the played stroke, its nib + drop the playhead ── */
+.media-skin[data-skin="ink-reed"] .ink-bar .media-time-slider {
+  inset: auto;
+  left: calc(51 * var(--bp));
+  bottom: calc(133.5 * var(--bp) - 22px);
+  width: calc(100% - 104 * var(--bp));
+  height: 44px;
+  padding: 0;
+  margin: 0;
+  --ink-track-h: calc(5 * var(--bp));
+}
+
+.media-skin[data-skin="ink-reed"] .ink-bar .media-time-slider-track {
+  inset: auto;
+  left: 0;
+  right: 0;
+  top: calc(50% - 2.5 * var(--bp));
+  width: auto;
+  height: calc(5 * var(--bp));
+  background: var(--ink-track);
+  border-radius: calc(2.5 * var(--bp));
+  overflow: visible;
+  isolation: auto;
+}
+
+.media-skin[data-skin="ink-reed"] .ink-bar .media-time-slider-track::before,
+.media-skin[data-skin="ink-reed"] .ink-bar .media-time-slider-track::after,
+.media-skin[data-skin="ink-reed"] .ink-bar .media-time-slider-buffer {
+  display: none;
+}
+
+.media-skin[data-skin="ink-reed"] .ink-bar .media-time-slider-fill,
+.media-skin[data-skin="ink-reed"] .ink-bar .media-time-slider[data-dragging] .media-time-slider-fill {
+  inset: 0 auto 0 0;
+  width: var(--media-slider-fill, 0%);
+  clip-path: none;
+  -webkit-mask: none;
+  mask: none;
+  background: none;
+  border-radius: 0;
+  overflow: visible;
+}
+
+.media-skin[data-skin="ink-reed"] .ink-bar .media-time-slider-fill::before {
+  content: "";
+  position: absolute;
+  left: calc(-5 * var(--bp));
+  right: calc(49.47 * var(--bp));
+  top: calc(2.5 * var(--bp) - 14.5 * var(--bp) - 0.5 * var(--bp));
+  height: calc(29 * var(--bp));
+  background: url("../assets/pen-body.webp") 0 0 / 100% 100% no-repeat;
+}
+
+.media-skin[data-skin="ink-reed"] .ink-bar .media-time-slider-thumb {
+  z-index: 2;
+  width: calc(24 * var(--bp));
+  height: calc(24 * var(--bp));
+  min-width: 16px;
+  min-height: 16px;
+  background: none;
+  border: 0;
+  border-radius: 50%;
+  box-shadow: none;
+  overflow: visible;
+}
+
+.media-skin[data-skin="ink-reed"] .ink-bar .media-time-slider-thumb::before {
+  inset: auto;
+  left: calc(50% - 49.47 * var(--bp));
+  top: calc(50% - 16.5 * var(--bp));
+  right: auto;
+  width: calc(64 * var(--bp));
+  height: calc(50 * var(--bp));
+  translate: none;
+  background: url("../assets/pen-nib.webp") 0 0 / 100% 100% no-repeat;
+  filter: none;
+  transition: none;
+}
+
+.media-skin[data-skin="ink-reed"] .ink-bar .media-time-slider-thumb::after {
+  display: none;
+}
+
+.media-skin[data-skin="ink-reed"] .ink-bar .media-time-slider:is([data-pointing], [data-dragging]) .media-time-slider-thumb::before {
+  scale: none;
+}
+
+/* ── fullscreen: the card fills the screen; the bar keeps a height-led scale so the picture gets the room ── */
+.media-skin[data-skin="ink-reed"]:fullscreen,
+:fullscreen > .media-skin[data-skin="ink-reed"],
+:fullscreen .media-skin[data-skin="ink-reed"] {
+  aspect-ratio: auto;
+}
+
+.media-skin[data-skin="ink-reed"]:fullscreen > *,
+.media-skin[data-skin="ink-reed"]:fullscreen media-controls,
+.media-skin[data-skin="ink-reed"]:fullscreen .video-controls-content,
+.media-skin[data-skin="ink-reed"]:fullscreen::before,
+.media-skin[data-skin="ink-reed"]:fullscreen::after {
+  --bp: min(calc(100cqw / 844), calc(100vh / 1000));
+}
+
+/* ── compact: under 32rem the bar becomes two rows with fixed 44px targets ── */
+@container media-root (width < 32rem) {
+  .media-skin[data-skin="ink-reed"] > :is(video, mux-video, hls-video),
+  .media-skin[data-skin="ink-reed"] :is(.media-poster, .media-indicator-group),
+  .media-skin[data-skin="ink-reed"] .media-buffering-indicator {
+    left: 12px;
+    top: 12px;
+    width: calc(100% - 24px);
+    height: calc(100% - 12px - 116px);
+    border-radius: 5px;
+  }
+
+  .media-skin[data-skin="ink-reed"] .ink-bar .media-time-slider {
+    left: 22px;
+    width: calc(100% - 44px);
+    bottom: 64px;
+  }
+
+  .media-skin[data-skin="ink-reed"] .ink-bar .media-time-group {
+    inset-inline-end: 18px;
+    bottom: 90px;
+    height: 20px;
+    font-size: 14px;
+  }
+
+  .media-skin[data-skin="ink-reed"] .ink-bar .media-time-separator {
+    padding-inline: 3px;
+  }
+
+  .media-skin[data-skin="ink-reed"] .ink-bar .media-button {
+    --bp: 0.62px;
+    --w: 44px;
+    --h: 44px;
+    bottom: 14px;
+  }
+
+  /* seven targets spread across the row */
+  .media-skin[data-skin="ink-reed"] .ink-bar .ink-play { inset-inline-start: calc(14px + (100% - 28px - 44px) * 0 / 6); }
+  .media-skin[data-skin="ink-reed"] .ink-bar .ink-skip-back { inset-inline-start: calc(14px + (100% - 28px - 44px) * 1 / 6); }
+  .media-skin[data-skin="ink-reed"] .ink-bar .ink-skip-forward { inset-inline-start: calc(14px + (100% - 28px - 44px) * 2 / 6); }
+  .media-skin[data-skin="ink-reed"] .ink-bar .media-mute-button { inset-inline-start: calc(14px + (100% - 28px - 44px) * 3 / 6); }
+  .media-skin[data-skin="ink-reed"] .ink-bar .media-captions-button { inset-inline-start: calc(14px + (100% - 28px - 44px) * 4 / 6); }
+  .media-skin[data-skin="ink-reed"] .ink-bar button[commandfor] { inset-inline-start: calc(14px + (100% - 28px - 44px) * 5 / 6); }
+  .media-skin[data-skin="ink-reed"] .ink-bar .media-fullscreen-button { inset-inline-start: calc(14px + (100% - 28px - 44px) * 6 / 6); }
+
+  .media-skin[data-skin="ink-reed"] .ink-bar .ink-divider {
+    display: none;
+  }
+}
+
+/* very narrow: the skips give way so the row never overflows */
+@container media-root (width < 21rem) {
+  .media-skin[data-skin="ink-reed"] .ink-bar :is(.ink-skip-back, .ink-skip-forward) {
+    display: none;
+  }
+
+  .media-skin[data-skin="ink-reed"] .ink-bar .ink-play { inset-inline-start: calc(10px + (100% - 20px - 44px) * 0 / 4); }
+  .media-skin[data-skin="ink-reed"] .ink-bar .media-mute-button { inset-inline-start: calc(10px + (100% - 20px - 44px) * 1 / 4); }
+  .media-skin[data-skin="ink-reed"] .ink-bar .media-captions-button { inset-inline-start: calc(10px + (100% - 20px - 44px) * 2 / 4); }
+  .media-skin[data-skin="ink-reed"] .ink-bar button[commandfor] { inset-inline-start: calc(10px + (100% - 20px - 44px) * 3 / 4); }
+  .media-skin[data-skin="ink-reed"] .ink-bar .media-fullscreen-button { inset-inline-start: calc(10px + (100% - 20px - 44px) * 4 / 4); }
+}
+
+@media (forced-colors: active) {
+  .media-skin[data-skin="ink-reed"] .ink-bar .media-button::before,
+  .media-skin[data-skin="ink-reed"] .ink-bar .media-button::after,
+  .media-skin[data-skin="ink-reed"] .ink-bar .media-time-slider-fill::before {
+    forced-color-adjust: none;
+  }
+}

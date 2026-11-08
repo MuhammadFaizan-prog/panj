@@ -24,7 +24,7 @@ body.ink-page .leaf {
   position: relative;
   box-sizing: border-box;
   max-width: 1160px;
-  margin: clamp(0px, 3vw, 40px) auto;
+  margin: clamp(16px, 3vw, 40px) auto;
   padding: clamp(16px, 3.4vw, 52px) clamp(12px, 4vw, 60px) clamp(24px, 3vw, 44px);
   background: var(--leaf);
   /* double rule (jadval) framing the text block */
@@ -60,7 +60,7 @@ body.ink-page .back:hover {
   text-align: center;
 }
 
-.leaf-head h1 {
+.leaf-head .leaf-title {
   margin: 0;
   font-size: clamp(2rem, 4.4vw, 3.4rem);
   font-weight: 400;
@@ -75,7 +75,7 @@ body.ink-page .back:hover {
 }
 
 /* a small gold fleuron between title and subtitle */
-.leaf-head h1::after {
+.leaf-head .leaf-title::after {
   content: "";
   display: block;
   width: 64px;
@@ -84,9 +84,87 @@ body.ink-page .back:hover {
   background: linear-gradient(90deg, transparent, var(--leaf-gold) 30% 70%, transparent);
 }
 
-body.ink-page #stage {
+/* ── hero: Faizi's reference, rebuilt. The plate (assets/plate.webp, 1408 x 768) is the reference itself; the live
+   player is the card, placed exactly on it in plate pixels (card 282, 65, 844 x 638). ── */
+.ir-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* hidden until focused: the reference paints no navigation */
+.ir-skip {
+  position: absolute;
+  z-index: 10;
+  left: 12px;
+  top: 8px;
+  padding: 0 14px;
+  border-radius: 22px;
+  background: #fbf7ee;
+  color: var(--leaf-ink);
+  border: 1px solid var(--leaf-gold);
+  font: 15px/42px var(--leaf-serif);
+  text-decoration: none;
+  translate: 0 -200%;
+}
+
+.ir-skip:focus-visible {
+  translate: none;
+}
+
+.ir-hero {
+  position: relative;
+  overflow: hidden;
+  background: #ece8de url("./assets/backdrop.webp") center / cover no-repeat;
+  isolation: isolate;
+}
+
+.ir-plate {
+  position: relative;
+  width: min(100%, calc(100svh * 1408 / 768));
+  min-width: 700px;
+  margin-inline: auto;
+  aspect-ratio: 1408 / 768;
+  container-type: inline-size;
+  background: url("./assets/plate.webp") 0 0 / 100% 100% no-repeat;
+}
+
+body.ink-page .ir-plate > #stage {
+  position: absolute;
+  left: calc(282 / 1408 * 100cqw);
+  top: calc(65 / 1408 * 100cqw);
+  width: calc(844 / 1408 * 100cqw);
+  height: calc(638 / 1408 * 100cqw);
   aspect-ratio: auto;
-  background: none;
+  background: transparent;
+}
+
+/* phones: the paper stays behind, the card spans the width */
+@media (max-width: 699.98px) {
+  .ir-plate {
+    width: 100%;
+    min-width: 0;
+    aspect-ratio: auto;
+    padding: 40px 12px 36px;
+    box-sizing: border-box;
+    background: none;
+  }
+
+  .ir-hero {
+    background: #efebe1;
+  }
+
+  body.ink-page .ir-plate > #stage {
+    position: relative;
+    left: auto;
+    top: auto;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 3.75;
+  }
 }
 
 .leaf-tools {
@@ -173,8 +251,10 @@ body.ink-page #stage {
   }
 }
 
-/* gallery.css sizes `#stage .media-skin` as a block (ID specificity); the Ink & Reed leaf is a grid
-   (picture row + paper bar), so restore it on this route. */
+/* the card fills the stage the page gives it */
 body.ink-page #stage .media-skin[data-skin="ink-reed"] {
-  display: grid;
+  display: block;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: auto;
 }
