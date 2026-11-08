@@ -1,586 +1,786 @@
-/* Darkroom: the art layer.
-   A matte black anodised deck under a safelight. The seek bar is a strip of 35 mm film,
-   the time is a seven-segment LED, the buttons are chunky push buttons with status LEDs.
+/* Darkroom: the film-lab unit as Faizi's locked reference paints it (darkroom-ref.webp, 1408 x 768).
+   The player is the whole unit, 756 x 648 reference pixels: a monitor in a safelight-red bezel, a strip of 35 mm film
+   running under it, and a matte deck with a play/pause key, a volume knob, a seven-segment clock and four push keys
+   with status LEDs. Every size is in reference pixels times --bp (one reference pixel at the current player width).
 
-   Layering: `utilities.darkroom` beats the Scaffold (`components`) but loses to the shared
-   essentials (`utilities`), so 44px targets, focus rings and reduced motion always win. */
+   Materials are cut from the reference by tools/build_assets.py (card, film, loupe, LEDs, key faces); the in-picture
+   bar, the clock (an original seven-segment font), the knob pointer and every state are live CSS and HTML.
+   Unlayered on purpose: it beats the Scaffold (`components`) and the shared essentials (`utilities`), so this file
+   restates their 44px targets with max(44px, …) and never touches `outline` (the essentials' focus ring stays).
+   Plain selectors, no nested `@scope { &[data-…] }`: Chrome 141 drops those, so every state swap is restated here. */
+
+@property --bp {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 1px;
+}
 
 @font-face {
   font-family: "Darkroom Segments";
   src: url("../fonts/darkroom-segments.woff") format("woff");
   font-display: block;
-  unicode-range: U+0020, U+002D-003A; /* space - . / 0-9 : */
+  unicode-range: U+0020, U+002D-003A;
 }
 
-@layer utilities.darkroom {
-  .media-skin[data-skin="darkroom"] {
-    --dr-deck-pad: 8px;
-    --media-caption-controls-y: -112px; /* keep captions above the deck */
-    background-color: #000;
+.media-skin[data-skin="darkroom"] {
+  --dr-red: #ff3d1f;
+  --dr-led: rgb(226 70 58);
+  --dr-led-glow: rgb(255 40 20 / 0.55);
+  --dr-sans: "Inter", "Helvetica Neue", Helvetica, Arial, "Liberation Sans", "DejaVu Sans", sans-serif;
+  --media-caption-controls-y: -44px;
+  position: relative;
+  display: flow-root;
+  aspect-ratio: 756 / 648;
+  min-height: auto; /* the compact unit's in-flow deck may grow it past the ratio */
+  padding: 0;
+  overflow: visible;
+  color: #f2ece6;
+  /* 100% auto: the same as 100% 100% for the wide unit, and the compact unit (taller) keeps the top undistorted */
+  background: #151311 url("../assets/card.webp") 0 0 / 100% auto no-repeat;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.media-skin[data-skin="darkroom"] > *,
+.media-skin[data-skin="darkroom"] media-controls,
+.media-skin[data-skin="darkroom"] .video-controls-content {
+  --bp: calc(100cqw / 756);
+}
+
+.media-skin[data-skin="darkroom"]::before,
+.media-skin[data-skin="darkroom"]::after {
+  content: none;
+}
+
+/* ── the monitor: the picture sits in the bezel at (23, 18), 710 x 345 ── */
+.media-skin[data-skin="darkroom"] > :is(video, mux-video, hls-video),
+.media-skin[data-skin="darkroom"] :is(.media-poster, .media-indicator-group),
+.media-skin[data-skin="darkroom"] .media-buffering-indicator {
+  position: absolute;
+  inset: auto;
+  left: calc(23 * var(--bp));
+  top: calc(18 * var(--bp));
+  width: calc(710 * var(--bp));
+  height: calc(345 * var(--bp));
+  min-height: 0;
+  aspect-ratio: auto;
+  contain: none;
+  border-radius: calc(6 * var(--bp));
+  box-shadow: none;
+}
+
+.media-skin[data-skin="darkroom"] > :is(video, mux-video, hls-video) {
+  object-fit: cover;
+  background: #050404;
+}
+
+.media-skin[data-skin="darkroom"] .media-poster-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: inherit;
+}
+
+.media-skin[data-skin="darkroom"]:fullscreen {
+  aspect-ratio: auto;
+  width: 100%;
+  height: 100%;
+}
+
+/* ── layers ── */
+.media-skin[data-skin="darkroom"] media-controls {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.media-skin[data-skin="darkroom"] .video-controls-backdrop {
+  display: none;
+}
+
+.media-skin[data-skin="darkroom"] .video-controls-content {
+  position: absolute;
+  inset: 0;
+  z-index: auto;
+  pointer-events: none;
+}
+
+/* ── the bar inside the picture: thin seek line, play, time, settings and fullscreen ── */
+.media-skin[data-skin="darkroom"] .dr-screen {
+  position: absolute;
+  inset: 0;
+  display: block;
+  padding: 0;
+  gap: 0;
+  background: none;
+  opacity: 1;
+  pointer-events: none;
+  transition: opacity 0.25s ease-out;
+}
+
+.media-skin[data-skin="darkroom"] .video-controls-content:not([data-visible]) .dr-screen {
+  opacity: 0;
+}
+
+.media-skin[data-skin="darkroom"] .video-controls-content:not([data-visible]) .dr-screen * {
+  pointer-events: none;
+}
+
+.media-skin[data-skin="darkroom"] .dr-screen :is(.video-controls-slider-row, .video-controls-row) {
+  position: static;
+  display: block;
+  padding: 0;
+  border: 0;
+}
+
+.media-skin[data-skin="darkroom"] .dr-screen :is(.media-time-slider, .media-button, .media-time-group) {
+  position: absolute;
+  pointer-events: auto;
+}
+
+.media-skin[data-skin="darkroom"] .dr-screen :is(.media-popup, media-menu) {
+  pointer-events: auto;
+}
+
+/* seek line: 4px at y 320, x 39-717; a 6px dot rides its end */
+.media-skin[data-skin="darkroom"] .dr-screen .media-time-slider {
+  left: calc(39 * var(--bp));
+  top: calc(322 * var(--bp) - 22px);
+  width: calc(678 * var(--bp));
+  height: 44px;
+  margin: 0;
+  padding: 0;
+  display: block;
+  cursor: pointer;
+  touch-action: none;
+}
+
+.media-skin[data-skin="darkroom"] .dr-screen .media-time-slider-track {
+  position: absolute;
+  inset: auto 0;
+  top: calc(50% - 2 * var(--bp));
+  width: 100%;
+  height: calc(4 * var(--bp));
+  margin: 0;
+  overflow: hidden;
+  border-radius: 0;
+  background: rgb(60 60 60);
+  box-shadow: none;
+}
+
+.media-skin[data-skin="darkroom"] .dr-screen .media-time-slider-buffer {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: var(--media-slider-buffer, 0%);
+  height: 100%;
+  background: rgb(111 111 111);
+  border-radius: 0;
+}
+
+.media-skin[data-skin="darkroom"] .dr-screen .media-time-slider-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: var(--media-slider-fill, 0%);
+  height: 100%;
+  background: rgb(226 226 226);
+  border-radius: 0;
+}
+
+.media-skin[data-skin="darkroom"] .dr-screen .media-time-slider-thumb {
+  position: absolute;
+  top: 50%;
+  left: var(--media-slider-fill, 0%);
+  width: calc(6 * var(--bp));
+  height: calc(6 * var(--bp));
+  margin: 0;
+  translate: -50% -50%;
+  border: 0;
+  border-radius: 50%;
+  background: rgb(236 236 236);
+  box-shadow: none;
+  opacity: 1;
+  scale: 1;
+}
+
+.media-skin[data-skin="darkroom"] .dr-screen .media-time-slider:is(:hover, [data-dragging]) .media-time-slider-thumb {
+  scale: 1.6;
+}
+
+.media-skin[data-skin="darkroom"] .dr-screen .media-time-slider-preview {
+  bottom: calc(100% + 4px);
+}
+
+/* in-picture buttons: invisible 44px targets around small white glyphs */
+.media-skin[data-skin="darkroom"] .dr-screen .media-button {
+  --cx: 0;
+  --cy: 343.5;
+  --w: max(44px, calc(36 * var(--bp)));
+  inset: auto;
+  left: calc(var(--cx) * var(--bp) - var(--w) / 2);
+  top: calc(var(--cy) * var(--bp) - var(--w) / 2);
+  width: var(--w);
+  height: var(--w);
+  margin: 0;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  color: #ececec;
+  background: transparent;
+  border: 0;
+  border-radius: 50%;
+  transform: none;
+  translate: none;
+}
+
+.media-skin[data-skin="darkroom"] .dr-screen .media-button:is(:hover, :active, [aria-expanded="true"]) {
+  background: rgb(255 255 255 / 0.08);
+}
+
+.media-skin[data-skin="darkroom"] .dr-screen .media-settings-button-label {
+  display: none;
+}
+
+.media-skin[data-skin="darkroom"] .dr-screen .dr-screen-play {
+  --cx: 68.5;
+}
+
+.media-skin[data-skin="darkroom"] .dr-screen .dr-screen-play :is(.media-button-icon-base, media-icon) {
+  display: none;
+}
+
+.media-skin[data-skin="darkroom"] .dr-screen .dr-screen-play::before {
+  content: "";
+  width: calc(14 * var(--bp));
+  height: calc(15 * var(--bp));
+  translate: calc(1 * var(--bp)) 0;
+  background: currentColor;
+  clip-path: polygon(0 0, 100% 50%, 0 100%);
+}
+
+.media-skin[data-skin="darkroom"] .dr-screen .dr-screen-play:not([data-paused]):not([data-ended])::before {
+  width: calc(12 * var(--bp));
+  height: calc(14 * var(--bp));
+  translate: 0 0;
+  background: linear-gradient(90deg, currentColor 0 34%, transparent 34% 66%, currentColor 66%);
+  clip-path: none;
+}
+
+.media-skin[data-skin="darkroom"] .dr-screen .dr-screen-play[data-ended]::before {
+  width: calc(15 * var(--bp));
+  height: calc(15 * var(--bp));
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.2 9a5 5 0 1 0 1.6-4.6' fill='none' stroke='%23ececec' stroke-width='1.8'/%3E%3Cpath d='M2.2 1.6v4.4h4.4z' fill='%23ececec'/%3E%3C/svg%3E") center / contain no-repeat;
+  clip-path: none;
+}
+
+.media-skin[data-skin="darkroom"] .dr-screen .dr-screen-gear {
+  --cx: 649;
+}
+
+.media-skin[data-skin="darkroom"] .dr-screen .dr-screen-gear .media-button-icon {
+  width: max(14px, calc(17 * var(--bp)));
+  height: max(14px, calc(17 * var(--bp)));
+  color: #dcdcdc;
+}
+
+.media-skin[data-skin="darkroom"] .dr-screen .dr-screen-fullscreen {
+  --cx: 686.5;
+  cursor: pointer;
+}
+
+.media-skin[data-skin="darkroom"] .dr-screen .dr-screen-glyph {
+  width: max(14px, calc(17 * var(--bp)));
+  height: max(12px, calc(15 * var(--bp)));
+  color: #dcdcdc;
+}
+
+.media-skin[data-skin="darkroom"] .dr-screen .media-time-group {
+  left: calc(95.5 * var(--bp));
+  top: calc(337.5 * var(--bp));
+  height: calc(12 * var(--bp));
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  font-family: var(--dr-sans);
+  font-size: max(11px, calc(15 * var(--bp)));
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0;
+  font-variant-numeric: tabular-nums;
+  color: #f1f1f1;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.media-skin[data-skin="darkroom"] .dr-screen :is(.media-time-current-value, .media-time-separator, .media-time-duration-value) {
+  display: inline-flex;
+  color: inherit;
+  opacity: 1;
+}
+
+.media-skin[data-skin="darkroom"] .dr-screen .media-time-separator {
+  padding-inline: calc(4 * var(--bp));
+}
+
+.media-skin[data-skin="darkroom"] .dr-screen :is(.media-time-separator, .media-time-duration-value) {
+  color: rgb(178 178 178);
+}
+
+.media-skin[data-skin="darkroom"] media-time[data-dr-pad]::before {
+  content: "0";
+}
+
+/* ── the film: runs through the gate as the video plays; the loupe stays on the current frame ── */
+.media-skin[data-skin="darkroom"] .dr-film {
+  --dr-shift: 0;
+  position: absolute;
+  z-index: 11;
+  left: 0;
+  top: calc(375 * var(--bp));
+  width: 100%;
+  height: calc(152 * var(--bp));
+  display: block;
+  cursor: grab;
+  touch-action: none;
+  outline-offset: -4px;
+}
+
+.media-skin[data-skin="darkroom"] .dr-film[data-dragging] {
+  cursor: grabbing;
+}
+
+.media-skin[data-skin="darkroom"] .dr-film-strip {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    url("../assets/film.webp") calc(-1 * var(--dr-shift) * var(--bp)) 0 / calc(756 * var(--bp)) 100% no-repeat,
+    url("../assets/film-tile.webp") calc((19 - var(--dr-shift)) * var(--bp)) 0 / calc(717 * var(--bp)) 100% repeat-x;
+}
+
+.media-skin[data-skin="darkroom"] .dr-film-loupe {
+  position: absolute;
+  left: calc(270 * var(--bp));
+  top: 0;
+  width: calc(220 * var(--bp));
+  height: 100%;
+  pointer-events: none;
+  background: url("../assets/loupe.webp") 0 0 / 100% 100% no-repeat;
+}
+
+/* ── the deck ── */
+.media-skin[data-skin="darkroom"] .dr-deck {
+  position: absolute;
+  z-index: 12;
+  left: 0;
+  top: calc(527 * var(--bp));
+  width: 100%;
+  height: calc(121 * var(--bp));
+  display: block;
+  pointer-events: none;
+}
+
+.media-skin[data-skin="darkroom"] .dr-deck > :is(.media-button, .dr-knob, .media-time-group) {
+  position: absolute;
+  pointer-events: auto;
+}
+
+.media-skin[data-skin="darkroom"] .dr-deck .media-button {
+  --cx: 0;
+  --cy: 63;
+  --gw: 44;
+  --gh: 44;
+  --w: max(44px, calc(var(--gw) * var(--bp)));
+  --h: max(44px, calc(var(--gh) * var(--bp)));
+  inset: auto;
+  left: calc(var(--cx) * var(--bp) - var(--w) / 2);
+  top: calc(var(--cy) * var(--bp) - var(--h) / 2);
+  width: var(--w);
+  height: var(--h);
+  margin: 0;
+  padding: 0;
+  display: block;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  border-radius: 50%;
+  transform: none;
+  translate: none;
+  cursor: pointer;
+}
+
+.media-skin[data-skin="darkroom"] .dr-deck .media-button :is(media-icon, .media-button-icon, .media-button-icon-base) {
+  display: none;
+}
+
+/* the art layer of a key, centred on the key in reference pixels */
+.media-skin[data-skin="darkroom"] .dr-deck .media-button::before {
+  content: none;
+  position: absolute;
+  left: calc(50% - var(--fw, 0) * var(--bp) / 2);
+  top: calc(50% - var(--fh, 0) * var(--bp) / 2);
+  width: calc(var(--fw, 0) * var(--bp));
+  height: calc(var(--fh, 0) * var(--bp));
+  pointer-events: none;
+  background: var(--face, none) var(--fx, 0) var(--fy, 0) / var(--fs, 100% 100%) no-repeat;
+}
+
+.media-skin[data-skin="darkroom"] .dr-deck .media-button:active::before {
+  filter: brightness(0.86);
+  translate: 0 calc(1 * var(--bp));
+}
+
+.media-skin[data-skin="darkroom"] .dr-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* play / pause: the brushed key at (26, 30) 86 x 69; playing lights the triangle instead of the bars */
+.media-skin[data-skin="darkroom"] .dr-deck .dr-key-play {
+  --cx: 69;
+  --cy: 64.5;
+  --gw: 86;
+  --gh: 69;
+  --fw: 86;
+  --fh: 69;
+  border-radius: calc(10 * var(--bp));
+}
+
+.media-skin[data-skin="darkroom"] .dr-deck .dr-key-play:not([data-paused]):not([data-ended])::before {
+  content: "";
+  --face: url("../assets/play-live.webp");
+}
+
+/* volume knob: centre (183.5, 62.5); drag it up or down, or Tab to it and use the arrows; the cap mutes */
+.media-skin[data-skin="darkroom"] .dr-knob {
+  left: calc(131.5 * var(--bp));
+  top: calc(10.5 * var(--bp));
+  width: calc(104 * var(--bp));
+  height: calc(104 * var(--bp));
+  pointer-events: none;
+}
+
+.media-skin[data-skin="darkroom"] .dr-knob-slider {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  min-width: 44px;
+  height: 100%;
+  min-height: 44px;
+  margin: 0;
+  padding: 0;
+  display: block;
+  border-radius: 50%;
+  cursor: ns-resize;
+  touch-action: none;
+  pointer-events: auto;
+}
+
+.media-skin[data-skin="darkroom"] .dr-knob-slider :is(.media-volume-slider-track, .media-volume-slider-fill) {
+  opacity: 0;
+}
+
+.media-skin[data-skin="darkroom"] .dr-knob-slider .media-volume-slider-thumb {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  translate: none;
+  transform: none;
+  background: transparent;
+  border: 0;
+  border-radius: 50%;
+  opacity: 1;
+  box-shadow: none;
+}
+
+.media-skin[data-skin="darkroom"] .dr-knob-pointer {
+  --dr-angle: calc(-150deg + 300deg * var(--dr-vol, 1));
+  position: absolute;
+  left: calc(50% - 1.6 * var(--bp));
+  top: calc(50% - 25 * var(--bp));
+  width: calc(3.2 * var(--bp));
+  height: calc(25 * var(--bp));
+  transform-origin: 50% 100%;
+  rotate: var(--dr-angle);
+  pointer-events: none;
+  background: linear-gradient(to bottom, transparent 0 2%, rgb(205 48 38) 2% 52%, transparent 52%);
+  border-radius: calc(1.6 * var(--bp));
+  transition: rotate 0.12s ease-out;
+}
+
+.media-skin[data-skin="darkroom"] .dr-deck[data-muted] .dr-knob-pointer {
+  background: linear-gradient(to bottom, transparent 0 2%, rgb(96 88 84) 2% 52%, transparent 52%);
+}
+
+.media-skin[data-skin="darkroom"] .dr-knob .dr-knob-cap {
+  --w: max(44px, calc(44 * var(--bp)));
+  left: calc(50% - var(--w) / 2);
+  top: calc(50% - var(--w) / 2);
+  width: var(--w);
+  height: var(--w);
+  pointer-events: auto;
+}
+
+/* the clock: seven-segment LED digits, current at x 268, duration at x 396 */
+.media-skin[data-skin="darkroom"] .dr-deck .dr-clock {
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  display: block;
+  font-family: "Darkroom Segments", ui-monospace, monospace;
+  font-size: calc(40 * var(--bp));
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: 0;
+  color: rgb(222 70 60);
+  text-shadow:
+    0 0 calc(1.5 * var(--bp)) rgb(255 60 40 / 0.55),
+    0 0 calc(6 * var(--bp)) rgb(255 30 15 / 0.45);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.media-skin[data-skin="darkroom"] .dr-clock :is(.media-time-current-value, .media-time-separator, .media-time-duration-value) {
+  position: absolute;
+  top: calc(46 * var(--bp));
+  display: flex;
+  color: inherit;
+  opacity: 1;
+}
+
+.media-skin[data-skin="darkroom"] .dr-clock .media-time-current-value {
+  left: calc(266.4 * var(--bp));
+}
+
+.media-skin[data-skin="darkroom"] .dr-clock .media-time-separator {
+  left: calc(371.5 * var(--bp));
+  padding: 0;
+}
+
+.media-skin[data-skin="darkroom"] .dr-clock .media-time-duration-value {
+  left: calc(394.4 * var(--bp));
+}
+
+/* push keys: CC, 1x, 1.5x, fullscreen on y 63.5; their LEDs sit above at y 31 */
+.media-skin[data-skin="darkroom"] .dr-deck .dr-key-cc { --cx: 555; }
+.media-skin[data-skin="darkroom"] .dr-deck .dr-key-1x { --cx: 606; }
+.media-skin[data-skin="darkroom"] .dr-deck .dr-key-15x { --cx: 657; }
+.media-skin[data-skin="darkroom"] .dr-deck .dr-key-fs { --cx: 709; }
+
+.media-skin[data-skin="darkroom"] .dr-deck .dr-key {
+  --gw: 46;
+  --gh: 46;
+}
+
+.media-skin[data-skin="darkroom"] .dr-deck .dr-key-rate::before {
+  content: "";
+  --fw: 52;
+  --fh: 52;
+  --face: url("../assets/rate-faces.webp");
+  --fs: 400% 100%;
+}
+
+.media-skin[data-skin="darkroom"] .dr-deck .dr-key-1x::before { --fx: 0%; }
+.media-skin[data-skin="darkroom"] .dr-deck .dr-key-1x[aria-pressed="false"]::before { --fx: calc(100% / 3); }
+.media-skin[data-skin="darkroom"] .dr-deck .dr-key-15x::before { --fx: 100%; }
+.media-skin[data-skin="darkroom"] .dr-deck .dr-key-15x[aria-pressed="true"]::before { --fx: calc(200% / 3); }
+
+.media-skin[data-skin="darkroom"] .dr-deck .dr-led {
+  --row: 0;
+  position: absolute;
+  left: calc(50% - 16 * var(--bp) + var(--lx, 0) * var(--bp));
+  top: calc(50% - 40 * var(--bp));
+  width: calc(32 * var(--bp));
+  height: calc(16 * var(--bp));
+  pointer-events: none;
+  background: url("../assets/leds.webp") 100% calc(var(--row) * 100% / 3) / 200% 400% no-repeat;
+}
+
+.media-skin[data-skin="darkroom"] .dr-deck .dr-key-cc .dr-led { --row: 0; --lx: 1; }
+.media-skin[data-skin="darkroom"] .dr-deck .dr-key-1x .dr-led { --row: 1; --lx: 1; }
+.media-skin[data-skin="darkroom"] .dr-deck .dr-key-15x .dr-led { --row: 2; --lx: 1; }
+.media-skin[data-skin="darkroom"] .dr-deck .dr-key-fs .dr-led { --row: 3; --lx: 1; }
+
+.media-skin[data-skin="darkroom"] .dr-deck :is(.dr-key-cc[data-active], .dr-key-rate[aria-pressed="true"], .dr-key-fs[data-fullscreen]) .dr-led {
+  background-position-x: 0;
+}
+
+/* ── popups ── */
+.media-skin[data-skin="darkroom"] .media-menu-popup {
+  color: #f4e9df;
+  background: #141010;
+  border: 1px solid #3a2e2b;
+  border-radius: 8px;
+  box-shadow: 0 10px 28px rgb(0 0 0 / 0.6);
+}
+
+.media-skin[data-skin="darkroom"] :is(.media-menu-item, .media-menu-radio-item, .media-menu-back-item)[data-highlighted] {
+  background: rgb(255 61 31 / 0.18);
+}
+
+.media-skin[data-skin="darkroom"] .media-tooltip-popup {
+  color: #f4e9df;
+  background: #141010;
+}
+
+/* focus rings: the essentials' ring, on round keys round */
+.media-skin[data-skin="darkroom"] .dr-film:focus-visible {
+  outline: 3px solid var(--panj-focus-color, #ffd27a);
+  box-shadow: inset 0 0 0 6px rgb(0 0 0 / 0.85);
+}
+
+/* ── preferences ── */
+@media (prefers-reduced-motion: reduce) {
+  .media-skin[data-skin="darkroom"] :is(.dr-screen, .dr-knob-pointer) {
+    transition: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .media-skin[data-skin="darkroom"] .dr-deck .media-button {
+    border: 1px solid ButtonText;
   }
 
-  /* ── Ambience: a faint safelight wash from above, a dark floor below ───────────── */
-  .media-skin[data-skin="darkroom"] .video-controls-backdrop {
-    background-image:
-      radial-gradient(120% 70% at 50% -25%, rgb(255 52 24 / 0.22), transparent 60%),
-      linear-gradient(to top, rgb(0 0 0 / 0.55), transparent 45%);
+  .media-skin[data-skin="darkroom"] .dr-deck :is(.dr-key-cc[data-active], .dr-key-rate[aria-pressed="true"], .dr-key-fs[data-fullscreen]) {
+    background: Highlight;
+  }
+}
+
+/* ── compact unit: under 35rem the deck becomes two rows of parts cut from the same card, so every key keeps a
+   44px target without overlapping its neighbour and the deck never covers the picture ── */
+@container media-root (width < 35rem) {
+  /* the compact deck is the unit's one in-flow child: the unit grows past its wide aspect ratio to hold it */
+  .media-skin[data-skin="darkroom"] .dr-deck {
+    --k: calc(100cqw / 470);
+    position: relative;
+    top: 0;
+    margin-top: calc(527 * var(--bp));
+    height: calc(196 * var(--k));
+    background: linear-gradient(to bottom, #2b1c19 0, #1a1715 4%, #161412 100%);
+    border-top: 1px solid rgb(120 70 60 / 0.5);
+    border-radius: 0 0 calc(10 * var(--k)) calc(10 * var(--k));
   }
 
-  /* ── The deck ─────────────────────────────────────────────────────────────────── */
-  .media-skin[data-skin="darkroom"] .video-controls-bottom {
-    gap: 2px;
-    padding: 4px var(--dr-deck-pad) 6px;
-    color: var(--dr-ink);
-    background-color: var(--dr-panel);
-    background-image:
-      /* four screws */
-      radial-gradient(circle at 7px 7px, #5a5050 0 1.6px, #1a1616 2.2px, transparent 3px),
-      radial-gradient(circle at calc(100% - 7px) 7px, #5a5050 0 1.6px, #1a1616 2.2px, transparent 3px),
-      radial-gradient(circle at 7px calc(100% - 7px), #5a5050 0 1.6px, #1a1616 2.2px, transparent 3px),
-      radial-gradient(circle at calc(100% - 7px) calc(100% - 7px), #5a5050 0 1.6px, #1a1616 2.2px, transparent 3px),
-      /* brushed anodising */
-      repeating-linear-gradient(90deg, rgb(255 255 255 / 0.018) 0 1px, transparent 1px 3px),
-      linear-gradient(to bottom, var(--dr-panel-hi), var(--dr-panel) 40%, #080707);
-    border-top: 1px solid var(--dr-panel-edge);
-    box-shadow:
-      0 -1px 0 rgb(255 61 31 / 0.35),
-      0 -10px 24px -12px var(--dr-safelight-glow);
-    transition: opacity var(--panj-motion-base) ease-out;
+  .media-skin[data-skin="darkroom"] .dr-deck .media-button {
+    --cy: 0;
+    left: calc(var(--cx) * var(--k) - var(--w) / 2);
+    top: calc(var(--cy) * var(--k) - var(--h) / 2);
+    --w: max(44px, calc(var(--gw) * var(--k)));
+    --h: max(44px, calc(var(--gh) * var(--k)));
   }
 
-  .media-skin[data-skin="darkroom"] .video-controls-top {
-    transition: opacity var(--panj-motion-base) ease-out;
+  .media-skin[data-skin="darkroom"] .dr-deck .media-button::before {
+    left: calc(50% - var(--fw, 0) * var(--k) / 2);
+    top: calc(50% - var(--fh, 0) * var(--k) / 2);
+    width: calc(var(--fw, 0) * var(--k));
+    height: calc(var(--fh, 0) * var(--k));
   }
 
-  .media-skin[data-skin="darkroom"] .video-controls-row {
-    gap: 6px;
-  }
-
-  .media-skin[data-skin="darkroom"] .video-controls-group {
-    gap: 6px;
-  }
-
-  /* ── Hardware push buttons ────────────────────────────────────────────────────── */
-  .media-skin[data-skin="darkroom"] .media-button {
-    color: var(--dr-ink);
-    background-color: #241f1f;
-    background-image: linear-gradient(to bottom, #3d3535, #221d1d 55%, #191515);
-    border: 1px solid #050404;
-    border-radius: 7px;
-    box-shadow:
-      inset 0 1px 0 rgb(255 255 255 / 0.14),
-      inset 0 -2px 0 rgb(0 0 0 / 0.45),
-      0 2px 0 #000,
-      0 3px 6px rgb(0 0 0 / 0.55);
-    transition:
-      transform var(--panj-motion-fast) ease-out,
-      background-color var(--panj-motion-fast) ease-out,
-      box-shadow var(--panj-motion-fast) ease-out;
-  }
-
-  @media (hover: hover) {
-    .media-skin[data-skin="darkroom"] .media-button:where(:hover) {
-      background-color: #2e2727;
-      background-image: linear-gradient(to bottom, #4a4040, #2a2424 55%, #1e1a1a);
-    }
-  }
-
-  .media-skin[data-skin="darkroom"] .media-button:where(:active) {
-    transform: translateY(1px);
-    background-image: linear-gradient(to bottom, #1c1818, #2a2424);
-    box-shadow:
-      inset 0 2px 3px rgb(0 0 0 / 0.6),
-      0 1px 0 #000;
-  }
-
-  .media-skin[data-skin="darkroom"] .media-button[aria-expanded="true"] {
-    background-image: linear-gradient(to bottom, #2a1411, #3a1a14);
-  }
-
-  .media-skin[data-skin="darkroom"] .media-button-icon,
-  .media-skin[data-skin="darkroom"] .media-button-icon-base {
-    width: 20px;
-    height: 20px;
-  }
-
-  /* Status LED in the top-right corner of a button. State is also carried by the icon and
-     by aria, so the LED is a bonus cue, never the only one. */
-  .media-skin[data-skin="darkroom"] :is(
-      .media-play-button,
-      .media-mute-button,
-      .media-captions-button,
-      .media-pip-button,
-      .media-fullscreen-button,
-      button[commandfor]
-    )::after {
+  /* every deck part shows its own patch of the card */
+  .media-skin[data-skin="darkroom"] .dr-deck :is(.dr-key-play, .dr-key-cc, .dr-key-fs)::before,
+  .media-skin[data-skin="darkroom"] .dr-deck .dr-knob::before,
+  .media-skin[data-skin="darkroom"] .dr-deck .dr-clock::before {
     content: "";
     position: absolute;
-    top: 4px;
-    right: 4px;
-    width: 5px;
-    height: 5px;
-    border-radius: 50%;
-    background: var(--dr-led-off);
-    box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.7);
+    left: calc(50% - var(--fw) * var(--k) / 2);
+    top: calc(50% - var(--fh) * var(--k) / 2);
+    width: calc(var(--fw) * var(--k));
+    height: calc(var(--fh) * var(--k));
+    background: url("../assets/card.webp") calc(var(--px) * -1 * var(--k)) calc(var(--py) * -1 * var(--k)) / calc(756 * var(--k)) calc(648 * var(--k)) no-repeat;
     pointer-events: none;
-    transition: background-color var(--panj-motion-fast) linear, box-shadow var(--panj-motion-fast) linear;
   }
 
-  .media-skin[data-skin="darkroom"] :is(
-      .media-play-button:not([data-paused]),
-      .media-captions-button[data-active],
-      .media-pip-button[data-pip],
-      .media-fullscreen-button[data-fullscreen],
-      button[commandfor][aria-expanded="true"]
-    )::after {
-    background: var(--dr-safelight);
-    box-shadow: 0 0 6px 1px var(--dr-safelight-glow), inset 0 0 1px rgb(255 255 255 / 0.6);
+  /* round parts lose the square of deck around them */
+  .media-skin[data-skin="darkroom"] .dr-deck :is(.dr-key-cc, .dr-key-fs)::before,
+  .media-skin[data-skin="darkroom"] .dr-deck .dr-knob::before {
+    mask-image: radial-gradient(closest-side, #000 86%, transparent 100%);
   }
 
-  .media-skin[data-skin="darkroom"] .media-mute-button[data-muted]::after {
-    background: var(--dr-amber);
-    box-shadow: 0 0 6px 1px rgb(255 179 71 / 0.6), inset 0 0 1px rgb(255 255 255 / 0.6);
+  /* row 1: play, knob, clock */
+  .media-skin[data-skin="darkroom"] .dr-deck .dr-key-play {
+    --cx: 58;
+    --cy: 58;
+    --fw: 86;
+    --fh: 69;
+    --px: 26;
+    --py: 557;
   }
 
-  /* The Scaffold's centre play/seek buttons: round enlarger knobs. Their background colour is
-     !important in the Scaffold, so steer it through the variable it reads. */
-  .media-skin[data-skin="darkroom"] .video-controls-center-button {
-    --media-background: #1d1919;
-    --media-button-highlight: #2e2727;
-    border-radius: 50%;
-    border: 2px solid #050404;
-    box-shadow:
-      0 0 0 3px rgb(255 61 31 / 0.25),
-      inset 0 1px 0 rgb(255 255 255 / 0.14),
-      0 6px 18px rgb(0 0 0 / 0.7);
+  .media-skin[data-skin="darkroom"] .dr-deck .dr-key-play:not([data-paused]):not([data-ended])::before {
+    background: url("../assets/play-live.webp") 0 0 / 100% 100% no-repeat;
   }
 
-  .media-skin[data-skin="darkroom"] .video-controls-center-play::after {
-    display: none;
+  .media-skin[data-skin="darkroom"] .dr-knob {
+    --fw: 104;
+    --fh: 104;
+    --px: 131.5;
+    --py: 537.5;
+    left: calc(108 * var(--k));
+    top: calc(6 * var(--k));
+    width: calc(104 * var(--k));
+    height: calc(104 * var(--k));
   }
 
-  .media-skin[data-skin="darkroom"] .media-seek-button-label {
-    font-family: var(--dr-segment-font);
-    color: var(--dr-amber);
+  .media-skin[data-skin="darkroom"] .dr-knob-pointer {
+    left: calc(50% - 1.6 * var(--k));
+    top: calc(50% - 25 * var(--k));
+    width: calc(3.2 * var(--k));
+    height: calc(25 * var(--k));
+    z-index: 1;
   }
 
-  /* ── Seven-segment time readout ───────────────────────────────────────────────── */
-  .media-skin[data-skin="darkroom"] .media-time-group {
-    height: 34px;
-    gap: 4px;
-    padding-inline: 8px;
-    margin-inline-start: 2px;
-    font-family: var(--dr-segment-font);
-    font-size: 18px;
-    letter-spacing: 0.02em;
-    color: var(--dr-led);
-    background-color: var(--dr-led-window);
-    background-image:
-      repeating-linear-gradient(0deg, rgb(255 255 255 / 0.025) 0 1px, transparent 1px 3px),
-      linear-gradient(to bottom, rgb(255 61 31 / 0.08), transparent);
-    border: 1px solid #000;
-    border-radius: 4px;
-    box-shadow:
-      inset 0 2px 6px rgb(0 0 0 / 0.9),
-      0 1px 0 rgb(255 255 255 / 0.07);
-    text-shadow: 0 0 6px rgb(255 61 31 / 0.65);
-    white-space: nowrap;
-  }
-
-  .media-skin[data-skin="darkroom"] :is(.media-time-current-value, .media-time-separator, .media-time-duration-value) {
-    display: inline;
-    opacity: 1;
-  }
-
-  .media-skin[data-skin="darkroom"] .media-time-separator {
-    color: var(--dr-amber);
-  }
-
-  /* Interactive toggle is replaced by the always-on current value. */
-  .media-skin[data-skin="darkroom"] .media-time-toggle {
-    display: none;
-  }
-
-  /* ── Volume: an inline console fader (Tab-reachable, draggable on touch) ──────── */
-  .media-skin[data-skin="darkroom"] .dr-fader {
-    flex: 0 1 92px;
-    min-width: 44px;
-    height: var(--panj-target-min);
-    display: flex;
-    align-items: center;
-  }
-
-  /* iOS and similar: the platform owns volume, so the fader steps aside and mute remains. */
-  .media-skin[data-skin="darkroom"] .dr-fader:has(.media-volume-slider:is([hidden], [data-hidden], [data-availability="unsupported"])) {
-    display: none;
-  }
-
-  .media-skin[data-skin="darkroom"] .media-volume-slider {
-    width: 100%;
-    height: var(--panj-target-min);
-    min-width: 0;
-    align-items: center;
-    justify-content: flex-start;
-    touch-action: none;
-  }
-
-  .media-skin[data-skin="darkroom"] .media-volume-slider-track {
-    top: 50%;
-    bottom: auto;
-    left: 0;
-    width: 100%;
-    height: 6px;
-    transform: translateY(-50%);
-    border-radius: 3px;
-    background-color: #050404;
-    background-image: repeating-linear-gradient(90deg, transparent 0 9px, rgb(255 255 255 / 0.12) 9px 10px);
-    box-shadow: inset 0 1px 2px #000, 0 1px 0 rgb(255 255 255 / 0.08);
-  }
-
-  .media-skin[data-skin="darkroom"] .media-volume-slider-fill {
-    top: 0;
-    bottom: 0;
-    left: 0;
-    width: var(--media-slider-fill, 0%);
-    height: 100%;
-    border-radius: 3px;
-    background: linear-gradient(to right, #b8401f, var(--media-accent));
-  }
-
-  .media-skin[data-skin="darkroom"] .media-volume-slider-thumb {
-    top: 50%;
-    bottom: auto;
-    left: var(--media-slider-fill, 0%);
-    width: 12px;
-    height: 24px;
-    border-radius: 2px;
-    background-color: #cfc4bb;
-    background-image:
-      linear-gradient(to bottom, transparent 10px, var(--dr-safelight) 10px 14px, transparent 14px),
-      linear-gradient(to bottom, #efe7e0, #8e847c);
-    border: 1px solid #000;
-    box-shadow: 0 2px 3px rgb(0 0 0 / 0.7);
-    transform: translate(-50%, -50%);
-  }
-
-  /* ── Film-strip seek bar ──────────────────────────────────────────────────────── */
-  .media-skin[data-skin="darkroom"] .video-controls-slider-row {
-    padding-inline: 2px;
-  }
-
-  .media-skin[data-skin="darkroom"] .media-time-slider-chapter {
-    --media-chapter-inset-start: 0;
-    --media-chapter-inset-end: 0;
-  }
-
-  .media-skin[data-skin="darkroom"] .media-time-slider-track {
-    height: 32px;
-    border-radius: 2px;
-    background-color: var(--dr-film-gate);
-    box-shadow: 0 0 0 1px #000, 0 2px 6px rgb(0 0 0 / 0.6);
-  }
-
-  /* Rebate with sprocket holes top and bottom; frames between them. */
-  .media-skin[data-skin="darkroom"] .media-time-slider-track::before {
-    inset: 0;
-    clip-path: none;
-    border-radius: inherit;
-    background-color: transparent;
-    background-image:
-      linear-gradient(90deg, var(--dr-sprocket) 0 5px, transparent 5px),
-      linear-gradient(90deg, var(--dr-sprocket) 0 5px, transparent 5px),
-      repeating-linear-gradient(
-        90deg,
-        var(--dr-film) 0 calc(var(--dr-frame) - 3px),
-        var(--dr-film-gate) calc(var(--dr-frame) - 3px) var(--dr-frame)
-      );
-    background-size:
-      10px 4px,
-      10px 4px,
-      100% 18px;
-    background-position:
-      2px 2px,
-      2px calc(100% - 2px),
-      0 50%;
-    background-repeat: repeat-x, repeat-x, no-repeat;
-  }
-
-  /* Buffered: stock loaded in the carrier, a shade lighter. */
-  .media-skin[data-skin="darkroom"] .media-time-slider-buffer {
-    inset-block: 7px;
-    background-color: transparent;
-    background-image: repeating-linear-gradient(
-      90deg,
-      var(--dr-film-buffer) 0 calc(var(--dr-frame) - 3px),
-      transparent calc(var(--dr-frame) - 3px) var(--dr-frame)
-    );
-  }
-
-  /* Played: frames developed under the safelight. */
-  .media-skin[data-skin="darkroom"] .media-time-slider-fill {
-    inset-block: 7px;
-    background-color: transparent;
-    background-image:
-      linear-gradient(90deg, transparent calc(var(--dr-frame) - 3px), var(--dr-film-gate) 0),
-      radial-gradient(70% 80% at 50% 45%, #ffc08a 0, #f06a33 38%, #a8331a 72%, #4a150b 100%);
-    background-size: var(--dr-frame) 100%;
-    background-repeat: repeat-x;
-  }
-
-  /* One playhead: a loupe bracket over the current frame. */
-  .media-skin[data-skin="darkroom"] .media-time-slider-thumb {
-    width: 22px;
-    height: 38px;
-    border: 2px solid var(--dr-amber);
-    border-radius: 3px;
-    background-color: rgb(255 179 71 / 0.12);
-    /* black keyline: the amber bracket stays distinct over the glowing played frames */
-    box-shadow:
-      0 0 0 2px #000,
-      0 0 10px rgb(255 140 60 / 0.55);
+  .media-skin[data-skin="darkroom"] .dr-knob .dr-knob-cap {
     z-index: 2;
   }
 
-  .media-skin[data-skin="darkroom"] .media-time-slider-thumb::after {
-    content: "";
-    position: absolute;
-    top: 3px;
-    bottom: 3px;
-    left: 50%;
-    width: 2px;
-    transform: translateX(-50%);
-    background: var(--dr-amber);
+  .media-skin[data-skin="darkroom"] .dr-deck .dr-clock {
+    --fw: 258;
+    --fh: 72;
+    --px: 250;
+    --py: 554;
+    left: calc(212 * var(--k));
+    top: calc(22 * var(--k));
+    width: calc(258 * var(--k));
+    height: calc(72 * var(--k));
+    font-size: calc(40 * var(--k));
   }
 
-  /* Hover preview: a print pulled from the contact sheet. */
-  .media-skin[data-skin="darkroom"] .media-time-slider-preview {
-    gap: 0;
-    padding: 4px 4px 0;
-    background: #f1e8dc;
-    box-shadow: 0 0 0 1px #000, 0 8px 22px rgb(0 0 0 / 0.75);
-    transition: opacity var(--panj-motion-fast) linear;
+  .media-skin[data-skin="darkroom"] .dr-clock :is(.media-time-current-value, .media-time-separator, .media-time-duration-value) {
+    top: calc(17 * var(--k));
+    z-index: 1;
   }
 
-  .media-skin[data-skin="darkroom"] .media-slider-thumbnail {
-    max-width: 168px;
-    background-color: #111;
-    filter: sepia(0.25) contrast(1.05);
+  .media-skin[data-skin="darkroom"] .dr-clock .media-time-current-value { left: calc(14.4 * var(--k)); }
+  .media-skin[data-skin="darkroom"] .dr-clock .media-time-separator { left: calc(119.5 * var(--k)); }
+  .media-skin[data-skin="darkroom"] .dr-clock .media-time-duration-value { left: calc(142.4 * var(--k)); }
+
+  /* row 2: the four keys, 112 apart */
+  .media-skin[data-skin="darkroom"] .dr-deck .dr-key {
+    --cy: 156;
+    --gw: 52;
+    --gh: 52;
   }
 
-  .media-skin[data-skin="darkroom"] .media-slider-thumbnail:not([data-hidden]) + .media-time-slider-preview-meta {
-    margin-top: 4px;
-  }
+  .media-skin[data-skin="darkroom"] .dr-deck .dr-key-cc { --cx: 67; --fw: 52; --fh: 52; --px: 529.5; --py: 564.5; }
+  .media-skin[data-skin="darkroom"] .dr-deck .dr-key-1x { --cx: 179; }
+  .media-skin[data-skin="darkroom"] .dr-deck .dr-key-15x { --cx: 291; }
+  .media-skin[data-skin="darkroom"] .dr-deck .dr-key-fs { --cx: 403; --fw: 52; --fh: 52; --px: 683.5; --py: 564.5; }
 
-  .media-skin[data-skin="darkroom"] .media-time-slider-preview-meta {
-    margin-inline: -4px;
-    padding: 3px 8px;
-    background: var(--dr-led-window);
-    color: var(--dr-led);
-    font-family: var(--dr-segment-font);
-    font-size: 15px;
-    text-shadow: 0 0 5px rgb(255 61 31 / 0.6);
-  }
-
-  .media-skin[data-skin="darkroom"] .media-time-slider-chapter-title {
-    font-family: var(--dr-label-font);
-    font-size: 11px;
-    color: var(--dr-amber);
-    opacity: 1;
-    text-shadow: none;
-  }
-
-  /* ── Maker's plate (decorative, aria-hidden) ──────────────────────────────────── */
-  .media-skin[data-skin="darkroom"] .dr-plate {
-    display: none;
-    align-items: center;
-    gap: 8px;
-    margin-inline: auto;
-    padding: 4px 10px;
-    border-radius: 3px;
-    color: var(--dr-ink-dim);
-    font-family: var(--dr-label-font);
-    font-size: 10px;
-    letter-spacing: 0.32em;
-    background: linear-gradient(to bottom, #171313, #0b0909);
-    box-shadow: inset 0 1px 2px #000, 0 1px 0 rgb(255 255 255 / 0.06);
-    user-select: none;
-  }
-
-  .media-skin[data-skin="darkroom"] .dr-plate-mark {
-    color: var(--dr-amber);
-    flex: none;
-  }
-
-  /* The safelight lamp: lit while film is running. */
-  .media-skin[data-skin="darkroom"] .dr-plate-lamp {
-    width: 9px;
-    height: 9px;
-    border-radius: 50%;
-    background: var(--dr-led-off);
-    box-shadow: inset 0 0 0 1px #000;
-    transition: background-color var(--panj-motion-slow) ease, box-shadow var(--panj-motion-slow) ease;
-  }
-
-  .media-skin[data-skin="darkroom"] .video-controls-row:has(.media-play-button:not([data-paused])) .dr-plate-lamp {
-    background: var(--dr-safelight);
-    box-shadow: 0 0 8px 2px var(--dr-safelight-glow);
-  }
-
-  @container media-root (width >= 46rem) {
-    .media-skin[data-skin="darkroom"] .dr-plate {
-      display: flex;
-    }
-  }
-
-  /* ── Popups: tooltips as embossed label tape, menus as a lab clipboard ───────── */
-  .media-skin[data-skin="darkroom"] .media-tooltip-popup {
-    padding: 3px 8px;
-    border: 1px solid #3a2a24;
-    border-radius: 3px;
-    background-color: #161111;
-    color: #ffd6a8;
-    font-family: var(--dr-label-font);
-    font-size: 11px;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    box-shadow: 0 4px 10px rgb(0 0 0 / 0.6);
-  }
-
-  .media-skin[data-skin="darkroom"] .media-tooltip-shortcut {
-    color: var(--dr-amber);
-    opacity: 1;
-  }
-
-  .media-skin[data-skin="darkroom"] :is(.media-menu-popup, .media-volume-popover-popup) {
-    border: 1px solid #3a2a24;
-    border-top: 2px solid var(--dr-safelight);
-    border-radius: 4px;
-    box-shadow: 0 10px 28px rgb(0 0 0 / 0.75);
-  }
-
-  .media-skin[data-skin="darkroom"] :is(.media-menu-item, .media-menu-radio-item, .media-menu-back-item) {
-    font-family: var(--dr-label-font);
-    font-size: 12px;
-    letter-spacing: 0.04em;
-  }
-
-  .media-skin[data-skin="darkroom"] :is(.media-menu-item, .media-menu-radio-item, .media-menu-back-item)[data-highlighted] {
-    background-color: #3a1712;
-    color: #fff3e8;
-    box-shadow: inset 3px 0 0 var(--dr-safelight);
-  }
-
-  .media-skin[data-skin="darkroom"] :is(.media-menu-hint-label, .media-menu-radio-icon) {
-    color: var(--dr-amber);
-    opacity: 1;
-  }
-
-  /* ── Indicators and status ────────────────────────────────────────────────────── */
-  .media-skin[data-skin="darkroom"] .media-indicator {
-    color: var(--dr-led);
-    background-color: rgb(23 6 5 / 0.92);
-    border: 1px solid #000;
-    border-radius: 4px;
-    box-shadow: 0 0 0 1px rgb(255 61 31 / 0.3), 0 6px 16px rgb(0 0 0 / 0.6);
-  }
-
-  .media-skin[data-skin="darkroom"] :is(.media-volume-indicator-value, .media-seek-indicator-value, media-status-indicator-value) {
-    font-family: var(--dr-segment-font);
-    text-shadow: 0 0 5px rgb(255 61 31 / 0.6);
-  }
-
-  .media-skin[data-skin="darkroom"] .media-buffering-indicator-spinner-icon {
-    color: var(--dr-safelight);
-    filter: drop-shadow(0 0 6px var(--dr-safelight-glow));
-  }
-
-  .media-skin[data-skin="darkroom"] .media-dialog-popup {
-    border: 1px solid #3a2a24;
-    border-top: 3px solid var(--dr-safelight);
-    border-radius: 4px;
-  }
-
-  .media-skin[data-skin="darkroom"] .media-dialog-title {
-    color: var(--dr-amber);
-  }
-
-  .media-skin[data-skin="darkroom"] .media-title {
-    color: var(--dr-ink);
-    font-family: var(--dr-label-font);
-    letter-spacing: 0.08em;
-  }
-
-  /* ── Small decks ─────────────────────────────────────────────────────────────── */
-  @container media-root (width < 34rem) {
-    .media-skin[data-skin="darkroom"] .video-controls-bottom {
-      --dr-deck-pad: 6px;
-    }
-
-    .media-skin[data-skin="darkroom"] :is(.video-controls-row, .video-controls-group) {
-      gap: 4px;
-    }
-
-    /* PiP stays on the `i` hotkey; the duration comes back on wider decks. */
-    .media-skin[data-skin="darkroom"] .media-pip-button,
-    .media-skin[data-skin="darkroom"] :is(.media-time-separator, .media-time-duration-value) {
-      display: none;
-    }
-
-    .media-skin[data-skin="darkroom"] .media-time-group {
-      font-size: 15px;
-      padding-inline: 6px;
-    }
-
-    .media-skin[data-skin="darkroom"] .dr-fader {
-      flex-basis: 72px;
-    }
-
-    .media-skin[data-skin="darkroom"] {
-      --dr-frame: 26px;
-    }
-  }
-
-  @container media-root (width < 21rem) {
-    /* Captions stay on the Settings menu and the `c` hotkey. */
-    .media-skin[data-skin="darkroom"] .media-captions-button {
-      display: none;
-    }
-
-    .media-skin[data-skin="darkroom"] :is(.video-controls-row, .video-controls-group) {
-      gap: 2px;
-    }
-
-    .media-skin[data-skin="darkroom"] .media-time-group {
-      font-size: 13px;
-      padding-inline: 4px;
-    }
-  }
-
-  /* ── Preferences ─────────────────────────────────────────────────────────────── */
-  @media (prefers-contrast: more) {
-    .media-skin[data-skin="darkroom"] {
-      --dr-led: #ffa27a;
-      --dr-sprocket: #c9b8ab;
-    }
-
-    .media-skin[data-skin="darkroom"] .media-time-group {
-      text-shadow: none;
-    }
-  }
-
-  @media (forced-colors: active) {
-    .media-skin[data-skin="darkroom"] :is(.media-button, .media-time-group, .video-controls-bottom) {
-      background-image: none;
-      box-shadow: none;
-    }
-
-    .media-skin[data-skin="darkroom"] .media-time-slider-thumb {
-      background: Highlight;
-      border-color: CanvasText;
-    }
-
-    .media-skin[data-skin="darkroom"] :is(.media-button, .dr-plate-lamp)::after {
-      display: none;
-    }
+  .media-skin[data-skin="darkroom"] .dr-deck .dr-led {
+    left: calc(50% - 16 * var(--k));
+    top: calc(50% - 40.5 * var(--k));
+    width: calc(32 * var(--k));
+    height: calc(16 * var(--k));
   }
 }

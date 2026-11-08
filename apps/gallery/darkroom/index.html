@@ -4,161 +4,42 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Darkroom · panj</title>
-    <meta name="description" content="Darkroom: Film lab. A Video.js v10 skin." />
+    <meta name="description" content="Darkroom: film-lab player. A Video.js v10 skin." />
+    <meta name="theme-color" content="#0b0908" />
     <link rel="stylesheet" href="/src/gallery.css" />
-    <link rel="stylesheet" href="/darkroom/darkroom-page.css" />
+    <link rel="preload" as="image" href="/darkroom/assets/plate.webp" fetchpriority="high" />
+    <link rel="stylesheet" href="/darkroom/page.css" />
   </head>
-  <body class="dr-body">
-    <main class="page dr-page">
+  <body class="dr-page">
+    <a class="dr-skip" href="/">← All skins</a>
+    <section class="dr-hero" aria-label="The Darkroom player on the darkroom wall">
+      <div class="dr-plate">
+        <h1 class="dr-sr">Darkroom</h1>
+        <div id="stage"></div>
+      </div>
+    </section>
+    <main class="page dr-notes">
+      <a class="back" href="/">← All skins</a>
       <header class="dr-head">
-        <a class="back" href="/">← All skins</a>
-        <h1>Darkroom</h1>
-        <p class="dr-tagline">Film lab. Seek on a strip of film, read the time off an LED, under the safelight.</p>
+        <h2>Darkroom</h2>
+        <p>Film-lab player</p>
       </header>
-
-      <!-- Drying line: decorative -->
-      <svg class="dr-line" viewBox="0 0 1200 170" preserveAspectRatio="xMidYMin meet" aria-hidden="true" focusable="false">
-        <defs>
-          <linearGradient id="dr-print-sheen" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stop-color="#ffffff" stop-opacity="0.08" />
-            <stop offset="1" stop-color="#000000" stop-opacity="0.25" />
-          </linearGradient>
-          <g id="dr-peg">
-            <rect x="-4" y="-10" width="8" height="22" rx="2" fill="#2a2322" stroke="#0a0707" />
-            <rect x="-1" y="-6" width="2" height="12" fill="#5c4f4c" />
-          </g>
-        </defs>
-        <path d="M0 22 Q600 58 1200 22" fill="none" stroke="#4a3d39" stroke-width="2" />
-        <!-- print 1: hills and sun -->
-        <g class="dr-print" style="--dr-sway-delay: 0s" transform="translate(120 34) rotate(-2)">
-          <rect x="-58" y="0" width="116" height="92" fill="#e9ddd0" />
-          <rect x="-50" y="8" width="100" height="70" fill="#2b1c18" />
-          <circle cx="18" cy="30" r="11" fill="#d9b9a3" />
-          <path d="M-50 70 L-22 44 L0 60 L22 40 L50 66 L50 78 L-50 78 Z" fill="#7d5a4c" />
-          <rect x="-58" y="0" width="116" height="92" fill="url(#dr-print-sheen)" />
-          <use href="#dr-peg" x="-34" y="0" /><use href="#dr-peg" x="34" y="0" />
-        </g>
-        <!-- print 2: portrait -->
-        <g class="dr-print" style="--dr-sway-delay: -1.3s" transform="translate(330 44) rotate(1.5)">
-          <rect x="-44" y="0" width="88" height="112" fill="#efe4d8" />
-          <rect x="-37" y="7" width="74" height="88" fill="#3a2722" />
-          <circle cx="0" cy="38" r="14" fill="#c9a690" />
-          <path d="M-26 95 Q-24 62 0 58 Q24 62 26 95 Z" fill="#8a6352" />
-          <rect x="-44" y="0" width="88" height="112" fill="url(#dr-print-sheen)" />
-          <use href="#dr-peg" x="-24" y="0" /><use href="#dr-peg" x="24" y="0" />
-        </g>
-        <!-- print 3: test strip -->
-        <g class="dr-print" style="--dr-sway-delay: -2.1s" transform="translate(560 50) rotate(-1)">
-          <rect x="-70" y="0" width="140" height="56" fill="#ece0d3" />
-          <rect x="-64" y="6" width="25" height="44" fill="#d8bfae" />
-          <rect x="-39" y="6" width="25" height="44" fill="#a98371" />
-          <rect x="-14" y="6" width="25" height="44" fill="#7a5547" />
-          <rect x="11" y="6" width="25" height="44" fill="#4f332b" />
-          <rect x="36" y="6" width="28" height="44" fill="#2a1a16" />
-          <use href="#dr-peg" x="0" y="0" />
-        </g>
-        <!-- print 4: city -->
-        <g class="dr-print" style="--dr-sway-delay: -0.7s" transform="translate(800 46) rotate(2)">
-          <rect x="-60" y="0" width="120" height="90" fill="#e7dbce" />
-          <rect x="-52" y="8" width="104" height="68" fill="#d6b49e" />
-          <path d="M-52 76 V48 H-36 V30 H-22 V52 H-8 V22 H8 V44 H20 V36 H34 V54 H52 V76 Z" fill="#3b2621" />
-          <rect x="-60" y="0" width="120" height="90" fill="url(#dr-print-sheen)" />
-          <use href="#dr-peg" x="-36" y="0" /><use href="#dr-peg" x="36" y="0" />
-        </g>
-        <!-- print 5: contact sheet -->
-        <g class="dr-print" style="--dr-sway-delay: -1.8s" transform="translate(1040 36) rotate(-1.5)">
-          <rect x="-56" y="0" width="112" height="100" fill="#ede1d4" />
-          <g fill="#2e1f1b">
-            <rect x="-48" y="8" width="28" height="20" /><rect x="-14" y="8" width="28" height="20" /><rect x="20" y="8" width="28" height="20" />
-            <rect x="-48" y="36" width="28" height="20" /><rect x="-14" y="36" width="28" height="20" fill="#9c7462" /><rect x="20" y="36" width="28" height="20" />
-            <rect x="-48" y="64" width="28" height="20" /><rect x="-14" y="64" width="28" height="20" /><rect x="20" y="64" width="28" height="20" />
-          </g>
-          <rect x="-16" y="34" width="32" height="24" fill="none" stroke="#d9381b" stroke-width="2" />
-          <use href="#dr-peg" x="0" y="0" />
-        </g>
-      </svg>
-
-      <section class="dr-scene" aria-label="Darkroom player">
-        <!-- Enlarger: decorative -->
-        <svg class="dr-enlarger" viewBox="0 0 220 420" aria-hidden="true" focusable="false">
-          <defs>
-            <linearGradient id="dr-beam" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stop-color="#ff5a2a" stop-opacity="0.35" />
-              <stop offset="1" stop-color="#ff5a2a" stop-opacity="0" />
-            </linearGradient>
-          </defs>
-          <rect x="20" y="392" width="190" height="22" rx="3" fill="#1a1414" stroke="#2c2321" />
-          <rect x="34" y="40" width="14" height="356" fill="#171212" stroke="#2c2321" />
-          <rect x="40" y="70" width="2" height="300" fill="#2f2725" />
-          <rect x="30" y="150" width="70" height="26" rx="3" fill="#1d1717" stroke="#2c2321" />
-          <circle cx="40" cy="163" r="7" fill="#2a2221" stroke="#0b0808" />
-          <path d="M84 96 H176 L188 150 H72 Z" fill="#1f1919" stroke="#332927" />
-          <rect x="96" y="70" width="70" height="28" rx="4" fill="#1a1515" stroke="#2c2321" />
-          <rect x="112" y="150" width="40" height="22" fill="#141010" stroke="#2c2321" />
-          <rect x="118" y="172" width="28" height="18" rx="2" fill="#0e0b0b" stroke="#2c2321" />
-          <circle cx="132" cy="190" r="6" fill="#2b0f0b" />
-          <path d="M120 194 L80 392 H186 L146 194 Z" fill="url(#dr-beam)" />
-          <rect x="70" y="384" width="124" height="8" fill="#e9ddd0" opacity="0.85" />
-          <rect x="176" y="112" width="5" height="10" rx="1" fill="#ff3d1f" class="dr-enlarger-led" />
-        </svg>
-
-        <div class="dr-easel">
-          <div id="stage"></div>
-        </div>
-
-        <!-- Trays and timer: decorative -->
-        <svg class="dr-trays" viewBox="0 0 220 420" aria-hidden="true" focusable="false">
-          <g transform="translate(110 70)">
-            <circle r="46" fill="#140f0f" stroke="#2c2321" stroke-width="3" />
-            <circle r="38" fill="#0d0909" />
-            <g stroke="#7a6a62" stroke-width="2">
-              <line x1="0" y1="-34" x2="0" y2="-28" /><line x1="34" y1="0" x2="28" y2="0" />
-              <line x1="0" y1="34" x2="0" y2="28" /><line x1="-34" y1="0" x2="-28" y2="0" />
-            </g>
-            <line x1="0" y1="0" x2="16" y2="-22" stroke="#ff3d1f" stroke-width="3" stroke-linecap="round" />
-            <circle r="4" fill="#3a302e" />
-          </g>
-          <g transform="translate(0 300)">
-            <path d="M10 0 H210 L200 34 H20 Z" fill="#1a1414" stroke="#2c2321" />
-            <path d="M24 6 H196 L190 26 H30 Z" fill="#2a0c08" opacity="0.8" />
-            <path d="M18 44 H202 L194 76 H26 Z" fill="#161111" stroke="#2c2321" />
-            <path d="M32 50 H188 L182 68 H38 Z" fill="#1f0906" opacity="0.8" />
-            <text x="110" y="100" text-anchor="middle" fill="#7a6a62" font-family="ui-monospace, Menlo, monospace" font-size="11" letter-spacing="3">DEV · STOP · FIX</text>
-          </g>
-        </svg>
-      </section>
-
-      <section class="dr-notes" aria-labelledby="dr-thinking">
-        <h2 id="dr-thinking">Design thinking</h2>
+      <section class="dr-thinking" aria-labelledby="dr-thinking-title">
+        <h2 id="dr-thinking-title">Design thinking</h2>
         <p>
-          A darkroom is where an image appears slowly, so the controls borrow from the tools you touch there. The seek bar is a
-          strip of 35&nbsp;mm film: played frames glow as if developed under the safelight, one loupe bracket marks where you
-          are, and hovering pulls a real frame from the video's storyboard. Time reads out on a seven-segment LED drawn as an
-          original font, and the push buttons carry small LEDs that light for playing, muted, captions and fullscreen. Safelight
-          red sets the mood but never carries essential text: digits and labels are bright amber or warm white on a matte black
-          deck, so they read the same over bright and dark footage. Volume is an inline fader you can Tab to and drag on touch,
-          instead of a hover-only popover.
+          A darkroom is where an image appears slowly, so the player is a piece of lab hardware: a monitor in a
+          safelight-red bezel, a strip of 35&nbsp;mm film under it and a matte deck. The page above is our own
+          AI-generated reference, rebuilt: the wall is the reference itself and the unit is the live player, placed on it
+          pixel for pixel. The film is a seek control: it runs through the gate as the video plays, so the red loupe
+          always rings the current frame; drag it to scrub, click a frame to jump to it, or Tab to it and use the
+          arrows. The thin line in the picture seeks too. Time reads off a seven-segment LED drawn as an original font;
+          the knob is the volume (drag it up or down, or use the arrows) and its cap mutes; the push keys carry LEDs that
+          light for captions, the current speed and fullscreen, and the play key lights the state it is in. Every key is
+          a 44px target, and the deck is opaque, so its contrast never depends on the footage.
         </p>
       </section>
+      <footer class="dr-colophon">Video.js v10.3.0 · HTML custom elements · materials cut from the reference · Darkroom Segments (original)</footer>
     </main>
-    <script type="module">
-      import '@videojs/html/i18n';
-      import { createSkinnedPlayer } from '@panj/darkroom';
-      import { SAMPLE } from '/src/media.ts';
-      import { mount } from '/src/mount.ts';
-
-      // Contact-sheet previews: Mux publishes a storyboard (WebVTT + sprite) for every playback ID.
-      // Added as a `thumbnails` metadata track after the captions track, so captions stay textTracks[0].
-      const id = /stream\.mux\.com\/([^/.?]+)/.exec(SAMPLE.src)?.[1];
-      const withStoryboard = (html) =>
-        id
-          ? html.replace(
-              '</video>',
-              `<track kind="metadata" label="thumbnails" default src="https://image.mux.com/${id}/storyboard.vtt"></video>`,
-            )
-          : html;
-
-      mount((html, poster) => createSkinnedPlayer(withStoryboard(html), poster));
-    </script>
+    <script type="module" src="/darkroom/page.ts"></script>
   </body>
 </html>

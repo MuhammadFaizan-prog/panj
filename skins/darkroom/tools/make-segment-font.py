@@ -13,13 +13,15 @@ from fontTools.pens.ttGlyphPen import TTGlyphPen
 
 UPM = 1000
 ASC, DESC = 800, -200
-SLANT = 0.08  # gentle forward lean, like a real LED module
+SLANT = 0.0   # upright, as the locked reference's LED module
 
 # Digit cell (font units)
-X0, X1 = 70, 530          # left / right outer edges
-Y0, Y1 = 0, 720           # bottom / top outer edges
+# Geometry measured off the locked reference (darkroom-ref.webp) at font-size 40px (25 units per pixel):
+# digits 18 x 29.5 px outer, 4 px segments, 21.5 px pitch.
+X0, X1 = 40, 490          # left / right outer edges
+Y0, Y1 = 0, 737           # bottom / top outer edges
 T = 92                    # segment thickness
-G = 10                    # gap between segments
+G = 12                    # gap between segments
 YM = (Y0 + Y1) / 2
 
 
@@ -82,18 +84,18 @@ def draw(polys):
 glyphs, advances = {".notdef": draw([rect(60, 0, 400, 700)])}, {".notdef": 520}
 for ch, segs in DIGITS.items():
     glyphs[NAMES[ch]] = draw([SEG[s] for s in segs])
-    advances[NAMES[ch]] = 600
-dot = 96
-glyphs["colon"] = draw([rect(77, 170, dot, dot), rect(77, 450, dot, dot)])
-advances["colon"] = 250
+    advances[NAMES[ch]] = 537
+dot = 88
+glyphs["colon"] = draw([rect(53, 112, dot, 100), rect(53, 512, dot, 100)])
+advances["colon"] = 237
 glyphs["period"] = draw([rect(77, 0, dot, dot)])
 advances["period"] = 250
 glyphs["hyphen"] = draw([hseg(40, 360, YM)])
 advances["hyphen"] = 400
-glyphs["slash"] = draw([[(40, 0), (130, 0), (360, 720), (270, 720)]])
+glyphs["slash"] = draw([[(0, 0), (75, 0), (325, 675), (250, 675)]])
 advances["slash"] = 400
 glyphs["space"] = TTGlyphPen(None).glyph()
-advances["space"] = 300
+advances["space"] = 0  # the clocks never need one; markup whitespace stays invisible
 
 order = [".notdef"] + [n for n in NAMES.values()]
 fb = FontBuilder(UPM, isTTF=True)
