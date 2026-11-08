@@ -14,8 +14,11 @@ class PhattaRateElement extends HTMLElement {
     this.#abort = new AbortController();
     const media = () => container.querySelector<HTMLMediaElement>('video, audio, mux-video, hls-video');
     const sync = (rate?: number) => {
-      const next = formatRate(rate ?? media()?.playbackRate ?? 1);
+      const value = rate ?? media()?.playbackRate ?? 1;
+      const next = formatRate(value);
       if (this.textContent !== next) this.textContent = next;
+      // the standalone (desk) paint reads "1.0x"
+      this.dataset.desk = `${Number.isFinite(value) ? (Number.isInteger(value) ? value.toFixed(1) : Number(value.toFixed(2))) : '1.0'}x`;
     };
     // `ratechange` does not bubble; a capturing listener on the container still sees it.
     container.addEventListener(

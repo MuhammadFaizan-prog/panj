@@ -24,6 +24,7 @@ import '@videojs/html/ui/tooltip';
 import '@videojs/html/ui/tooltip-label';
 import '@videojs/html/ui/tooltip-shortcut';
 import '@videojs/html/ui/fullscreen-button';
+import '@videojs/html/ui/pip-button';
 import '@videojs/html/ui/play-button';
 import '@videojs/html/ui/time-slider';
 import '@videojs/html/ui/time-slider-chapters';

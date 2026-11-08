@@ -30,6 +30,7 @@ export default defineConfig({
       input: {
         hub: path('./index.html'),
         ...Object.fromEntries(ROUTES.map((r) => [r, path(`./${r}/index.html`)])),
+        'phatta-player': path('./phatta/player.html'),
       },
     },
   },

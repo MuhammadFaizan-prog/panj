@@ -28,6 +28,13 @@
 }
 
 @font-face {
+  font-family: "Phatta Desk";
+  src: url("../assets/fonts/rc700.woff2") format("woff2");
+  font-weight: 700;
+  font-display: block;
+}
+
+@font-face {
   font-family: "Phatta Tag";
   src: url("../assets/fonts/inter500.woff2") format("woff2");
   font-weight: 500;
@@ -67,6 +74,11 @@
     & .phatta-speed-button {
       --b-cx: var(--g-rate-cx); --b-cy: var(--g-rate-cy); --b-d: var(--g-rate-d);
       --b-ix: var(--g-rate-ix); --b-iy: var(--g-rate-iy); --b-iw: var(--g-rate-iw); --b-ih: var(--g-rate-ih);
+    }
+    & .media-pip-button {
+      --b-cx: var(--g-pip-cx); --b-cy: var(--g-pip-cy); --b-d: var(--g-pip-d);
+      --b-ix: var(--g-pip-ix); --b-iy: var(--g-pip-iy); --b-iw: var(--g-pip-iw); --b-ih: var(--g-pip-ih);
+      --b-ring: none;
     }
     & .media-fullscreen-button {
       --b-cx: var(--g-fs-cx); --b-cy: var(--g-fs-cy); --b-d: var(--g-fs-d);
@@ -713,6 +725,87 @@
     & .media-time-toggle {
       display: none;
     }
+  }
+}
+
+/* ─────────────────────────── standalone ("desk") paint ───────────────────────────
+   The player on its own, from Faizi's standalone reference: rainbow-gradient seek fill stretched over the played
+   part, white condensed numerals, a PiP button, "1.0x" speed face. Picked with [data-phatta-theme="desk"]. */
+@layer phatta {
+  .media-skin[data-skin="phatta"] .media-pip-button {
+    display: none;
+  }
+
+  :where([data-phatta-theme="desk"]) .media-skin[data-skin="phatta"] {
+    & .video-controls-content .media-pip-button:not([data-hidden]) {
+      display: grid;
+    }
+
+    & .media-pip-button .media-button-icon {
+      display: none !important;
+    }
+
+    & .media-pip-button[data-pip] .media-pip-button-exit-icon {
+      display: block !important;
+    }
+
+    & .media-pip-button[data-pip]::before {
+      background-image: none !important;
+    }
+
+    & .media-time-slider-fill {
+      right: auto;
+      width: var(--media-slider-fill, 0%);
+      clip-path: none;
+      background-repeat: no-repeat;
+      background-size: 100% 100%;
+    }
+
+    & .media-time-slider[data-dragging] .media-time-slider-fill {
+      width: var(--media-slider-pointer, 0%);
+      clip-path: none;
+    }
+
+    & .phatta-tag {
+      display: none;
+    }
+
+    & .media-time-slider-preview-meta {
+      width: auto;
+      height: auto;
+      padding: 4px 8px;
+      border-radius: 6px;
+      background: rgb(10 8 6 / 0.9);
+      box-shadow: 0 0 0 1px rgb(201 154 59 / 0.8);
+    }
+
+    & .media-time-slider-value {
+      color: #fff;
+      font-family: "Phatta Desk", "Roboto Condensed", system-ui, sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    & .media-time-group {
+      justify-content: center;
+      color: #fff;
+      font-family: "Phatta Desk", "Roboto Condensed", "Arial Narrow", system-ui, sans-serif;
+    }
+
+    & .phatta-rate {
+      font-size: 0;
+      font-family: "Phatta Desk", "Roboto Condensed", "Arial Narrow", system-ui, sans-serif;
+      color: #fff;
+    }
+
+    & .phatta-rate::before {
+      content: attr(data-desk);
+      font-size: calc(var(--g-rate-fs, 22) * var(--k));
+    }
+  }
+
+  :where([data-phatta-theme="desk"]) :where([data-phatta-plate]) .media-skin[data-skin="phatta"]:not(:fullscreen, :fullscreen > *) .media-time-group {
+    width: calc(var(--g-tmw) * var(--k));
   }
 }
 
