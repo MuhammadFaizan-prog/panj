@@ -4,7 +4,7 @@ A static front-end with no backend, no accounts and no user data. The risks are 
 
 ## Repository
 
-- **Private** while building; public only at submission on Faizi's OK.
+- **Public** from P1 (Faizi's call, 2026-11-08). Treat every commit as published.
 - No secrets in the repo. `.env*` is git-ignored. Nothing in this project needs a key until P7 (Mux playback IDs are public by design; Mux API tokens never enter the repo).
 
 ## Dependencies

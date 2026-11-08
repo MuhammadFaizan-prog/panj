@@ -68,7 +68,7 @@ Exit: a checklist so every state is designed in all five skins.
 - One Vercel project serving `panj.vercel.app/<skin>`.
 - Mux free account; one asset with a public playback ID, used in all five skins.
 - One skin embedded on faizi-dev.vercel.app.
-- Repo goes public only at submission, on Faizi's OK.
+- Repo is already public (Faizi's call at P1).
 - Per skin: cover image, 20 s screen clip, 3–4 sentences of design thinking, posted with #videojsskinschallenge.
 
 ## Timeline (PKT)

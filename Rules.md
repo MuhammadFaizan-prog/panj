@@ -8,7 +8,7 @@
 
 ## Never without Faizi's explicit OK
 
-- Make the repo public (only at submission).
+- Change the repo's visibility (it is public since P1, by Faizi's choice on 2026-11-08).
 - Create a Vercel project or deploy anything.
 - Create a Mux account or upload media.
 - Touch faizi-dev.vercel.app or any other repo.
