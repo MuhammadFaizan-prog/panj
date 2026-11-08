@@ -1,19 +1,21 @@
 // /glass showcase: mounts the Glass player and swaps its footage (Film / Bright / Dark).
 // Film is the shared public sample (the a11y suite intercepts that URL). Bright and Dark are short
 // abstract clips generated for this page (footage/*.webm, ~60 KB each) to stress-test legibility.
+// Film opens on the reference's wave (assets/poster.webp, cut by skins/glass/tools/build_assets.py).
 import '@videojs/html/i18n';
 import { createSkinnedPlayer } from '@panj/glass';
 
 import { SAMPLE } from '../src/media';
 import brightClip from './footage/bright.webm?url';
 import darkClip from './footage/dark.webm?url';
+import wavePoster from './assets/poster.webp?url';
 
 type Footage = 'film' | 'bright' | 'dark';
 
 const FOOTAGE: Record<Footage, { src: string; poster?: string; note: string; theme: 'light' | 'dark' }> = {
   film: {
     src: SAMPLE.src,
-    poster: SAMPLE.poster,
+    poster: wavePoster,
     note: 'Film: the public Video.js demo clip, mostly mid-tones.',
     theme: 'dark',
   },

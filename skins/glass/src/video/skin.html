@@ -180,6 +180,7 @@
 </media-slider-preview>
 </media-time-slider>
 </div>
+<glass-clock class="glass-clock">
 <media-time-group class="media-time-group">
 <media-time class="media-time-toggle" type="current" toggle>
 </media-time>
@@ -190,12 +191,14 @@
 <media-time class="media-time-duration-value" type="duration">
 </media-time>
 </media-time-group>
+</glass-clock>
 <media-controls-group class="video-controls-group glass-end">
 <media-captions-button class="media-button media-captions-button" id="vjs-COsQCb_P-0-10-trigger">
 <media-icon family="glass" name="captions-off" class="media-button-icon media-captions-button-off-icon">
 </media-icon>
 <media-icon family="glass" name="captions-on" class="media-button-icon media-captions-button-on-icon">
 </media-icon>
+<span class="glass-cc" aria-hidden="true">CC</span>
 </media-captions-button>
 <media-tooltip trigger="vjs-COsQCb_P-0-10-trigger" side="top" class="media-popup media-popup-safe-area media-tooltip-popup">
 <media-tooltip-label>
@@ -204,8 +207,7 @@
 </media-tooltip-shortcut>
 </media-tooltip>
 <button commandfor="vjs-Rq0iN2VF-h-popup" class="media-button" id="vjs-COsQCb_P-0-11-trigger">
-<media-icon family="glass" name="gear" class="media-button-icon">
-</media-icon>
+<glass-rate class="glass-rate" aria-hidden="true">1x</glass-rate>
 <media-text class="media-settings-button-label" token="menu.settings">Settings</media-text>
 </button>
 <media-tooltip trigger="vjs-COsQCb_P-0-11-trigger" side="top" class="media-popup media-popup-safe-area media-tooltip-popup">

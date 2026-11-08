@@ -66,4 +66,6 @@ import '@videojs/html/ui/status-indicator-value';
 import '@videojs/html/ui/seek-indicator';
 import '@videojs/html/ui/seek-indicator-value';
 import './icons';
+import './elements';
 import './glass.css';
+import './glass-ref.css';

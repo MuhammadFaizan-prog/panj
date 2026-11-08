@@ -96,7 +96,8 @@ body.glass-page {
   color: var(--g-ink-soft);
 }
 
-.glass-head h1 {
+.glass-head h1,
+.glass-head .glass-title {
   margin: 0;
   font-size: clamp(2.4rem, 5vw, 3.6rem);
   font-weight: 650;
@@ -157,26 +158,6 @@ body.glass-page {
 .glass-segments button[aria-pressed="true"] {
   background: var(--g-chip-on);
   color: var(--g-chip-on-ink);
-}
-
-/* The player: large, rounded, lifted. */
-.glass-frame {
-  border-radius: 24px;
-  padding: 1px;
-  background: linear-gradient(160deg, rgb(255 255 255 / 0.35), rgb(255 255 255 / 0.04) 40%, rgb(255 255 255 / 0.12));
-  box-shadow: 0 40px 80px -40px rgb(0 0 0 / 0.55), 0 8px 24px -12px rgb(0 0 0 / 0.35);
-}
-
-.glass-page #stage {
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  background: #000;
-  border-radius: 23px;
-  overflow: hidden;
-}
-
-.glass-page #stage .media-skin {
-  --media-border-radius: 23px;
 }
 
 .glass-note {
@@ -247,15 +228,6 @@ body.glass-page {
     min-width: 0;
     padding: 0 14px;
   }
-
-  .glass-frame,
-  .glass-page #stage {
-    border-radius: 16px;
-  }
-
-  .glass-page #stage .media-skin {
-    --media-border-radius: 16px;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -263,4 +235,115 @@ body.glass-page {
   .glass-segments button {
     transition: none;
   }
+}
+
+/* ── hero: Faizi's reference, rebuilt. The frame and backdrop are a plate cut from it (assets/plate.webp,
+   1376 x 768); the live player sits exactly on its painted video rectangle. Everything is placed in plate pixels. ── */
+@property --gl-radius {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 0px;
+}
+
+.gl-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* hidden until focused: the reference paints no navigation */
+.gl-skip {
+  position: absolute;
+  z-index: 10;
+  left: 12px;
+  top: 8px;
+  padding: 0 14px;
+  border-radius: 999px;
+  background: #0b0c10;
+  color: #fff;
+  font: 15px/44px ui-sans-serif, system-ui, sans-serif;
+  text-decoration: none;
+  translate: 0 -200%;
+}
+
+.gl-skip:focus-visible {
+  translate: none;
+}
+
+.gl-hero {
+  position: relative;
+  overflow: hidden;
+  background: #22404a;
+  isolation: isolate;
+}
+
+/* past the plate's aspect ratio the same backdrop carries on, blurred, to the edges */
+.gl-hero::before {
+  content: "";
+  position: absolute;
+  inset: -60px;
+  z-index: -1;
+  background: url("./assets/backdrop.webp") center / cover no-repeat;
+  filter: blur(12px);
+}
+
+.gl-plate {
+  position: relative;
+  width: min(100%, calc(100svh * 1376 / 768));
+  min-width: 700px;
+  margin-inline: auto;
+  aspect-ratio: 1376 / 768;
+  container-type: inline-size;
+  background: url("./assets/plate.webp") 0 0 / 100% 100% no-repeat;
+}
+
+.glass-page .gl-plate > #stage {
+  position: absolute;
+  left: calc(119 / 1376 * 100cqw);
+  top: calc(58 / 1376 * 100cqw);
+  width: calc(1137 / 1376 * 100cqw);
+  height: calc(652 / 1376 * 100cqw);
+  aspect-ratio: auto;
+  border-radius: var(--gl-radius);
+  overflow: hidden;
+  background: #000;
+  --gl-radius: calc(26 / 1376 * 100cqw);
+}
+
+.glass-page #stage .media-skin {
+  --media-border-radius: var(--gl-radius);
+  --media-object-fit: cover;
+}
+
+/* phones: the plate's backdrop stays behind, the player spans the width at the reference's aspect ratio */
+@media (max-width: 699.98px) {
+  .gl-plate {
+    width: 100%;
+    min-width: 0;
+    aspect-ratio: auto;
+    padding: 56px 12px 40px;
+    box-sizing: border-box;
+    background: none;
+  }
+
+  .glass-page .gl-plate > #stage {
+    position: relative;
+    left: auto;
+    top: auto;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 3;
+    --gl-radius: 18px;
+  }
+}
+
+.glass-showcase .glass-title {
+  margin: 0;
+  font-size: clamp(2.4rem, 5vw, 3.6rem);
+  font-weight: 650;
+  letter-spacing: -0.035em;
+  line-height: 1;
 }

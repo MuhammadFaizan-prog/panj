@@ -6,52 +6,57 @@
     <title>Glass · panj</title>
     <meta name="description" content="Glass: a liquid-glass Video.js v10 skin. A frosted floating control pill that stays readable over bright and dark footage." />
     <link rel="stylesheet" href="/src/gallery.css" />
+    <link rel="preload" as="image" href="/glass/assets/plate.webp" fetchpriority="high" />
     <link rel="stylesheet" href="/glass/glass-page.css" />
   </head>
   <body class="glass-page">
-    <div class="glass-page-light" aria-hidden="true"></div>
-    <main class="page glass-showcase">
-      <a class="back" href="/">← All skins</a>
-
-      <header class="glass-head">
-        <div>
-          <p class="glass-eyebrow">panj · Video.js v10 skin</p>
-          <h1>Glass</h1>
-          <p class="glass-lede">A frosted control pill that floats over the picture and stays readable on snow or at night.</p>
+    <a class="gl-skip" href="/">← All skins</a>
+    <main>
+      <section class="gl-hero" aria-label="The Glass player over a breaking wave">
+        <div class="gl-plate" data-glass-plate>
+          <h1 class="gl-sr">Glass</h1>
+          <div id="stage"></div>
         </div>
-
-        <div class="glass-switch" role="group" aria-labelledby="footage-label">
-          <span id="footage-label" class="glass-switch-label">Footage</span>
-          <div class="glass-segments">
-            <button type="button" data-footage="film" aria-pressed="true">Film</button>
-            <button type="button" data-footage="bright" aria-pressed="false">Bright</button>
-            <button type="button" data-footage="dark" aria-pressed="false">Dark</button>
-          </div>
-        </div>
-      </header>
-
-      <div class="glass-frame">
-        <div id="stage"></div>
-      </div>
-      <p id="footage-note" class="glass-note" aria-live="polite">Film: the public Video.js demo clip, mostly mid-tones.</p>
-
-      <section class="glass-thinking" aria-labelledby="thinking-title">
-        <h2 id="thinking-title">Design thinking</h2>
-        <p>
-          Glass treats the controls as a lens resting on the picture rather than a bar bolted underneath it. The pill uses
-          real backdrop blur that also dims what sits behind it, a 1px gradient rim for the specular edge, and a soft
-          gradient scrim beneath, so white glyphs hold up over a white frame. Where blur is not supported the same pill
-          becomes solid tinted glass, and under reduced transparency or higher contrast it turns near-opaque with a visible
-          edge. Motion is a small spring on hover and press, and it switches off under reduced motion. The icons are
-          hand-drawn SVG on a 24px grid; every behaviour underneath is stock Video.js v10.
-        </p>
-        <ul class="glass-facts">
-          <li><strong>Surface</strong><span>backdrop blur + saturate + dim, 1px specular rim</span></li>
-          <li><strong>Fallbacks</strong><span>solid tint without blur; near-opaque for reduced transparency</span></li>
-          <li><strong>Targets</strong><span>44px everywhere, white ring + dark halo on focus</span></li>
-          <li><strong>Volume</strong><span>Tab reaches the slider; on touch, first tap on the speaker opens it</span></li>
-        </ul>
       </section>
+
+      <div class="page glass-showcase">
+        <header class="glass-head">
+          <div>
+            <p class="glass-eyebrow">panj · Video.js v10 skin</p>
+            <h2 class="glass-title">Glass</h2>
+            <p class="glass-lede">A frosted control pill that floats over the picture and stays readable on snow or at night.</p>
+            <p><a class="back" href="/">← All skins</a></p>
+          </div>
+
+          <div class="glass-switch" role="group" aria-labelledby="footage-label">
+            <span id="footage-label" class="glass-switch-label">Footage</span>
+            <div class="glass-segments">
+              <button type="button" data-footage="film" aria-pressed="true">Film</button>
+              <button type="button" data-footage="bright" aria-pressed="false">Bright</button>
+              <button type="button" data-footage="dark" aria-pressed="false">Dark</button>
+            </div>
+          </div>
+        </header>
+        <p id="footage-note" class="glass-note" aria-live="polite">Film: the public Video.js demo clip, mostly mid-tones.</p>
+
+        <section class="glass-thinking" aria-labelledby="thinking-title">
+          <h2 id="thinking-title">Design thinking</h2>
+          <p>
+            Glass treats the controls as a lens resting on the picture rather than a bar bolted underneath it. The page
+            above is our own AI-generated reference, rebuilt: the frame and backdrop are cut from it, the poster is its
+            wave, and the pill is real CSS, a backdrop blur with a pale sea-glass tint and a 2px rim, so it frosts
+            whatever footage plays behind it. A thin luminous ring holds the play glyph, the seek fill glows, and every
+            glyph carries a hairline dark halo, so white strokes still hold over foam. Where blur is not supported the
+            pill becomes solid tinted glass, and under reduced transparency or higher contrast it turns near-opaque.
+          </p>
+          <ul class="glass-facts">
+            <li><strong>Surface</strong><span>backdrop blur + brightness, sea-glass tint, 2px rim</span></li>
+            <li><strong>Fallbacks</strong><span>solid tint without blur; near-opaque for reduced transparency</span></li>
+            <li><strong>Targets</strong><span>44px everywhere, white ring + dark halo on focus</span></li>
+            <li><strong>Live</strong><span>time, speed (“1x”), captions, volume and fullscreen are stock Video.js v10</span></li>
+          </ul>
+        </section>
+      </div>
     </main>
     <script type="module" src="/glass/main.ts"></script>
   </body>
