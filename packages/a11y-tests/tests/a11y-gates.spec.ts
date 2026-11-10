@@ -57,7 +57,7 @@ for (const skin of SKINS) {
       const pop = container.locator('media-volume-popover');
       const touch = info.project.name.startsWith('mobile');
       // Phatta, Glass and Ink & Reed keep a hover popover on desktop and show the slider inline on touch;
-      // Basant and Darkroom always show an inline slider.
+      // Basant, Darkroom and Jaali always show an inline slider.
       if ((await pop.count()) > 0 && !touch) {
         await container.locator('media-mute-button').hover();
         await expect(pop).toHaveAttribute('data-open', { timeout: 3000 });

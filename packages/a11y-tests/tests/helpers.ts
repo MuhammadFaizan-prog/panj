@@ -3,7 +3,7 @@ import { fileURLToPath } from 'node:url';
 
 import { expect, type Page } from '@playwright/test';
 
-export const SKINS = ['phatta', 'glass', 'basant', 'ink-reed', 'darkroom'] as const;
+export const SKINS = ['phatta', 'glass', 'basant', 'ink-reed', 'darkroom', 'jaali'] as const;
 export type Skin = (typeof SKINS)[number];
 
 const fixture = (name: string) => readFileSync(fileURLToPath(new URL(`../fixtures/${name}`, import.meta.url)));

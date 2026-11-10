@@ -1,0 +1,35 @@
+/* Jaali skin tokens: carved sandstone, a lapis-and-ivory pill, gold light.
+   Scope every rule to [data-skin="jaali"].
+   Contrast (WCAG):
+     --jl-ink        #f4e7d2  on the time strip #1d130c  15.2:1  current time, menu text
+     --jl-ink-dim    #b49a7b  on the time strip            7.4:1  separators, duration
+     --jl-lapis      #1f3f9e  on the ivory studs #efe6d2   7.9:1  control glyphs (cut from the reference)
+     --jl-gold       #f6c66a  decoration, lit beads, focus halo
+   The strip and the deck are opaque stone, so these ratios hold over bright and dark video alike. */
+.media-skin[data-skin="jaali"] {
+  /* palette */
+  --jl-stone: #b0835a;
+  --jl-stone-hi: #c99c6e;
+  --jl-stone-lo: #7e5838;
+  --jl-strip: #1d130c;
+  --jl-ink: #f4e7d2;
+  --jl-ink-dim: #b49a7b;
+  --jl-lapis: #1f3f9e;
+  --jl-ivory: #efe6d2;
+  --jl-gold: #f6c66a;
+  --jl-digits: "Jaali Digits", "Montserrat", ui-sans-serif, system-ui, sans-serif;
+
+  /* shared panj tokens */
+  --panj-surface: var(--jl-strip);
+  --panj-on-surface: var(--jl-ink);
+  --panj-accent: var(--jl-gold);
+  --panj-focus-color: #ffd27a; /* bright amber ring, black halo keeps it visible on stone and on bright frames */
+  --panj-focus-halo: rgb(0 0 0 / 0.9);
+
+  /* public Video.js props, so hosts can retheme */
+  --media-accent: var(--media-accent-color, var(--jl-gold));
+  --media-foreground: var(--jl-ink);
+  --media-popover: #1d130c;
+  --media-popover-foreground: var(--jl-ink);
+  --media-ring: var(--panj-focus-color);
+}

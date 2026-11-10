@@ -4,7 +4,7 @@ import { defineConfig, type Connect, type Plugin } from 'vite';
 
 const path = (file: string) => fileURLToPath(new URL(file, import.meta.url));
 
-const ROUTES = ['phatta', 'glass', 'basant', 'ink-reed', 'darkroom'] as const;
+const ROUTES = ['phatta', 'glass', 'basant', 'ink-reed', 'darkroom', 'jaali'] as const;
 
 // Serve /phatta (no trailing slash) as /phatta/ so every route answers 200 in dev and preview.
 const cleanRoutes: Connect.NextHandleFunction = (req, _res, next) => {

@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "license": "Apache-2.0",
-  "description": "Five Video.js v10 skins: Phatta, Glass, Basant, Ink & Reed, Darkroom",
+  "description": "Six Video.js v10 skins: Phatta, Glass, Basant, Ink & Reed, Darkroom, Jaali",
   "packageManager": "pnpm@10.14.0",
   "scripts": {
     "dev": "pnpm --filter @panj/gallery dev",

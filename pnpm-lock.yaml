@@ -22,6 +22,9 @@ importers:
       '@panj/ink-reed':
         specifier: workspace:*
         version: link:../../skins/ink-reed
+      '@panj/jaali':
+        specifier: workspace:*
+        version: link:../../skins/jaali
       '@panj/phatta':
         specifier: workspace:*
         version: link:../../skins/phatta
@@ -201,6 +204,58 @@ importers:
         version: 8.3.6(jiti@2.7.0)
 
   skins/ink-reed:
+    dependencies:
+      '@panj/tokens':
+        specifier: workspace:*
+        version: link:../../packages/tokens
+      '@videojs/html':
+        specifier: 10.3.0
+        version: 10.3.0(@videojs/hlsjs-video@10.3.0)(@videojs/mux-video@10.3.0)(react@19.3.1)
+    devDependencies:
+      '@base-ui/react':
+        specifier: ^1.6.0
+        version: 1.9.0(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+      '@heroicons/react':
+        specifier: ^2.2.0
+        version: 2.2.0(react@19.3.1)
+      '@tailwindcss/vite':
+        specifier: ^4.3.3
+        version: 4.3.5(vite@8.3.6(jiti@2.7.0))
+      '@types/react':
+        specifier: ^19.3.0
+        version: 19.3.0
+      '@types/react-dom':
+        specifier: ^19.3.0
+        version: 19.3.0(@types/react@19.3.0)
+      '@videojs/mux-video':
+        specifier: 10.3.0
+        version: 10.3.0
+      '@vitejs/plugin-react':
+        specifier: ^6.1.2
+        version: 6.2.1(vite@8.3.6(jiti@2.7.0))
+      class-variance-authority:
+        specifier: ^0.7.1
+        version: 0.7.1
+      cn:
+        specifier: ^0.4.0
+        version: 0.4.0
+      react:
+        specifier: ^19.3.0
+        version: 19.3.1
+      react-dom:
+        specifier: ^19.3.0
+        version: 19.3.1(react@19.3.1)
+      tailwindcss:
+        specifier: ^4.3.3
+        version: 4.3.5
+      typescript:
+        specifier: ^7.0.2
+        version: 7.0.2
+      vite:
+        specifier: ^8.3.4
+        version: 8.3.6(jiti@2.7.0)
+
+  skins/jaali:
     dependencies:
       '@panj/tokens':
         specifier: workspace:*

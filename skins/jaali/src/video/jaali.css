@@ -1,0 +1,732 @@
+/* Jaali: the carved sandstone player as Faizi's locked reference paints it (jaali-ref.webp, 1376 x 768).
+   The player is the whole unit, 1030 x 703 reference pixels: a sandstone frame with floral corner filigree, the
+   star-lattice jaali window the video sits behind, a dark time strip, a seek bar of 8-point star beads and a carved
+   deck with a lapis-and-ivory pill (previous, -10 s, play, +10 s, next) and three ivory studs (volume, settings,
+   fullscreen). Every size is in card pixels (reference pixel minus the card origin 173, 65) times --bp, one
+   reference pixel at the current player width.
+
+   Materials are cut from the reference by tools/build_assets.py (card, beads, flare, groove, dot, pause and muted
+   faces, the phone pill); the time text, the bead states, the groove, the dot and every control are live.
+   Unlayered on purpose: it beats the Scaffold (`components`) and the shared essentials (`utilities`), so this file
+   restates their 44px targets with max(44px, …) and never touches `outline` (the essentials' focus ring stays).
+   Plain selectors, no nested `@scope { &[data-…] }`: Chrome 141 drops those, so every state swap is restated here. */
+
+@property --bp {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 1px;
+}
+
+@property --ox {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 0px;
+}
+
+@property --oy {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 0px;
+}
+
+@property --u {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 1px;
+}
+
+@font-face {
+  font-family: "Jaali Digits";
+  src: url("../fonts/montserrat-digits.woff") format("woff");
+  font-display: block;
+  unicode-range: U+0020, U+002D-003A;
+}
+
+.media-skin[data-skin="jaali"] {
+  position: relative;
+  display: flow-root;
+  aspect-ratio: 1030 / 703;
+  min-height: auto;
+  padding: 0;
+  overflow: visible;
+  color: var(--jl-ink);
+  background: transparent;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.media-skin[data-skin="jaali"] > * {
+  --bp: calc(100cqw / 1030);
+  --ox: 0px;
+  --oy: 0px;
+  --u: var(--bp);
+}
+
+.media-skin[data-skin="jaali"]::before,
+.media-skin[data-skin="jaali"]::after {
+  content: none;
+}
+
+/* fullscreen: the unit keeps its proportions, centred on the dark alcove */
+.media-skin[data-skin="jaali"]:fullscreen {
+  aspect-ratio: auto;
+  width: 100%;
+  height: 100%;
+  container-type: size;
+  background: #120c08;
+}
+
+.media-skin[data-skin="jaali"]:fullscreen > * {
+  --bp: min(100cqw / 1030, 100cqh / 703);
+  --ox: calc((100cqw - 1030 * var(--bp)) / 2);
+  --oy: calc((100cqh - 703 * var(--bp)) / 2);
+}
+
+/* ── the window: the picture sits behind the lattice at (27, 17), 981 x 491 ── */
+.media-skin[data-skin="jaali"] > :is(video, mux-video, hls-video),
+.media-skin[data-skin="jaali"] :is(.media-poster, .media-indicator-group),
+.media-skin[data-skin="jaali"] .media-buffering-indicator {
+  position: absolute;
+  inset: auto;
+  left: calc(var(--ox) + 27 * var(--bp));
+  top: calc(var(--oy) + 17 * var(--bp));
+  width: calc(981 * var(--bp));
+  height: calc(491 * var(--bp));
+  min-height: 0;
+  aspect-ratio: auto;
+  contain: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.media-skin[data-skin="jaali"] > :is(video, mux-video, hls-video) {
+  object-fit: cover;
+  background: #241a12;
+}
+
+.media-skin[data-skin="jaali"] .media-poster-image {
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  border-radius: 0;
+}
+
+.media-skin[data-skin="jaali"] .media-indicator-group {
+  z-index: 12;
+  pointer-events: none;
+}
+
+/* ── layers ── */
+.media-skin[data-skin="jaali"] media-controls {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.media-skin[data-skin="jaali"] .video-controls-backdrop {
+  display: none;
+}
+
+.media-skin[data-skin="jaali"] .media-buffering-indicator-controls {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.media-skin[data-skin="jaali"] .video-controls-content {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 1;
+  visibility: visible;
+}
+
+.media-skin[data-skin="jaali"] .jl-unit {
+  position: absolute;
+  left: var(--ox);
+  top: var(--oy);
+  width: calc(1030 * var(--bp));
+  height: calc(703 * var(--bp));
+  pointer-events: none;
+}
+
+.media-skin[data-skin="jaali"] .jl-card {
+  position: absolute;
+  inset: 0;
+  background: url("../assets/card.webp") 0 0 / 100% 100% no-repeat;
+  pointer-events: none;
+}
+
+/* a soft shade at the window's edges once the landscape poster gives way to the film */
+.media-skin[data-skin="jaali"] .jl-vignette {
+  position: absolute;
+  left: calc(27 * var(--bp));
+  top: calc(17 * var(--bp));
+  width: calc(981 * var(--bp));
+  height: calc(491 * var(--bp));
+  background: radial-gradient(120% 95% at 50% 55%, transparent 55%, rgb(20 12 6 / 0.45) 100%);
+  opacity: 1;
+  pointer-events: none;
+}
+
+.media-skin[data-skin="jaali"] .media-poster[data-visible] ~ media-controls .jl-vignette {
+  opacity: 0;
+}
+
+/* ── the time strip: live MM:SS left (current / duration) and right (current / remaining), the script label in the
+   middle is the captions button ── */
+.media-skin[data-skin="jaali"] .jl-strip {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.media-skin[data-skin="jaali"] .jl-time {
+  --jl-fs: 14;
+  position: absolute;
+  top: calc(var(--jl-ty, 515.6) * var(--bp));
+  height: calc(24 * var(--bp));
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  font-family: var(--jl-digits);
+  font-size: max(9px, calc(var(--jl-fs) * var(--bp)));
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: calc(var(--jl-ls, -0.2) * var(--bp));
+  font-variant-numeric: tabular-nums;
+  color: rgb(241 224 197);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.media-skin[data-skin="jaali"] .jl-time-left {
+  left: calc(var(--jl-lx, 30.6) * var(--bp));
+}
+
+.media-skin[data-skin="jaali"] .jl-time-right {
+  right: calc(var(--jl-rx, 32.6) * var(--bp));
+  color: rgb(254 230 200);
+}
+
+.media-skin[data-skin="jaali"] .jl-time :is(.media-time-current-value, .media-time-separator, .media-time-duration-value, .media-time-remaining-value) {
+  display: inline-flex;
+  color: inherit;
+  opacity: 1;
+}
+
+.media-skin[data-skin="jaali"] .jl-time .media-time-separator {
+  padding-inline: calc(var(--jl-sp, 4.6) * var(--bp));
+}
+
+.media-skin[data-skin="jaali"] .jl-time-left :is(.media-time-separator, .media-time-duration-value) {
+  color: rgb(150 128 101);
+}
+
+.media-skin[data-skin="jaali"] .jl-time-right :is(.media-time-separator, .media-time-remaining-value) {
+  color: rgb(178 151 120);
+}
+
+.media-skin[data-skin="jaali"] .jl-time media-time > span[aria-hidden="true"] {
+  display: none;
+}
+
+.media-skin[data-skin="jaali"] media-time[data-jl-pad]::before {
+  content: "0";
+}
+
+/* the label: an invisible 44px target over the carved script; captions on lights it */
+.media-skin[data-skin="jaali"] .jl-label {
+  --w: max(44px, calc(76 * var(--bp)));
+  --h: max(44px, calc(34 * var(--bp)));
+  position: absolute;
+  inset: auto;
+  left: calc(515 * var(--bp) - var(--w) / 2);
+  top: calc(528 * var(--bp) - var(--h) / 2);
+  width: var(--w);
+  height: var(--h);
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  display: block;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  border-radius: calc(8 * var(--bp));
+  pointer-events: auto;
+  cursor: pointer;
+  transform: none;
+  translate: none;
+  /* above the seek bar: on small players the two 44px targets overlap and the label must stay reachable */
+  z-index: 3;
+}
+
+.media-skin[data-skin="jaali"] .jl-label :is(media-icon, .media-button-icon) {
+  display: none;
+}
+
+.media-skin[data-skin="jaali"] .jl-label-art {
+  position: absolute;
+  left: calc(50% - 31 * var(--bp));
+  top: calc(50% - 11 * var(--bp));
+  width: calc(62 * var(--bp));
+  height: calc(22 * var(--bp));
+  background: url("../assets/card.webp") calc(-484 * var(--bp)) calc(-517 * var(--bp)) / calc(1030 * var(--bp)) calc(703 * var(--bp)) no-repeat;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.media-skin[data-skin="jaali"] .jl-label:hover .jl-label-art,
+.media-skin[data-skin="jaali"] .jl-label[data-active] .jl-label-art {
+  opacity: 1;
+  filter: brightness(1.45) drop-shadow(0 0 calc(4 * var(--bp)) rgb(255 200 110 / 0.85));
+}
+
+/* ── the seek bar: 27 star beads over an invisible time slider; the played groove and its dot are the slider's
+   fill and thumb ── */
+.media-skin[data-skin="jaali"] .jl-beads {
+  position: absolute;
+  left: 0;
+  top: calc(547 * var(--bp));
+  width: 100%;
+  height: calc(42 * var(--bp));
+  display: block;
+  pointer-events: none;
+}
+
+.media-skin[data-skin="jaali"] .jl-bead {
+  --row: 1;
+  position: absolute;
+  left: calc((var(--cx) - 20) * var(--bp));
+  top: 0;
+  width: calc(40 * var(--bp));
+  height: calc(42 * var(--bp));
+  background: url("../assets/beads.webp") calc(var(--i) * -40 * var(--bp)) calc(var(--row) * -42 * var(--bp)) / calc(1080 * var(--bp)) calc(126 * var(--bp)) no-repeat;
+}
+
+.media-skin[data-skin="jaali"] .jl-bead[data-s="lit"] { --row: 0; }
+.media-skin[data-skin="jaali"] .jl-bead[data-s="off"] { --row: 1; }
+.media-skin[data-skin="jaali"] .jl-bead[data-s="head"] { --row: 2; }
+
+.media-skin[data-skin="jaali"] .jl-flare {
+  position: absolute;
+  left: calc((var(--cx, 612) - 20) * var(--bp));
+  top: calc(-28 * var(--bp));
+  width: calc(41 * var(--bp));
+  height: calc(28 * var(--bp));
+  background: url("../assets/flare.webp") 0 0 / 100% 100% no-repeat;
+  mix-blend-mode: plus-lighter;
+}
+
+.media-skin[data-skin="jaali"] .jl-flare[hidden] {
+  display: none;
+}
+
+.media-skin[data-skin="jaali"] .jl-seek {
+  --h: max(44px, calc(54 * var(--bp)));
+  position: absolute;
+  left: calc(19 * var(--bp));
+  top: calc(574 * var(--bp) - var(--h) / 2);
+  width: calc(989 * var(--bp));
+  height: var(--h);
+  margin: 0;
+  padding: 0;
+  display: block;
+  cursor: pointer;
+  touch-action: none;
+  pointer-events: auto;
+}
+
+.media-skin[data-skin="jaali"] .jl-seek .media-time-slider-track {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: visible;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.media-skin[data-skin="jaali"] .jl-seek .media-time-slider-buffer {
+  display: none;
+}
+
+.media-skin[data-skin="jaali"] .jl-seek .media-time-slider-fill,
+.media-skin[data-skin="jaali"] .jl-seek[data-dragging] .media-time-slider-fill {
+  position: absolute;
+  inset: auto;
+  left: 0;
+  top: calc(50% + 14 * var(--bp));
+  width: var(--media-slider-fill, 0%);
+  height: calc(10 * var(--bp));
+  border-radius: 0;
+  background: url("../assets/groove.webp") 0 0 / calc(989 * var(--bp)) 100% no-repeat;
+  opacity: 1;
+}
+
+.media-skin[data-skin="jaali"] .jl-seek[data-dragging] .media-time-slider-fill {
+  width: var(--media-slider-pointer, var(--media-slider-fill, 0%));
+}
+
+.media-skin[data-skin="jaali"] .jl-seek .media-time-slider-thumb {
+  position: absolute;
+  inset: auto;
+  left: var(--media-slider-fill, 0%);
+  top: calc(50% + 11 * var(--bp));
+  width: calc(24 * var(--bp));
+  height: calc(16 * var(--bp));
+  margin: 0;
+  translate: calc(-12 * var(--bp)) 0;
+  transform: none;
+  border: 0;
+  border-radius: calc(8 * var(--bp));
+  background: url("../assets/thumb.webp") 0 0 / 100% 100% no-repeat;
+  box-shadow: none;
+  opacity: 1;
+  scale: 1;
+}
+
+.media-skin[data-skin="jaali"] .jl-seek[data-dragging] .media-time-slider-thumb {
+  left: var(--media-slider-pointer, var(--media-slider-fill, 0%));
+}
+
+.media-skin[data-skin="jaali"] .jl-seek .media-time-slider-preview {
+  bottom: calc(100% + 6px);
+  padding: 3px 8px;
+  border-radius: 6px;
+  color: var(--jl-ink);
+  background: rgb(29 19 12 / 0.92);
+  border: 1px solid rgb(246 198 106 / 0.45);
+  font: 500 12px/1.2 var(--jl-digits);
+}
+
+/* ── the deck ── */
+.media-skin[data-skin="jaali"] .jl-deck {
+  position: absolute;
+  left: 0;
+  top: calc(600 * var(--bp));
+  width: 100%;
+  height: calc(103 * var(--bp));
+  display: block;
+  pointer-events: none;
+}
+
+.media-skin[data-skin="jaali"] .jl-pill,
+.media-skin[data-skin="jaali"] .jl-ornament {
+  display: none;
+}
+
+.media-skin[data-skin="jaali"] .jl-deck .jl-key {
+  --cx: 0;
+  --cy: 46;
+  --gw: 56;
+  --gh: 44;
+  --w: max(44px, calc(var(--gw) * var(--u)));
+  --h: max(44px, calc(var(--gh) * var(--u)));
+  position: absolute;
+  inset: auto;
+  left: calc(var(--cx) * var(--u) - var(--w) / 2);
+  top: calc(var(--cy) * var(--u) - var(--h) / 2);
+  width: var(--w);
+  height: var(--h);
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  display: block;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  border-radius: calc(12 * var(--u));
+  transform: none;
+  translate: none;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.media-skin[data-skin="jaali"] .jl-deck .jl-key :is(media-icon, .media-button-icon, .media-button-icon-base, .media-seek-button-content) {
+  display: none;
+}
+
+.media-skin[data-skin="jaali"] .jl-deck .jl-key:hover {
+  background: radial-gradient(closest-side, rgb(255 236 190 / 0.22), transparent);
+}
+
+.media-skin[data-skin="jaali"] .jl-deck .jl-key:active {
+  background: radial-gradient(closest-side, rgb(30 20 10 / 0.25), transparent);
+}
+
+.media-skin[data-skin="jaali"] .jl-deck .jl-prev { --cx: 363; --cy: 47; }
+.media-skin[data-skin="jaali"] .jl-deck .jl-rew { --cx: 431; --cy: 47; }
+.media-skin[data-skin="jaali"] .jl-deck .jl-ff { --cx: 599; --cy: 45; }
+.media-skin[data-skin="jaali"] .jl-deck .jl-next { --cx: 667; --cy: 45; }
+
+.media-skin[data-skin="jaali"] .jl-deck .jl-play {
+  --cx: 514.5;
+  --cy: 46.5;
+  --gw: 72;
+  --gh: 72;
+  border-radius: 50%;
+}
+
+/* playing: the disc shows the two lapis bars instead of the triangle */
+.media-skin[data-skin="jaali"] .jl-deck .jl-play:not([data-paused]):not([data-ended])::after {
+  content: "";
+  position: absolute;
+  left: calc(50% - 38.5 * var(--u));
+  top: calc(50% - 38.5 * var(--u));
+  width: calc(76 * var(--u));
+  height: calc(76 * var(--u));
+  background: url("../assets/pause.webp") 0 0 / 100% 100% no-repeat;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.media-skin[data-skin="jaali"] .jl-deck .jl-stud {
+  --gw: 48;
+  --gh: 48;
+  border-radius: 50%;
+}
+
+.media-skin[data-skin="jaali"] .jl-deck .jl-mute { --cx: 864.5; --cy: 47; }
+.media-skin[data-skin="jaali"] .jl-deck .jl-settings { --cx: 923; --cy: 46; }
+.media-skin[data-skin="jaali"] .jl-deck .jl-fs { --cx: 982; --cy: 46; }
+
+.media-skin[data-skin="jaali"] .jl-deck .jl-mute[data-muted]::after,
+.media-skin[data-skin="jaali"] .jl-deck[data-muted] .jl-mute::after {
+  content: "";
+  position: absolute;
+  left: calc(50% - 24.5 * var(--u));
+  top: calc(50% - 24 * var(--u));
+  width: calc(48 * var(--u));
+  height: calc(48 * var(--u));
+  background: url("../assets/muted.webp") 0 0 / 100% 100% no-repeat;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+/* volume: an inline slider along the carved panel left of the studs; its gold level shows on hover, focus and drag */
+.media-skin[data-skin="jaali"] .jl-volume {
+  position: absolute;
+  left: calc(727 * var(--u));
+  top: calc(47 * var(--u) - max(44px, calc(44 * var(--u))) / 2);
+  width: calc(108 * var(--u));
+  min-width: 44px;
+  height: max(44px, calc(44 * var(--u)));
+  margin: 0;
+  display: block;
+  cursor: pointer;
+  touch-action: none;
+  pointer-events: auto;
+}
+
+.media-skin[data-skin="jaali"] .jl-volume .media-volume-slider-track {
+  position: absolute;
+  inset: auto 0;
+  top: calc(50% - 2.5 * var(--u));
+  width: auto;
+  height: calc(5 * var(--u));
+  margin: 0;
+  border-radius: calc(3 * var(--u));
+  background: rgb(46 28 14 / 0.7);
+  transform: none;
+  translate: none;
+  box-shadow: inset 0 1px 1px rgb(0 0 0 / 0.5);
+  opacity: 0;
+  overflow: hidden;
+}
+
+.media-skin[data-skin="jaali"] .jl-volume .media-volume-slider-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: var(--media-slider-fill, 0%);
+  height: 100%;
+  background: linear-gradient(90deg, #d79a3c, #ffe08f);
+  border-radius: inherit;
+}
+
+.media-skin[data-skin="jaali"] .jl-volume .media-volume-slider-thumb {
+  position: absolute;
+  inset: auto;
+  left: var(--media-slider-fill, 100%);
+  top: 50%;
+  width: calc(13 * var(--u));
+  height: calc(13 * var(--u));
+  margin: 0;
+  translate: -50% -50%;
+  transform: none;
+  border: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 35%, #fff8e6, #f1d79c 55%, #b5833f);
+  box-shadow: 0 0 calc(6 * var(--u)) rgb(255 210 120 / 0.9);
+  opacity: 0;
+}
+
+.media-skin[data-skin="jaali"] .jl-volume:is(:hover, :focus-within, [data-dragging]) :is(.media-volume-slider-track, .media-volume-slider-thumb),
+.media-skin[data-skin="jaali"] .jl-deck:has(.jl-mute:hover) .jl-volume :is(.media-volume-slider-track, .media-volume-slider-thumb) {
+  opacity: 1;
+}
+
+/* ── popups ── */
+.media-skin[data-skin="jaali"] .media-menu-popup {
+  color: var(--jl-ink);
+  background: #1d130c;
+  border: 1px solid rgb(246 198 106 / 0.4);
+  border-radius: 10px;
+  box-shadow: 0 10px 28px rgb(0 0 0 / 0.6);
+  pointer-events: auto;
+}
+
+.media-skin[data-skin="jaali"] :is(.media-menu-item, .media-menu-radio-item, .media-menu-back-item)[data-highlighted] {
+  background: rgb(31 63 158 / 0.55);
+}
+
+.media-skin[data-skin="jaali"] .media-tooltip-popup {
+  color: var(--jl-ink);
+  background: #1d130c;
+}
+
+/* ── preferences ── */
+@media (forced-colors: active) {
+  .media-skin[data-skin="jaali"] .jl-deck .jl-key,
+  .media-skin[data-skin="jaali"] .jl-label {
+    border: 1px solid ButtonText;
+  }
+
+  .media-skin[data-skin="jaali"] .jl-label[data-active] {
+    background: Highlight;
+  }
+}
+
+/* ── compact unit: under 760px the window, strip and beads keep the reference's proportions and the deck becomes
+   two rows of parts cut from the same art (the pill, then the volume panel and the three studs), so every control
+   keeps a 44px target without overlapping its neighbour ── */
+@container media-root (width < 760px) {
+  .media-skin[data-skin="jaali"] {
+    aspect-ratio: auto;
+    height: auto;
+  }
+
+  /* the unit's one in-flow box: the top 600 card rows at the player's width plus the two-row deck */
+  .media-skin[data-skin="jaali"]::after {
+    content: "";
+    display: block;
+    height: calc(600 * 100cqw / 1030 + 186 * min(412px, 100cqw - 16px) / 412);
+    pointer-events: none;
+  }
+
+  .media-skin[data-skin="jaali"] .jl-unit {
+    height: 100%;
+  }
+
+  .media-skin[data-skin="jaali"] .jl-card {
+    bottom: auto;
+    height: calc(600 * var(--bp));
+    background-size: calc(1030 * var(--bp)) calc(703 * var(--bp));
+  }
+
+  .media-skin[data-skin="jaali"] .jl-time {
+    font-size: max(10px, calc(var(--jl-fs) * var(--bp)));
+  }
+
+  /* the seek target starts at the bead row and grows down over the groove, so it clears the label above it */
+  .media-skin[data-skin="jaali"] .jl-seek {
+    top: calc(547 * var(--bp));
+  }
+
+  /* the groove and its dot stay on the card's groove row (588 and 585) whatever the target's height */
+  .media-skin[data-skin="jaali"] .jl-seek .media-time-slider-fill,
+  .media-skin[data-skin="jaali"] .jl-seek[data-dragging] .media-time-slider-fill {
+    top: calc(41 * var(--bp));
+  }
+
+  .media-skin[data-skin="jaali"] .jl-seek .media-time-slider-thumb {
+    top: calc(38 * var(--bp));
+  }
+
+  .media-skin[data-skin="jaali"] .jl-deck {
+    --k: calc(min(412px, 100cqw - 16px) / 412);
+    --u: var(--k);
+    --px: calc(50% - 206 * var(--k));
+    top: calc(600 * var(--bp));
+    height: calc(186 * var(--k));
+    background:
+      linear-gradient(to bottom, rgb(60 36 18 / 0.55), transparent 6px),
+      linear-gradient(170deg, var(--jl-stone-hi), var(--jl-stone) 45%, var(--jl-stone-lo));
+    border-radius: 0 0 calc(10 * var(--k)) calc(10 * var(--k));
+  }
+
+  .media-skin[data-skin="jaali"] .jl-deck .jl-key {
+    left: calc(var(--px) + var(--cx) * var(--k) - var(--w) / 2);
+  }
+
+  .media-skin[data-skin="jaali"] .jl-pill {
+    display: block;
+    position: absolute;
+    left: var(--px);
+    top: calc(4 * var(--k));
+    width: calc(412 * var(--k));
+    height: calc(100 * var(--k));
+    background: url("../assets/pill.webp") 0 0 / 100% 100% no-repeat;
+    pointer-events: none;
+  }
+
+  .media-skin[data-skin="jaali"] .jl-deck .jl-prev { --cx: 54; --cy: 54; }
+  .media-skin[data-skin="jaali"] .jl-deck .jl-rew { --cx: 122; --cy: 54; }
+  .media-skin[data-skin="jaali"] .jl-deck .jl-play { --cx: 205.5; --cy: 53.5; }
+  .media-skin[data-skin="jaali"] .jl-deck .jl-ff { --cx: 290; --cy: 52; }
+  .media-skin[data-skin="jaali"] .jl-deck .jl-next { --cx: 358; --cy: 52; }
+
+  /* row 2: the carved volume panel, then the studs 64 apart */
+  .media-skin[data-skin="jaali"] .jl-ornament {
+    display: block;
+    position: absolute;
+    left: calc(var(--px) + 47.5 * var(--k));
+    top: calc(114 * var(--k));
+    width: calc(113 * var(--k));
+    height: calc(58 * var(--k));
+    border-radius: calc(6 * var(--k));
+    background: url("../assets/card.webp") calc(-724 * var(--k)) calc(-618 * var(--k)) / calc(1030 * var(--k)) calc(703 * var(--k)) no-repeat;
+    pointer-events: none;
+  }
+
+  .media-skin[data-skin="jaali"] .jl-volume {
+    left: calc(var(--px) + 50 * var(--k));
+    top: calc(143 * var(--k) - max(44px, calc(44 * var(--k))) / 2);
+    width: calc(108 * var(--k));
+  }
+
+  .media-skin[data-skin="jaali"] .jl-volume .media-volume-slider-track,
+  .media-skin[data-skin="jaali"] .jl-volume .media-volume-slider-thumb {
+    opacity: 1;
+  }
+
+  .media-skin[data-skin="jaali"] .jl-deck .jl-mute { --cx: 204.5; --cy: 143; --sx: 864.5; --sy: 647; }
+  .media-skin[data-skin="jaali"] .jl-deck .jl-settings { --cx: 268.5; --cy: 143; --sx: 923; --sy: 646; }
+  .media-skin[data-skin="jaali"] .jl-deck .jl-fs { --cx: 332.5; --cy: 143; --sx: 982; --sy: 646; }
+
+  /* each stud shows its own patch of the card */
+  .media-skin[data-skin="jaali"] .jl-deck .jl-stud::before {
+    content: "";
+    position: absolute;
+    left: calc(50% - 25 * var(--k));
+    top: calc(50% - 25 * var(--k));
+    width: calc(50 * var(--k));
+    height: calc(50 * var(--k));
+    border-radius: 50%;
+    background: url("../assets/card.webp") calc((25 - var(--sx)) * var(--k)) calc((25 - var(--sy)) * var(--k)) / calc(1030 * var(--k)) calc(703 * var(--k)) no-repeat;
+    box-shadow: 0 calc(2 * var(--k)) calc(5 * var(--k)) rgb(40 22 8 / 0.45);
+    pointer-events: none;
+  }
+
+  .media-skin[data-skin="jaali"] .jl-deck .jl-mute[data-muted]::after,
+  .media-skin[data-skin="jaali"] .jl-deck[data-muted] .jl-mute::after {
+    z-index: 1;
+  }
+}

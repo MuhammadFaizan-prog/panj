@@ -15,6 +15,7 @@
     "@panj/darkroom": "workspace:*",
     "@panj/glass": "workspace:*",
     "@panj/ink-reed": "workspace:*",
+    "@panj/jaali": "workspace:*",
     "@panj/phatta": "workspace:*",
     "@videojs/html": "10.3.0"
   },
