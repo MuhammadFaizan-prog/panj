@@ -119,10 +119,24 @@
       height: calc(54 * var(--bp));
     }
 
-    /* playing: the ring steps back with the controls */
-    .video-controls-content:not([data-visible]) .video-controls-center:has(.media-play-button[data-started]:not([data-paused], [data-ended])) {
+    /* playing: the ring steps off the picture. Basant's bar never hides, so tying the ring to the controls'
+       visibility left it parked over the film whenever the pointer was busy on the bar. Now it fades out as soon
+       as playback starts, like Glass's centre cluster, and only comes back while the controls are awake AND the
+       pointer is over the picture (not the bar), or while it holds keyboard focus; idle controls fade it again.
+       Paused, ended and before the first play it stays up. */
+    .video-controls-center {
+      transition: opacity 0.2s ease;
+    }
+
+    .video-controls-center:has(.media-play-button[data-started]:not([data-paused], [data-ended])) {
       opacity: 0;
       pointer-events: none;
+    }
+
+    :scope:hover:not(:has(.basant-bar:hover)) .video-controls-content[data-visible] .video-controls-center,
+    .video-controls-content[data-visible] .video-controls-center:has(.video-controls-center-play:focus-visible) {
+      opacity: 1;
+      pointer-events: auto;
     }
 
     /* ── the bar ─────────────────────────────────────────────────────────── */
