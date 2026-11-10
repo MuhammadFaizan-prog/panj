@@ -38,6 +38,7 @@ B = {
     'charkhi_box': (398, 592, 582, 674),
     'seek_kite_box': (694, 580, 812, 722),     # sprite crop
     'volume_kite_box': (904, 548, 976, 668),   # sprite crop
+    'caption_box': (30, 696, 222, 742),        # leftover "Dribbble Present" caption, painted out of the plate
 }
 VOL_DIAMOND = [(925.0, 566.8), (953.7, 554.7), (970.8, 583.8), (938.7, 603.0)]
 VOL_TRACK = (940, 619, 947, 648)    # white fill (live), excluded from the volume sprite
@@ -140,6 +141,18 @@ def main():
     plate = ref.copy()
     filled = fill_holes(src, below & ~hole)
     plate[hole] = filled[hole]
+    # the mockup's leftover "Dribbble Present" caption under the card (bottom left): the backdrop there is heavily
+    # blurred, so the letters are inpainted and the patch is smoothed to the blur of its surroundings
+    lx0, ly0, lx1, ly1 = B['caption_box']
+    win = np.clip(plate[ly0:ly1, lx0:lx1] + 0.5, 0, 255).astype(np.uint8)
+    lum = win.astype(np.float32).mean(2)
+    letters = (lum - cv2.GaussianBlur(lum, (0, 0), 6) > 12).astype(np.uint8)
+    letters = cv2.dilate(letters, np.ones((7, 7), np.uint8))
+    patch = cv2.inpaint(win, letters, 6, cv2.INPAINT_TELEA).astype(np.float32)
+    patch = cv2.GaussianBlur(patch, (0, 0), 5)
+    w = cv2.GaussianBlur(letters.astype(np.float32), (0, 0), 3)
+    w = np.clip(w * 2.5, 0, 1)[..., None]
+    plate[ly0:ly1, lx0:lx1] = plate[ly0:ly1, lx0:lx1] * (1 - w) + patch * w
     save(np.clip(plate + 0.5, 0, 255).astype(np.uint8), f'{PAGE_OUT}/plate.webp', q=92)
     bd = cv2.GaussianBlur(ref, (0, 0), 24)
     Image.fromarray(np.clip(bd + 0.5, 0, 255).astype(np.uint8)).resize((688, 384), Image.LANCZOS).save(
