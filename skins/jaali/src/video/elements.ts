@@ -145,6 +145,14 @@ class JaaliDeckElement extends HTMLElement {
     this.#abort = new AbortController();
     const { signal } = this.#abort;
     shieldGestures(this, signal);
+    // the lattice lifts off the picture on the first play and stays off (paused too) until the source changes;
+    // jaali.css keys the fade on this attribute
+    const played = () => container.setAttribute('data-jl-played', '');
+    container.addEventListener('play', played, { capture: true, signal });
+    container.addEventListener('playing', played, { capture: true, signal });
+    container.addEventListener('emptied', () => container.removeAttribute('data-jl-played'), { capture: true, signal });
+    const m0 = findMedia(container);
+    if (m0 && !m0.paused) played();
     const strip = container.querySelector<HTMLElement>('.jl-strip');
     if (strip) shieldGestures(strip, signal);
     const seek = container.querySelector<HTMLElement>('media-time-slider');

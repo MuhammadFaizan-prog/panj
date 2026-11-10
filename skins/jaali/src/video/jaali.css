@@ -35,6 +35,13 @@
   initial-value: 1px;
 }
 
+/* 1 while the lattice is drawn over the picture, 0 once playback has started (see .jl-card below) */
+@property --jl-lattice {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 1;
+}
+
 @font-face {
   font-family: "Jaali Digits";
   src: url("../fonts/montserrat-digits.woff") format("woff");
@@ -158,6 +165,27 @@
   inset: 0;
   background: url("../assets/card.webp") 0 0 / 100% 100% no-repeat;
   pointer-events: none;
+}
+
+/* once playback has started (data-jl-played, set by <jl-deck> on the first play and kept while paused) the lattice
+   bars lift off the picture: open.webp keeps the frame and its corner filigree and cuts the bars, and a flat layer at
+   --jl-lattice adds them back, so the bars fade from 1 to 0 while the frame never moves. The unplayed poster state has
+   no mask at all and stays pixel-identical to the reference. */
+.media-skin[data-skin="jaali"][data-jl-played] .jl-card {
+  --jl-lattice: 0;
+  -webkit-mask:
+    url("../assets/open.webp") 0 0 / calc(1030 * var(--bp)) calc(703 * var(--bp)) no-repeat,
+    linear-gradient(rgb(0 0 0 / var(--jl-lattice)) 0 0);
+  mask:
+    url("../assets/open.webp") 0 0 / calc(1030 * var(--bp)) calc(703 * var(--bp)) no-repeat,
+    linear-gradient(rgb(0 0 0 / var(--jl-lattice)) 0 0);
+  transition: --jl-lattice 400ms ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .media-skin[data-skin="jaali"][data-jl-played] .jl-card {
+    transition: none;
+  }
 }
 
 /* a soft shade at the window's edges once the landscape poster gives way to the film */

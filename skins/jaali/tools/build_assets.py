@@ -20,6 +20,8 @@ Skin sprites (skins/jaali/src/assets/):
   pause.webp    the play disc with the lapis triangle repainted as two bars (shown while playing)
   muted.webp    the volume stud with its sound waves replaced by a cross (shown while muted)
   pill.webp     the lapis/ivory pill with the play disc, RGBA, for the phone deck
+  open.webp     a mask for card.webp once playback has started: opaque everywhere except the lattice bars, which it
+                cuts away so only the frame and its corner filigree stay over the picture (alpha = corners / card)
 Page assets (apps/gallery/jaali/assets/):
   plate.webp    the reference itself (the live player covers its unit)
   backdrop.webp the alcove, blurred and small, for past the plate's aspect ratio and phones
@@ -171,6 +173,16 @@ def star_mask():
     return np.clip((19.0 - r) / 3.0, 0, 1)[..., None]
 
 
+def open_mask(alpha_win, corners, shape):
+    """card alpha x mask = the corner rim's alpha, so the lattice bars vanish and the frame stays exactly as painted"""
+    x, y, w, h = VIDEO
+    keep = np.where(alpha_win > 0, corners / np.maximum(alpha_win, 1e-6), 1.0)
+    m = np.full((*shape, 4), 0, np.uint8)
+    m[..., 3] = 255
+    m[y:y + h, x:x + w, 3] = np.round(np.clip(keep, 0, 1) * 255).astype(np.uint8)
+    return m
+
+
 def main():
     ref = np.array(Image.open(REF).convert('RGB'))
     assert ref.shape[:2] == (768, 1376), ref.shape
@@ -207,6 +219,7 @@ def main():
     card[y:y + h, x:x + w, 3] = np.round(alpha_win * 255).astype(np.uint8)
     card[y:y + h, x:x + w, :3][alpha_win == 0] = 0
     save(card[cy0:cy0 + ch, cx0:cx0 + cw], os.path.join(SKIN_OUT, 'card.webp'))
+    save(open_mask(alpha_win, corners, card.shape[:2])[cy0:cy0 + ch, cx0:cx0 + cw], os.path.join(SKIN_OUT, 'open.webp'))
 
     # ── beads ──
     sm = star_mask()
